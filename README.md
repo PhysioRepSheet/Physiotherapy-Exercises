@@ -13,13 +13,15 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - Print or save as PDF, or open a pre-filled email in your own mail program.
 - Optional weekly tick chart on the handout and patient page (patient ticks are saved on their own phone only).
 - Optional patient goal and plan ("when I'll do them"), printed as write-in lines if left blank. Included in the patient link, never in templates.
-- Green, amber, red pain guide (on by default) on the handout and patient page, with a pain limit setting (mild ache only, up to 3/10, up to 5/10).
+- Three-column builder on wide screens: library, the handout, and a handout details panel (actions, patient and physio details, print options, advice, goal and plan). On smaller screens the details fold away above the handout.
+- Gentle border on every printed page.
+- (The green, amber, red pain guide was removed on 16 Nov 2026 at Alex's request. Older links that had it switched on still open, without it.)
 - 50 exercises across knee, hip, ankle, back, shoulder, neck, balance and after surgery, all with moving pictures.
 - 10 ready-made condition templates in starters.js (starting points only), from the empty handout or "My templates".
 - Works offline once opened, and can be installed as an app (manifest.webmanifest, sw.js). **When you change any file, change VERSION at the top of sw.js** so devices fetch the new files.
 - Opens patient links on older phones without built-in decompression (vendor/tiny-inflate.js, MIT licence).
 - "My templates": save programmes in the physio's own browser (no patient details), start a new handout from one, and download or load a backup file.
-- "Copy for notes": a clinical summary (sets x reps, load, progressions given, pain guide) to paste into the patient record. Copied on the device only.
+- "Copy for notes": a clinical summary (sets x reps, load, progressions given) to paste into the patient record. Copied on the device only.
 - "Weight or band" per exercise, and "How long to keep going" for the whole programme.
 - Search understands clinical terms (e.g. SLR, STS, glute med, Codman, DNF) via `aliases` in exercises.js.
 - Time estimate ("about N minutes each time") and a tip when a programme has more than 5 exercises.

@@ -221,7 +221,7 @@
       if (data.pl) { $("#plan-text").textContent = data.pl; $("#plan-box").hidden = false; }
       if (data.du) { $("#du-text").textContent = data.du; $("#du-box").hidden = false; }
       $("#goal-plan").hidden = !(data.go || data.pl || data.du);
-      $("#pain-wrap").hidden = !data.pg;
+      $("#pain-wrap").hidden = true; // pain guide removed (16 Nov 2026), even for older links
       if (data.pg) {
         const g = H.painGuide(data.pg);
         $(".pg-green-text").textContent = g.green;

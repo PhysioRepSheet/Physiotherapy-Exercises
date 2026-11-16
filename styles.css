@@ -161,13 +161,13 @@ textarea { resize: vertical; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .programme-list { list-style: none; margin: 24px 0 0; padding: 0; display: flex; flex-direction: column; gap: 16px; counter-reset: ex; }
 .ex-card {
-  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 22px;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 18px;
   counter-increment: ex; break-inside: avoid; transition: box-shadow .2s var(--ease), border-color .2s var(--ease);
   animation: card-in .35s var(--ease);
 }
 .ex-card:hover { box-shadow: var(--shadow); border-color: var(--line-strong); }
 @keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.ex-media .pic { width: 230px; border-radius: 12px; }
+.ex-media .pic { width: 160px; border-radius: 12px; } /* smaller at Alex's request, 16 Nov 2026 */
 .ex-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .ex-title { font-size: 1.125rem; display: flex; align-items: center; gap: 10px; }
 .ex-title::before {
@@ -210,7 +210,7 @@ textarea { resize: vertical; }
 
 @media (max-width: 760px) {
   .ex-card { grid-template-columns: 1fr; gap: 14px; }
-  .ex-media .pic { width: 100%; max-width: 380px; margin: 0 auto; }
+  .ex-media .pic { width: 100%; max-width: 220px; margin: 0 auto; }
   .params { grid-template-columns: repeat(3, 1fr); }
   .params .freq, .params .load { grid-column: 1 / -1; }
   .options-grid { grid-template-columns: 1fr; }
@@ -292,7 +292,7 @@ dialog::backdrop { background: rgba(23, 35, 43, .4); backdrop-filter: blur(3px);
   .print-head dl div { display: flex; flex-direction: column; border-left: .6mm solid var(--line-strong); padding-left: 2.5mm; }
   .print-head dt { font-size: 7.5pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
   .print-head dd { margin: 0; font-weight: 600; }
-  .print-qr { width: 32mm; flex: none; text-align: center; border: .3mm solid var(--line-strong); border-radius: 3mm; padding: 3mm 3mm 2mm; align-self: flex-start; }
+  .print-qr { width: 32mm; flex: none; text-align: center; border: .35mm solid var(--line-strong); border-radius: 3mm; padding: 3mm 3mm 2mm; align-self: flex-start; margin-right: .6mm; box-sizing: border-box; }
   .print-qr svg { width: 100%; height: auto; display: block; }
   .print-qr p { font-size: 7.5pt; line-height: 1.25; margin: 1.5mm 0 0; color: var(--ink-soft); }
   .print-qr strong { color: var(--brand-ink); display: block; font-size: 8.5pt; }
@@ -506,3 +506,72 @@ dialog::backdrop { background: rgba(23, 35, 43, .4); backdrop-filter: blur(3px);
 .mt-starters summary { cursor: pointer; font-weight: 600; padding: 4px 0; }
 .mt-starters[open] summary { margin-bottom: 8px; }
 .mt-starters .hint { margin: 0 0 8px; }
+
+/* Gentle page border on printed handouts (repeats on every page).
+   The page margin is a little smaller, and the content is padded in from the border on every page. */
+@media print {
+  @page { margin: 8mm; }
+  @page saver { margin: 5mm; }
+  html, body { background: transparent !important; }
+  .page-frame { display: block !important; position: fixed; inset: 0; border: .4mm solid #c9d6d1; border-radius: 4mm; pointer-events: none; z-index: 0; }
+  .bw-print .page-frame { border-color: #999; }
+  body > .wrap, body > main, body > footer { position: relative; z-index: 1; }
+  body { padding: 5mm 6mm; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+  body.paper-saver { padding: 3.5mm 4.5mm; }
+}
+.page-frame { display: none; }
+
+/* ---------- Three columns: library | handout | details (16 Nov 2026) ----------
+   On wide screens the details panel sits on the right, so the chosen exercises show straight away.
+   On smaller screens it sits above the handout, with the form folded away under "Patient, physio and print options". */
+@media (min-width: 961px) { .layout { grid-template-columns: 340px minmax(0, 1fr); } }
+.settings { display: flex; flex-direction: column; gap: 14px; }
+.settings h2 { font-size: 1.25rem; }
+.settings-actions { gap: 8px; }
+.settings-actions #btn-print { order: -1; flex-basis: 100%; }
+.settings-details summary { cursor: pointer; font-weight: 600; font-size: .9375rem; padding: 10px 0; border-top: 1px solid var(--line); list-style: none; display: flex; align-items: center; gap: 8px; }
+.settings-details summary::-webkit-details-marker { display: none; }
+.settings-details summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft); transform: rotate(-45deg); transition: transform .2s var(--ease); margin: 0 4px 0 2px; }
+.settings-details[open] summary::before { transform: rotate(45deg); }
+.settings-body { padding-top: 4px; }
+.settings .tick-row { flex-direction: column; gap: 10px; }
+.settings .goal-plan { grid-template-columns: 1fr; }
+.programme-toolbar { padding-bottom: 14px; margin-bottom: 0; }
+@media (min-width: 961px) and (max-width: 1239px) {
+  .settings { grid-column: 2; grid-row: 1; }
+  .programme { grid-column: 2; grid-row: 2; }
+  .library { grid-row: 1 / span 2; }
+  .settings .field-grid { grid-template-columns: 1fr 1fr; }
+  .settings .tick-row { flex-direction: row; gap: 10px 28px; }
+  .settings .goal-plan { grid-template-columns: 1fr 1fr; }
+  .settings-actions #btn-print { order: 0; flex-basis: auto; }
+}
+@media (min-width: 1240px) {
+  .wrap.layout, .site-header .wrap { max-width: 1680px; }
+  .layout { grid-template-columns: 320px minmax(0, 1fr) 340px; gap: 24px; }
+  .settings { position: sticky; top: 92px; max-height: calc(100vh - 112px); overflow-y: auto; scrollbar-width: thin; padding: 20px; }
+  .settings .field-grid { grid-template-columns: 1fr; gap: 12px; }
+  .settings-details > summary { display: none; }
+  .settings-details { border-top: 1px solid var(--line); padding-top: 12px; }
+}
+@media (max-width: 960px) {
+  .settings { order: 1; }
+  .programme { order: 2; }
+  .settings-actions #btn-print { order: 0; flex-basis: auto; }
+}
+@media print {
+  .programme-toolbar { display: none !important; }
+  .gp-print-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 6mm; margin: 0 0 3mm; }
+  .paper-saver .gp-print-row { margin-bottom: 2mm; }
+}
+/* When the handout column is narrow (three columns on a laptop), keep cards compact */
+.programme-list { container-type: inline-size; }
+@media (min-width: 1240px) {
+  @container (max-width: 620px) {
+    .ex-card { grid-template-columns: 100px minmax(0, 1fr); gap: 14px; padding: 14px; }
+    .ex-media .pic { width: 100px; max-width: none; margin: 0; }
+    .params { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .params .freq, .params .load { grid-column: 1 / -1; }
+    .options-grid { grid-template-columns: 1fr; }
+  }
+}

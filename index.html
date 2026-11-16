@@ -29,6 +29,7 @@
     </div>
   </header>
 
+  <div class="page-frame" aria-hidden="true"></div>
   <main class="wrap layout">
     <h1 class="visually-hidden no-print">RepSheet: make a home exercise handout</h1>
     <!-- LEFT: Exercise library -->
@@ -41,68 +42,14 @@
       <p class="library-foot"><a href="#" data-request="exercise">Can't find an exercise? Request one</a></p>
     </section>
 
-    <!-- RIGHT: The handout being built -->
+    <!-- MIDDLE: The handout being built -->
     <section class="panel programme" id="programme" aria-labelledby="programme-title">
       <div class="programme-toolbar no-print">
         <h2 id="programme-title">Patient handout</h2>
-        <div class="actions">
-          <button type="button" class="btn btn-secondary" id="btn-clear">Clear</button>
-          <button type="button" class="btn btn-secondary" id="btn-my-templates">My templates</button>
-          <button type="button" class="btn btn-secondary" id="btn-template">Share as template</button>
-          <button type="button" class="btn btn-secondary" id="btn-notes" title="Copy a summary of this programme to paste into your clinical notes">Copy for notes</button>
-          <button type="button" class="btn btn-secondary" id="btn-email">Email</button>
-          <button type="button" class="btn btn-primary" id="btn-print">Print or save as PDF</button>
-        </div>
       </div>
 
       <div class="handout">
         <div class="handout-head">
-          <div class="field-grid">
-            <div class="field">
-              <label for="patient-name">Patient name <span class="hint">(optional, not saved or shared)</span></label>
-              <input id="patient-name" type="text" autocomplete="off">
-            </div>
-            <div class="field">
-              <label for="handout-date">Date</label>
-              <input id="handout-date" type="date">
-            </div>
-            <div class="field">
-              <label for="clinician">Physiotherapist</label>
-              <input id="clinician" type="text" autocomplete="off" placeholder="e.g. Sam Smith, Physiotherapist">
-            </div>
-            <div class="field">
-              <label for="contact">Contact details</label>
-              <input id="contact" type="text" autocomplete="off" placeholder="e.g. Outpatient Physio, 01234 567890">
-            </div>
-          </div>
-          <div class="tick-row no-print">
-            <label class="remember">
-              <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="tick-chart"> <span><strong>Weekly tick chart</strong> <span class="hint">(boxes to tick each day, on the handout and patient page)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="pain-guide" checked> <span><strong>Pain guide</strong> <span class="hint">(green, amber, red: how much pain is OK, on the handout and patient page)</span></span>
-            </label>
-            <label class="pain-level-field" for="pain-level">
-              <span>Pain allowed while exercising</span>
-              <select id="pain-level">
-                <option value="1">Mild ache only</option>
-                <option value="3">Up to 3 out of 10</option>
-                <option value="5">Up to 5 out of 10</option>
-              </select>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="bw-print"> <span><strong>Black and white printing</strong> <span class="hint">(no colour fills, crisp black lines: best for mono printers and saves ink)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="paper-saver"> <span><strong>Paper saver</strong> <span class="hint">(two columns, smaller pictures and margins, so it fits on fewer pages)</span></span>
-            </label>
-          </div>
           <!-- What's shown on the printed handout -->
           <div class="print-only print-head">
             <div class="print-title">
@@ -118,37 +65,13 @@
         </div>
 
         <div class="field general-notes-field">
-          <label for="general-notes" class="no-print">General advice for the patient</label>
-          <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>
-          <p id="no-id-hint" class="hint no-print">Notes are included in the patient link, so don't put names, NHS numbers or other identifying details in any notes.</p>
           <p class="print-only" id="print-general-notes"></p>
         </div>
 
-        <!-- Goal and plan: agreeing these with the patient helps them keep going -->
-        <div class="goal-plan">
-          <div class="field">
-            <label for="goal" class="no-print">Patient's goal <span class="hint">(optional)</span></label>
-            <input id="goal" type="text" maxlength="140" placeholder="e.g. Walk to the shop without stopping" aria-describedby="goal-hint">
-            <div class="print-only gp-print"><h2>My goal</h2><p id="print-goal"></p></div>
-          </div>
-          <div class="field">
-            <label for="plan" class="no-print">When they'll do them <span class="hint">(optional)</span></label>
-            <input id="plan" type="text" maxlength="140" placeholder="e.g. After breakfast, and while the kettle boils" aria-describedby="goal-hint">
-            <div class="print-only gp-print"><h2>My plan: when I'll do them</h2><p id="print-plan"></p></div>
-          </div>
-          <div class="field duration-field">
-            <label for="duration" class="no-print">How long to keep going <span class="hint">(optional)</span></label>
-            <input id="duration" type="text" maxlength="80" list="duration-options" placeholder="e.g. For 6 weeks, or until your next appointment">
-            <datalist id="duration-options">
-              <option value="Until your next appointment">
-              <option value="For 2 weeks">
-              <option value="For 4 weeks">
-              <option value="For 6 weeks">
-              <option value="For 12 weeks">
-              <option value="Keep going every day, even when you feel better">
-            </datalist>
-          </div>
-          <p id="goal-hint" class="hint no-print">Agreeing a goal and a time of day helps people keep going. Leave them blank and the handout prints lines for the patient to fill in.</p>
+        <!-- Goal and plan as printed (typed in the details panel) -->
+        <div class="gp-print-row print-only">
+          <div class="gp-print"><h2>My goal</h2><p id="print-goal"></p></div>
+          <div class="gp-print"><h2>My plan: when I'll do them</h2><p id="print-plan"></p></div>
         </div>
 
         <p id="programme-summary" class="programme-summary no-print" hidden></p>
@@ -193,7 +116,7 @@
           </div>
         </section>
 
-        <div id="print-pain" class="print-only">
+        <div id="print-pain" class="print-only" hidden>
         <section class="pain-guide" aria-labelledby="pain-title-print">
           <h2 id="pain-title-print">How much pain is OK?</h2>
           <ul>
@@ -225,6 +148,103 @@
         </footer>
       </div>
     </section>
+
+    <!-- RIGHT: handout details, options and actions (not printed) -->
+    <aside class="panel settings no-print" aria-labelledby="settings-title">
+      <h2 id="settings-title">Handout details</h2>
+        <div class="actions settings-actions">
+          <button type="button" class="btn btn-secondary" id="btn-clear">Clear</button>
+          <button type="button" class="btn btn-secondary" id="btn-my-templates">My templates</button>
+          <button type="button" class="btn btn-secondary" id="btn-template">Share as template</button>
+          <button type="button" class="btn btn-secondary" id="btn-notes" title="Copy a summary of this programme to paste into your clinical notes">Copy for notes</button>
+          <button type="button" class="btn btn-secondary" id="btn-email">Email</button>
+          <button type="button" class="btn btn-primary" id="btn-print">Print or save as PDF</button>
+        </div>
+
+      <details class="settings-details" id="settings-details" open>
+        <summary>Patient, physio and print options</summary>
+        <div class="settings-body">
+          <div class="field-grid">
+            <div class="field">
+              <label for="patient-name">Patient name <span class="hint">(optional, not saved or shared)</span></label>
+              <input id="patient-name" type="text" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="handout-date">Date</label>
+              <input id="handout-date" type="date">
+            </div>
+            <div class="field">
+              <label for="clinician">Physiotherapist</label>
+              <input id="clinician" type="text" autocomplete="off" placeholder="e.g. Sam Smith, Physiotherapist">
+            </div>
+            <div class="field">
+              <label for="contact">Contact details</label>
+              <input id="contact" type="text" autocomplete="off" placeholder="e.g. Outpatient Physio, 01234 567890">
+            </div>
+          </div>
+          <div class="tick-row">
+            <label class="remember">
+              <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="tick-chart"> <span><strong>Weekly tick chart</strong> <span class="hint">(boxes to tick each day, on the handout and patient page)</span></span>
+            </label>
+            <!-- Pain guide (traffic light) removed at Alex's request, 16 Nov 2026. Kept hidden and off so old links still open. -->
+            <label class="large-toggle" hidden>
+              <input type="checkbox" id="pain-guide"> <span><strong>Pain guide</strong> <span class="hint">(green, amber, red: how much pain is OK, on the handout and patient page)</span></span>
+            </label>
+            <label class="pain-level-field" for="pain-level" hidden>
+              <span>Pain allowed while exercising</span>
+              <select id="pain-level">
+                <option value="1">Mild ache only</option>
+                <option value="3">Up to 3 out of 10</option>
+                <option value="5">Up to 5 out of 10</option>
+              </select>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="bw-print"> <span><strong>Black and white printing</strong> <span class="hint">(no colour fills, crisp black lines: best for mono printers and saves ink)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="paper-saver"> <span><strong>Paper saver</strong> <span class="hint">(two columns, smaller pictures and margins, so it fits on fewer pages)</span></span>
+            </label>
+          </div>
+
+          <div class="field general-notes-field">
+          <label for="general-notes">General advice for the patient</label>
+          <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>
+          <p id="no-id-hint" class="hint">Notes are included in the patient link, so don't put names, NHS numbers or other identifying details in any notes.</p>
+          </div>
+
+        <!-- Goal and plan: agreeing these with the patient helps them keep going -->
+        <div class="goal-plan">
+          <div class="field">
+            <label for="goal">Patient's goal <span class="hint">(optional)</span></label>
+            <input id="goal" type="text" maxlength="140" placeholder="e.g. Walk to the shop without stopping" aria-describedby="goal-hint">
+          </div>
+          <div class="field">
+            <label for="plan">When they'll do them <span class="hint">(optional)</span></label>
+            <input id="plan" type="text" maxlength="140" placeholder="e.g. After breakfast, and while the kettle boils" aria-describedby="goal-hint">
+          </div>
+          <div class="field duration-field">
+            <label for="duration">How long to keep going <span class="hint">(optional)</span></label>
+            <input id="duration" type="text" maxlength="80" list="duration-options" placeholder="e.g. For 6 weeks, or until your next appointment">
+            <datalist id="duration-options">
+              <option value="Until your next appointment">
+              <option value="For 2 weeks">
+              <option value="For 4 weeks">
+              <option value="For 6 weeks">
+              <option value="For 12 weeks">
+              <option value="Keep going every day, even when you feel better">
+            </datalist>
+          </div>
+          <p id="goal-hint" class="hint">Agreeing a goal and a time of day helps people keep going. Leave them blank and the handout prints lines for the patient to fill in.</p>
+        </div>
+        </div>
+      </details>
+    </aside>
   </main>
 
   <footer class="site-footer no-print">

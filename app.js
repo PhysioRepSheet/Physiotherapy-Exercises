@@ -452,7 +452,7 @@
     const set = (id, on, cls) => { $(id).checked = !!on; if (cls) document.body.classList.toggle(cls, !!on); };
     set("#large-print", data.lp, "large-print");
     set("#tick-chart", data.tc); $("#print-ticks").hidden = !data.tc;
-    set("#pain-guide", !data.npg); $("#print-pain").hidden = !!data.npg; $("#pain-level").disabled = !!data.npg;
+    set("#pain-guide", false); $("#print-pain").hidden = true; // pain guide removed (16 Nov 2026)
     $("#pain-level").value = String(data.pgl || 1); applyPainLevel();
     set("#bw-print", data.bw, "bw-print");
     set("#paper-saver", data.ps, "paper-saver");
@@ -794,6 +794,12 @@
   $("#handout-date").value = new Date().toISOString().slice(0, 10);
   $("#search").addEventListener("input", renderLibrary);
   $("#btn-print").addEventListener("click", printHandout);
+  // Details panel: always open in the three-column layout, folded away on smaller screens to start with
+  (function () {
+    const sd = $("#settings-details"); const wide = window.matchMedia("(min-width: 1240px)");
+    sd.open = wide.matches;
+    wide.addEventListener("change", () => { if (wide.matches) sd.open = true; });
+  })();
   $("#btn-email").addEventListener("click", openEmail);
   $("#btn-clear").addEventListener("click", clearAll);
   $("#btn-copy").addEventListener("click", copyLink);
