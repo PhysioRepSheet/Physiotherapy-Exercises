@@ -1,0 +1,107 @@
+/* Patient page: larger text, one exercise per card, phone first */
+body.patient { font-size: 17px; }
+.patient-main { max-width: 760px; padding-top: 28px; padding-bottom: 48px; }
+.patient-intro { background: linear-gradient(140deg, var(--brand) 0%, #13867b 100%); color: #fff; border-radius: var(--radius-lg); padding: 28px 26px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+.patient-intro::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.08); }
+.patient-intro h1 { font-size: clamp(1.6rem, 6vw, 2.1rem); letter-spacing: -0.03em; position: relative; }
+.patient-meta { color: rgba(255,255,255,.85); margin: 8px 0 0; position: relative; }
+.patient-general { background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius); padding: 12px 16px; margin: 18px 0 0; white-space: pre-wrap; position: relative; }
+.patient-list { list-style: none; margin: 24px 0; padding: 0; display: flex; flex-direction: column; gap: 20px; counter-reset: ex; }
+.p-card { background: var(--card); border: 1px solid rgba(23,35,43,.06); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 20px; counter-increment: ex; }
+.p-card h2 { font-size: 1.35rem; margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+.p-card h2::before { content: counter(ex); display: inline-grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 999px; background: var(--brand-tint); color: var(--brand-ink); font-size: .95rem; }
+.p-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.p-card-head h2 { margin-bottom: 0; }
+.p-read { min-height: 40px; padding: 7px 14px; font-size: .9rem; }
+.p-read[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.reading { background: #fff3c4; border-radius: 6px; box-shadow: 0 0 0 4px #fff3c4; }
+.p-media { position: relative; }
+.p-media .pic { width: 100%; border-radius: var(--radius); }
+.p-pause { position: absolute; right: 10px; bottom: 10px; border: 1px solid var(--line); background: rgba(255,255,255,.94); border-radius: 999px; padding: 6px 14px; font-size: .85rem; font-weight: 600; cursor: pointer; box-shadow: var(--shadow-sm); }
+.p-dose { display: inline-block; font-weight: 700; color: var(--brand-ink); background: var(--brand-tint); border-radius: 999px; padding: 8px 16px; margin: 16px 0 0; font-size: 1.05rem; }
+.p-steps { padding-left: 22px; margin: 14px 0 0; }
+.p-steps li + li { margin-top: 6px; }
+.p-steps li::marker { color: var(--brand); font-weight: 700; }
+.p-notes { margin: 14px 0 0; padding: 12px 14px; border-left: 4px solid var(--accent); background: var(--accent-tint); border-radius: 0 12px 12px 0; white-space: pre-wrap; }
+.p-options { margin-top: 14px; display: grid; gap: 4px; }
+.p-options h3 { font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-soft); margin-top: 8px; }
+.p-options ul { margin: 4px 0 0; padding-left: 22px; }
+.p-video { margin-top: 16px; }
+.p-video-btn { display: inline-flex; align-items: center; gap: 8px; }
+.p-video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
+.p-video-frame iframe, .p-video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.p-video .hint { margin: 6px 0 0; }
+.p-steps-pics { display: none; }
+.patient-safety { font-size: .95rem; border-left: 4px solid var(--accent); }
+.patient-privacy { text-align: center; margin-top: 18px; }
+.patient-error h2 { margin-bottom: 8px; }
+
+/* Weekly tick chart */
+.p-ticks { background: var(--card); border: 1px solid rgba(23,35,43,.06); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 18px 20px; margin-top: 20px; }
+.p-ticks-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.p-ticks-head h2 { font-size: 1.2rem; }
+.p-ticks-nav { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: .9rem; color: var(--ink-soft); }
+.p-ticks-nav .btn-ghost { padding: 4px 12px; font-size: 1rem; }
+.p-ticks-nav .btn-ghost:disabled { opacity: .35; cursor: default; }
+.p-ticks-help { margin: 6px 0 12px; color: var(--ink-soft); }
+.p-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.p-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 10px; border-radius: 14px; border: 1.5px solid var(--line-strong); background: #fff; font: inherit; cursor: pointer; color: var(--ink); min-height: 76px; }
+.p-day-name { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
+.p-day-date { font-size: 1rem; font-weight: 600; }
+.p-day-tick { height: 1.2em; font-weight: 800; font-size: 1.05rem; }
+.p-day.today { border-color: var(--brand); border-width: 2px; }
+.p-day.today .p-day-name { color: var(--brand); }
+.p-day.today::after { content: "today"; font-size: .62rem; font-weight: 700; text-transform: uppercase; color: var(--brand); margin-top: -2px; }
+.p-day.today.done::after { color: #fff; }
+.p-day.done { background: var(--brand); border-color: var(--brand); color: #fff; }
+.p-day.done .p-day-name { color: rgba(255,255,255,.85); }
+.p-day:disabled { opacity: .4; cursor: default; }
+.p-ticks-count { font-weight: 700; color: var(--brand-ink); margin: 12px 0 2px; }
+.p-ticks .hint { margin: 2px 0 0; }
+.p-ticks-print { display: none; }
+@media (max-width: 380px) { .p-day-name { font-size: .62rem; letter-spacing: 0; } }
+
+/* Large print */
+body.patient.large-print { font-size: 22px; line-height: 1.5; }
+.large-print .patient-intro h1 { font-size: 2.3rem; }
+.large-print .p-card h2 { font-size: 1.7rem; }
+.large-print .p-dose { font-size: 1.25rem; }
+.large-print .p-steps, .large-print .p-notes { color: #000; }
+.large-print .btn, .large-print .p-pause { font-size: 1.05rem; padding: 10px 18px; }
+.large-print .patient-main { max-width: 900px; }
+
+@media print {
+  .p-media, .p-video, .p-pause { display: none !important; }
+  .patient-intro { background: none; color: var(--ink); box-shadow: none; padding: 0; }
+  .patient-intro::after { display: none; }
+  .patient-meta { color: var(--ink-soft); }
+  .patient-general { background: var(--brand-tint-2); border: none; }
+  .p-steps-pics { display: block; }
+  .p-steps-pics svg { height: 34mm; width: auto; max-width: 100%; }
+  .large-print .p-steps-pics svg { height: 62mm; }
+  body.patient.large-print { font-size: 16pt; }
+  .p-card { break-inside: avoid; box-shadow: none; border: 1px solid var(--line); }
+  .patient-privacy { display: none; }
+  .p-ticks { box-shadow: none; border: 1px solid var(--line); break-inside: avoid; }
+  .p-ticks-print { display: table; width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 8px; }
+  .p-ticks-print th, .p-ticks-print td { border: 1px solid #555; height: 9mm; text-align: center; font-size: 10pt; }
+  .p-ticks-print tbody th { text-align: left; padding-left: 6px; width: 20mm; }
+}
+
+/* Goal and plan, pain guide, reminder */
+.p-goal { display: grid; gap: 14px; }
+.p-goal h2, .p-reminder h2 { font-size: 1.1rem; margin: 0 0 4px; }
+.p-goal p { margin: 0; font-size: 1.1rem; font-weight: 600; color: var(--brand-ink); }
+.p-reminder p { margin: 0 0 10px; }
+.p-reminder-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 10px; }
+.p-reminder-row label { font-weight: 600; }
+.p-reminder-row input { font-size: 1.1rem; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+.large-print .pain-guide li, .large-print .p-goal p { font-size: 1.25rem; }
+@media print {
+  .p-goal { break-inside: avoid; border: 1px solid var(--line); }
+  #pain-wrap { box-shadow: none; border: 1px solid var(--line); }
+  .pain-guide ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+.p-goal { margin-top: 20px; }
+#pain-wrap, .p-reminder { margin-bottom: 20px; }
+.p-reminder-row .btn { white-space: normal; text-align: center; }

@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RepSheet: home exercise handouts</title>
+  <meta name="description" content="Free tool for physiotherapists to build printable home exercise handouts. Nothing you type leaves your browser.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#programme">Skip to handout</a>
+
+  <header class="site-header no-print">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html" aria-label="Home"><svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9"/><circle cx="20" cy="8.5" r="3"/><path d="M7 25c2.5-6 6.5-9.5 12.5-10M14.5 15.5 19 25M19.5 15l4.5-2.5"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+      <div class="header-right">
+        <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause animations</button>
+        <p class="privacy-badge">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2l6 2.5v4.7c0 4-2.6 7.2-6 8.8-3.4-1.6-6-4.8-6-8.8V4.5L10 2z"/></svg>
+          Nothing you type leaves this device
+        </p>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap layout">
+    <h1 class="visually-hidden no-print">RepSheet: make a home exercise handout</h1>
+    <!-- LEFT: Exercise library -->
+    <section class="panel library no-print" aria-labelledby="library-title">
+      <h2 id="library-title">Exercise library</h2>
+      <label class="visually-hidden" for="search">Search exercises</label>
+      <input id="search" type="search" placeholder="Search exercises…" autocomplete="off">
+      <div id="area-filters" class="chips" role="group" aria-label="Filter by body area"></div>
+      <ul id="library-list" class="library-list"></ul>
+      <p class="library-foot"><a href="#" data-request="exercise">Can't find an exercise? Request one</a></p>
+    </section>
+
+    <!-- RIGHT: The handout being built -->
+    <section class="panel programme" id="programme" aria-labelledby="programme-title">
+      <div class="programme-toolbar no-print">
+        <h2 id="programme-title">Patient handout</h2>
+        <div class="actions">
+          <button type="button" class="btn btn-secondary" id="btn-clear">Clear</button>
+          <button type="button" class="btn btn-secondary" id="btn-my-templates">My templates</button>
+          <button type="button" class="btn btn-secondary" id="btn-template">Share as template</button>
+          <button type="button" class="btn btn-secondary" id="btn-notes" title="Copy a summary of this programme to paste into your clinical notes">Copy for notes</button>
+          <button type="button" class="btn btn-secondary" id="btn-email">Email</button>
+          <button type="button" class="btn btn-primary" id="btn-print">Print or save as PDF</button>
+        </div>
+      </div>
+
+      <div class="handout">
+        <div class="handout-head">
+          <div class="field-grid">
+            <div class="field">
+              <label for="patient-name">Patient name <span class="hint">(optional, not saved or shared)</span></label>
+              <input id="patient-name" type="text" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="handout-date">Date</label>
+              <input id="handout-date" type="date">
+            </div>
+            <div class="field">
+              <label for="clinician">Physiotherapist</label>
+              <input id="clinician" type="text" autocomplete="off" placeholder="e.g. Sam Smith, Physiotherapist">
+            </div>
+            <div class="field">
+              <label for="contact">Contact details</label>
+              <input id="contact" type="text" autocomplete="off" placeholder="e.g. Outpatient Physio, 01234 567890">
+            </div>
+          </div>
+          <div class="tick-row no-print">
+            <label class="remember">
+              <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="tick-chart"> <span><strong>Weekly tick chart</strong> <span class="hint">(boxes to tick each day, on the handout and patient page)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="pain-guide" checked> <span><strong>Pain guide</strong> <span class="hint">(green, amber, red: how much pain is OK, on the handout and patient page)</span></span>
+            </label>
+            <label class="pain-level-field" for="pain-level">
+              <span>Pain allowed while exercising</span>
+              <select id="pain-level">
+                <option value="1">Mild ache only</option>
+                <option value="3">Up to 3 out of 10</option>
+                <option value="5">Up to 5 out of 10</option>
+              </select>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="bw-print"> <span><strong>Black and white printing</strong> <span class="hint">(no colour fills, crisp black lines: best for mono printers and saves ink)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="paper-saver"> <span><strong>Paper saver</strong> <span class="hint">(two columns, smaller pictures and margins, so it fits on fewer pages)</span></span>
+            </label>
+          </div>
+          <!-- What's shown on the printed handout -->
+          <div class="print-only print-head">
+            <div class="print-title">
+              <p class="print-kicker">Home exercise programme</p>
+              <h1>Your exercises</h1>
+              <dl id="print-meta"></dl>
+            </div>
+            <div id="print-qr" class="print-qr" hidden>
+              <div id="print-qr-code"></div>
+              <p><strong>Scan me</strong> to watch your exercises move</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="field general-notes-field">
+          <label for="general-notes" class="no-print">General advice for the patient</label>
+          <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>
+          <p id="no-id-hint" class="hint no-print">Notes are included in the patient link, so don't put names, NHS numbers or other identifying details in any notes.</p>
+          <p class="print-only" id="print-general-notes"></p>
+        </div>
+
+        <!-- Goal and plan: agreeing these with the patient helps them keep going -->
+        <div class="goal-plan">
+          <div class="field">
+            <label for="goal" class="no-print">Patient's goal <span class="hint">(optional)</span></label>
+            <input id="goal" type="text" maxlength="140" placeholder="e.g. Walk to the shop without stopping" aria-describedby="goal-hint">
+            <div class="print-only gp-print"><h2>My goal</h2><p id="print-goal"></p></div>
+          </div>
+          <div class="field">
+            <label for="plan" class="no-print">When they'll do them <span class="hint">(optional)</span></label>
+            <input id="plan" type="text" maxlength="140" placeholder="e.g. After breakfast, and while the kettle boils" aria-describedby="goal-hint">
+            <div class="print-only gp-print"><h2>My plan: when I'll do them</h2><p id="print-plan"></p></div>
+          </div>
+          <div class="field duration-field">
+            <label for="duration" class="no-print">How long to keep going <span class="hint">(optional)</span></label>
+            <input id="duration" type="text" maxlength="80" list="duration-options" placeholder="e.g. For 6 weeks, or until your next appointment">
+            <datalist id="duration-options">
+              <option value="Until your next appointment">
+              <option value="For 2 weeks">
+              <option value="For 4 weeks">
+              <option value="For 6 weeks">
+              <option value="For 12 weeks">
+              <option value="Keep going every day, even when you feel better">
+            </datalist>
+          </div>
+          <p id="goal-hint" class="hint no-print">Agreeing a goal and a time of day helps people keep going. Leave them blank and the handout prints lines for the patient to fill in.</p>
+        </div>
+
+        <p id="programme-summary" class="programme-summary no-print" hidden></p>
+        <p id="too-many-tip" class="tip no-print" hidden><strong>Tip:</strong> people tend to do a few exercises well rather than lots of them badly. Research with older adults found 2 exercises were done better than 8. Aim for about 3 to 5 if you can.</p>
+
+        <ol id="programme-list" class="programme-list"></ol>
+
+        <div id="empty-state" class="empty-state no-print">
+          <h3>Build a handout in three steps</h3>
+          <ol class="empty-steps">
+            <li><span class="step-num">1</span><strong>Choose exercises</strong><span>Pick from the library on the left.</span></li>
+            <li><span class="step-num">2</span><strong>Tailor them</strong><span>Set reps, holds, notes and progressions.</span></li>
+            <li><span class="step-num">3</span><strong>Share</strong><span>Print, save as PDF, email or give the QR code.</span></li>
+          </ol>
+          <div class="empty-templates starter-pick">
+            <label for="starter-select">Or start from a ready-made template</label>
+            <div class="starter-row">
+              <select id="starter-select"><option value="">Choose a condition…</option></select>
+              <button type="button" class="btn btn-secondary" id="btn-starter">Use</button>
+            </div>
+            <p class="hint">Starting points only. Check each exercise and dose suits your patient.</p>
+          </div>
+          <div id="empty-templates" class="empty-templates" hidden>
+            <p>Or start from one of your templates:</p>
+            <div id="empty-templates-list" class="mt-chips"></div>
+          </div>
+        </div>
+
+        <!-- Patient link and QR code -->
+        <section id="share" class="share no-print" hidden aria-labelledby="share-title">
+          <div id="share-qr" class="share-qr"></div>
+          <div class="share-body">
+            <h3 id="share-title">Patient link</h3>
+            <p class="hint">The patient can scan the QR code or open this link to see their exercises with moving pictures. The whole programme is packed into the link itself, so nothing is stored on any server. The patient's name is never included.</p>
+            <div class="share-row">
+              <label class="visually-hidden" for="share-link">Patient link</label>
+              <input id="share-link" type="text" readonly>
+              <button type="button" class="btn btn-secondary" id="btn-copy">Copy</button>
+              <a class="btn btn-secondary" id="share-open" target="_blank" rel="noopener">Preview</a>
+            </div>
+            <p id="share-local" class="warn" hidden>You're using the site from your own computer, so this link only works on this computer. Once the site is online, links and QR codes will work on patients' phones.</p>
+          </div>
+        </section>
+
+        <div id="print-pain" class="print-only">
+        <section class="pain-guide" aria-labelledby="pain-title-print">
+          <h2 id="pain-title-print">How much pain is OK?</h2>
+          <ul>
+            <li class="pg-green"><strong>Green: carry on.</strong> <span class="pg-green-text">A mild ache or stretch that settles within an hour or so.</span></li>
+            <li class="pg-amber"><strong>Amber: go easier.</strong> <span class="pg-amber-text">Pain that lasts after the exercises, or is worse the next morning. Do fewer, or do them more gently.</span></li>
+            <li class="pg-red"><strong>Red: stop.</strong> Sharp pain, or pain that keeps getting worse. Stop and call your physio.</li>
+          </ul>
+        </section>
+        </div>
+
+        <!-- Weekly tick chart (printed only when ticked) -->
+        <section id="print-ticks" class="print-only print-ticks" hidden>
+          <h2>Tick a box each day you do your exercises</h2>
+          <table>
+            <thead><tr><th scope="col"><span class="visually-hidden">Week</span></th><th scope="col">Mon</th><th scope="col">Tue</th><th scope="col">Wed</th><th scope="col">Thu</th><th scope="col">Fri</th><th scope="col">Sat</th><th scope="col">Sun</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Week 1</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><th scope="row">Week 2</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><th scope="row">Week 3</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+              <tr><th scope="row">Week 4</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <footer class="print-only print-foot">
+          <p class="print-safety"><strong>Stay safe.</strong> Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.</p>
+          <p id="print-foot-contact" class="print-foot-contact"></p>
+          <p class="print-made">Made with RepSheet</p>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="wrap">
+      <p>Free to use. Exercises are general examples: always tailor them to the patient in front of you.</p>
+      <p class="footer-links">
+        <a href="#" data-request="feedback">Send feedback</a>
+        <a href="#" data-request="exercise">Request an exercise</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="disclaimer.html">Disclaimer</a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Email dialog -->
+  <dialog id="email-dialog" aria-labelledby="email-title">
+    <form method="dialog" class="dialog-body">
+      <h2 id="email-title">Email this handout</h2>
+      <p>This opens a new email in your own mail program (for example Outlook) with the exercises and the patient link written out. Nothing is sent from this website.</p>
+      <div class="field">
+        <label for="email-to">Patient email address <span class="hint">(optional)</span></label>
+        <input id="email-to" type="email" autocomplete="off">
+      </div>
+      <p class="hint">Tip: to include the step-by-step pictures, choose <em>Print or save as PDF</em>, save the PDF, and attach it to the email.</p>
+      <div class="dialog-actions">
+        <button value="cancel" class="btn btn-secondary">Cancel</button>
+        <button value="send" id="email-go" class="btn btn-primary">Open email</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Share as template dialog -->
+  <dialog id="my-templates-dialog" aria-labelledby="mt-title">
+    <form method="dialog" class="dialog-body">
+      <h2 id="mt-title">My templates</h2>
+      <p>Save programmes you use often, then start a new handout from one in a click. Templates are kept in this browser on this computer only. They are never sent anywhere.</p>
+      <div class="field">
+        <label for="mt-name">Save the current programme as</label>
+        <div class="share-row">
+          <input id="mt-name" type="text" autocomplete="off" maxlength="60" placeholder='e.g. "Knee OA week 1"'>
+          <button type="button" class="btn btn-primary" id="btn-mt-save">Save</button>
+        </div>
+      </div>
+      <p class="warn">A template keeps the exercises, settings, exercise notes and general advice. It never keeps the patient's name, date, goal or plan. Check the notes say nothing about this patient before saving.</p>
+      <ul id="mt-list" class="mt-list" aria-label="Saved templates"></ul>
+      <details class="mt-starters">
+        <summary>Ready-made templates for common conditions</summary>
+        <p class="hint">Starting points only. Check each exercise and dose suits your patient, and save your own version.</p>
+        <ul id="starter-list" class="mt-list" aria-label="Ready-made templates"></ul>
+      </details>
+      <p class="hint">Some NHS computers clear browser data when you log off. Download a backup file to keep your templates safe or move them to another computer.</p>
+      <div class="mt-file-row">
+        <button type="button" class="btn btn-secondary" id="btn-mt-export">Download backup</button>
+        <label class="btn btn-secondary" for="mt-import">Load backup</label>
+        <input id="mt-import" type="file" accept=".json,application/json" class="visually-hidden">
+      </div>
+      <div class="dialog-actions">
+        <button value="close" class="btn btn-primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="notes-dialog" aria-labelledby="notes-title">
+    <form method="dialog" class="dialog-body">
+      <h2 id="notes-title">Summary for your notes</h2>
+      <p>Copy this into the patient's record. It's made on this computer and isn't sent anywhere.</p>
+      <label class="visually-hidden" for="notes-text">Summary</label>
+      <textarea id="notes-text" rows="10" readonly></textarea>
+      <div class="dialog-actions">
+        <button value="close" class="btn btn-primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="template-dialog" aria-labelledby="template-title">
+    <form method="dialog" class="dialog-body">
+      <h2 id="template-title">Share as a template</h2>
+      <p>This link opens the builder with these exercises, settings and notes already filled in, ready for a colleague (or you) to use with another patient. Like the patient link, everything is packed into the link itself, so nothing is stored.</p>
+      <div class="field">
+        <label for="template-name">Template name <span class="hint">(optional, e.g. "Knee OA week 1")</span></label>
+        <input id="template-name" type="text" autocomplete="off" maxlength="60">
+      </div>
+      <div class="field">
+        <label for="template-link">Template link</label>
+        <div class="share-row">
+          <input id="template-link" type="text" readonly>
+          <button type="button" class="btn btn-secondary" id="btn-template-copy">Copy</button>
+        </div>
+      </div>
+      <p class="warn">The patient's name, the date and your contact details are left out. Exercise notes and general advice are included, so check they say nothing about this patient.</p>
+      <p id="template-local" class="hint" hidden>You're using the site from your own computer, so this link only works on this computer until the site is online.</p>
+      <div class="dialog-actions">
+        <button value="close" class="btn btn-primary">Done</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast no-print" role="status" aria-live="polite"></div>
+
+  <script src="config.js"></script>
+  <script src="exercises.js"></script>
+  <script src="illustrations.js"></script>
+  <script src="figures.js"></script>
+  <script src="vendor/qrcode.js"></script>
+  <script src="starters.js"></script>
+  <script src="vendor/tiny-inflate.js"></script>
+  <script src="common.js"></script>
+  <script src="feedback.js"></script>
+  <script src="app.js"></script>
+  <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
+</body>
+</html>

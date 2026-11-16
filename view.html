@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex">
+  <title>Your exercises · RepSheet</title>
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-title" content="My exercises">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="view.css">
+</head>
+<body class="patient">
+  <header class="site-header no-print">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9"/><circle cx="20" cy="8.5" r="3"/><path d="M7 25c2.5-6 6.5-9.5 12.5-10M14.5 15.5 19 25M19.5 15l4.5-2.5"/></svg><span class="wordmark">Your exercises</span>
+      </div>
+      <div class="header-right">
+        <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause pictures</button>
+        <button type="button" class="btn-ghost" id="btn-large" aria-pressed="false">Larger text</button>
+        <button type="button" class="btn-ghost" id="btn-print">Print</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap patient-main">
+    <section id="intro" class="patient-intro">
+      <h1>Your home exercise programme</h1>
+      <p id="meta" class="patient-meta"></p>
+      <p id="general" class="patient-general" hidden></p>
+    </section>
+
+    <section id="goal-plan" class="p-goal panel" hidden>
+      <div id="goal-box" hidden><h2>My goal</h2><p id="goal-text"></p></div>
+      <div id="plan-box" hidden><h2>My plan: when I'll do them</h2><p id="plan-text"></p></div>
+      <div id="du-box" hidden><h2>How long to keep going</h2><p id="du-text"></p></div>
+    </section>
+
+    <section id="ticks" class="p-ticks" hidden aria-labelledby="ticks-title">
+      <div class="p-ticks-head">
+        <h2 id="ticks-title">Your week</h2>
+        <div class="p-ticks-nav no-print">
+          <button type="button" class="btn-ghost" id="week-prev" aria-label="Previous week">&larr;</button>
+          <span id="week-label" aria-live="polite"></span>
+          <button type="button" class="btn-ghost" id="week-next" aria-label="Next week">&rarr;</button>
+        </div>
+      </div>
+      <p class="p-ticks-help no-print">Tap a day when you've done your exercises.</p>
+      <div id="week-days" class="p-days no-print" role="group" aria-label="Days of the week"></div>
+      <p id="week-count" class="p-ticks-count no-print"></p>
+      <p class="hint no-print">Your ticks are saved on this phone only. Nothing is sent anywhere.</p>
+      <table class="p-ticks-print print-only"><thead><tr><th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
+        <tbody><tr><th>Week 1</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 2</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 3</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 4</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
+    </section>
+
+    <ol id="list" class="patient-list"></ol>
+
+    <div id="error" class="panel patient-error" hidden>
+      <h2>We couldn't open this programme</h2>
+      <p>The link may be incomplete. Try scanning the QR code again, or ask your physiotherapist to send you the link again.</p>
+    </div>
+
+    <div id="pain-wrap" class="panel" hidden>
+    <section class="pain-guide" aria-labelledby="pain-title">
+          <h2 id="pain-title">How much pain is OK?</h2>
+          <ul>
+            <li class="pg-green"><strong>Green: carry on.</strong> <span class="pg-green-text">A mild ache or stretch that settles within an hour or so.</span></li>
+            <li class="pg-amber"><strong>Amber: go easier.</strong> <span class="pg-amber-text">Pain that lasts after the exercises, or is worse the next morning. Do fewer, or do them more gently.</span></li>
+            <li class="pg-red"><strong>Red: stop.</strong> Sharp pain, or pain that keeps getting worse. Stop and call your physio.</li>
+          </ul>
+        </section>
+    </div>
+
+    <section id="reminder" class="panel p-reminder no-print" aria-labelledby="reminder-title">
+      <h2 id="reminder-title">Remind me each day</h2>
+      <p>Doing your exercises at the same time each day makes them easier to remember.</p>
+      <div class="p-reminder-row">
+        <label for="reminder-time">Time</label>
+        <input id="reminder-time" type="time" value="09:00">
+        <button type="button" class="btn btn-primary" id="btn-reminder">Add a daily reminder to my calendar</button>
+      </div>
+      <p class="hint">This adds a reminder to your phone's calendar for the next 6 weeks. Nothing is sent to us.</p>
+    </section>
+
+    <aside class="panel patient-safety">
+      <strong>Stay safe:</strong> Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.
+    </aside>
+    <p class="patient-privacy hint">This page is built from your link. Your programme is not stored anywhere. <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a> · Made with RepSheet</p>
+  </main>
+
+  <script src="exercises.js"></script>
+  <script src="illustrations.js"></script>
+  <script src="figures.js"></script>
+  <script src="vendor/tiny-inflate.js"></script>
+  <script src="common.js"></script>
+  <script src="view.js"></script>
+  <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
+</body>
+</html>
