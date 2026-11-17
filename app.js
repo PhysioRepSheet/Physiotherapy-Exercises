@@ -259,11 +259,15 @@
           el("p", { class: "param-summary", text: H.describe(item) }),
           fillDose(el("div", { class: "print-only dose-panel" }), item),
           el("div", { class: "field ex-notes" },
-            el("label", { for: notesId, class: "no-print", text: "Notes for this exercise" }),
-            el("textarea", {
-              id: notesId, rows: "1", placeholder: "e.g. Use a 2kg weight. Keep pain below 3 out of 10.",
-              oninput: (e) => { item.notes = e.target.value; notesPrint.textContent = e.target.value; changed(); }
-            }),
+            // Folded away until needed, to keep the card short (opens by itself when there is a note)
+            el("details", { class: "note-toggle no-print", open: !!item.notes },
+              el("summary", {}, "Note for this exercise ", el("span", { class: "hint", text: "(optional)" })),
+              el("label", { for: notesId, class: "visually-hidden", text: "Note for this exercise" }),
+              el("textarea", {
+                id: notesId, rows: "2", placeholder: "e.g. Use a 2kg weight. Keep pain below 3 out of 10.",
+                oninput: (e) => { item.notes = e.target.value; notesPrint.textContent = e.target.value; changed(); }
+              })
+            ),
             notesPrint
           ),
           optionCount ? el("details", { class: "progressions no-print", open: ticked > 0 },

@@ -6,7 +6,7 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17b";
+const VERSION = "repsheet-2026-11-17c";
 const FILES = [
   "./", "index.html", "view.html", "privacy.html", "disclaimer.html",
   "styles.css", "view.css",
