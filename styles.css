@@ -1086,3 +1086,9 @@ body { font-optical-sizing: auto; }
 .options-fold > :not(summary) { padding-left: 12px; padding-right: 12px; }
 .options-fold > :last-child { padding-bottom: 10px; }
 @media (prefers-reduced-motion: reduce) { .options-fold-chev { transition: none; } }
+
+/* ---------- Handout details buttons: compact grid (17 Nov 2026) ---------- */
+.settings .settings-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.settings .settings-actions #btn-print { grid-column: 1 / -1; order: 0; }
+.settings .settings-actions .btn-secondary { padding: 8px 6px; font-size: .875rem; min-height: 40px; line-height: 1.15; white-space: normal; text-wrap: balance; justify-content: center; text-align: center; }
+@media (max-width: 340px) { .settings .settings-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

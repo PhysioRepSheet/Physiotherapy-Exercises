@@ -903,7 +903,7 @@
   }
   function writeTemplates(list) {
     try { localStorage.setItem(TEMPLATES_KEY, JSON.stringify(list)); return true; }
-    catch (e) { toast("This browser won't let the site save templates. Use Share as template instead.", 4000); return false; }
+    catch (e) { toast("This browser won't let the site save templates. Use Share template instead.", 4000); return false; }
   }
   const countText = (t) => { const n = (t.data && t.data.x || []).length; return n + " exercise" + (n === 1 ? "" : "s"); };
 
