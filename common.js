@@ -1,5 +1,5 @@
 /*
-  Shared helpers used by both the builder (index.html) and the patient page (view.html).
+  Shared helpers used by both the builder (builder.html) and the patient page (view.html).
 */
 (function () {
   "use strict";
@@ -37,12 +37,13 @@
     if (ex.image) {
       const img = document.createElement("img");
       img.src = ex.image;
-      img.alt = "Illustration of " + ex.name;
+      img.alt = (ex.custom ? "Picture of " : "Illustration of ") + ex.name;
       img.loading = "lazy";
       box.append(img);
       return { el: box };
     }
-    const ill = ILLUSTRATIONS[ex.id];
+    // A physio's own exercise can borrow the drawing of a similar stock exercise ("like")
+    const ill = ILLUSTRATIONS[ex.id] || (ex.like && ILLUSTRATIONS[ex.like]);
     if (!ill || !window.PhysioFigures) { box.innerHTML = PLACEHOLDER; return { el: box }; }
     if (mode === "thumb") {
       box.innerHTML = window.PhysioFigures.frameSVG(ill, ill.frames.length - 1, { arrows: false, alt: ex.name });
@@ -140,11 +141,54 @@
     };
   }
 
+  // ---------- A physio's own exercises ----------
+  // Made in the builder and kept on that computer. When shared (patient link or template link) only the
+  // words travel in the link: name, steps, and which stock drawing it looks like. A photo never goes in a link.
+  const OWN_AREA = "My exercises";
+  const clip = (v, n) => String(v == null ? "" : v).slice(0, n);
+  function packCustom(ex) {
+    const a = [ex.id, ex.name, ex.instructions, ex.like || "", ex.bodyArea || ""];
+    while (a.length > 3 && a[a.length - 1] === "") a.pop();
+    return a;
+  }
+  // Link contents come from outside, so check and trim everything
+  function unpackCustom(a) {
+    if (!Array.isArray(a) || !/^my-[a-z0-9]{3,16}$/.test(String(a[0]))) return null;
+    const steps = (Array.isArray(a[2]) ? a[2] : []).map((t) => clip(t, 240).trim()).filter(Boolean).slice(0, 12);
+    const like = clip(a[3], 60);
+    return {
+      id: String(a[0]), name: clip(a[1], 80).trim() || "Exercise", area: OWN_AREA, bodyArea: clip(a[4], 40),
+      instructions: steps.length ? steps : ["Follow your physio's instructions."],
+      like: LIBRARY.some((e) => e.id === like && !e.custom) ? like : "",
+      custom: true, image: "", defaults: {}, progressions: [], regressions: []
+    };
+  }
+  // Add own exercises to the library. Ones already on this computer are kept as they are (with their photo)
+  // unless replace is true.
+  function registerCustom(list, replace) {
+    (list || []).forEach((ex) => {
+      if (!ex || !ex.id) return;
+      const i = LIBRARY.findIndex((e) => e.id === ex.id);
+      if (i >= 0) { if (replace) LIBRARY[i] = ex; }
+      else LIBRARY.unshift(ex);
+    });
+  }
+  function unregisterCustom(id) {
+    const i = LIBRARY.findIndex((e) => e.id === id && e.custom);
+    if (i >= 0) LIBRARY.splice(i, 1);
+  }
+  // The own-exercise definitions needed for a list of programme items
+  function customDefs(items) {
+    const seen = new Set();
+    return items.map((it) => byId(it.id)).filter((ex) => ex && ex.custom && !seen.has(ex.id) && seen.add(ex.id)).map(packCustom);
+  }
+
   function formatDate(iso) {
     if (!iso) return "";
     const d = new Date(iso + "T00:00:00");
     return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  window.Handout = { LIBRARY, byId, describe, picture, videoInfo, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress };
+  window.Handout = { LIBRARY, byId, describe, picture, videoInfo, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
+    OWN_AREA, packCustom, unpackCustom, registerCustom, unregisterCustom, customDefs };
 })();

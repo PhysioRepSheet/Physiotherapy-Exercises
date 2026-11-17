@@ -2,7 +2,7 @@
   "name": "RepSheet: home exercise handouts",
   "short_name": "RepSheet",
   "description": "Free tool for physiotherapists to build printable home exercise handouts. Nothing you type leaves your device.",
-  "start_url": "index.html",
+  "start_url": "builder.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f6f5f1",

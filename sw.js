@@ -6,13 +6,14 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17-logo";
+const VERSION = "repsheet-2026-11-17e";
 const FILES = [
-  "./", "index.html", "view.html", "privacy.html", "disclaimer.html",
-  "styles.css", "view.css",
+  "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html",
+  "styles.css", "view.css", "landing.css",
   "config.js", "exercises.js", "illustrations.js", "figures.js", "starters.js", "common.js", "feedback.js", "app.js", "view.js",
   "vendor/qrcode.js", "vendor/tiny-inflate.js",
-  "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png"
+  "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
+  "images/landing/builder.jpg", "images/landing/phone.jpg", "images/landing/handout.jpg"
 ];
 
 self.addEventListener("install", (event) => {

@@ -40,6 +40,7 @@
     down: '<path d="M6 9l6 6 6-6"/>',
     remove: '<path d="M6 6l12 12M18 6L6 18"/>',
     grip: '<circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/>',
+    edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
     video: '<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>'
   };
 
@@ -62,7 +63,7 @@
     list.innerHTML = "";
     const matches = LIBRARY.filter((e) =>
       (activeArea === "All" || e.area === activeArea) &&
-      (!q || (e.name + " " + e.area + " " + (e.aliases || "") + " " + e.instructions.join(" ")).toLowerCase().includes(q))
+      (!q || (e.name + " " + e.area + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ")).toLowerCase().includes(q))
     );
     if (!matches.length) {
       list.append(el("li", { class: "lib-empty", text: "No exercises match your search." }));
@@ -75,8 +76,9 @@
         H.picture(ex, "thumb").el,
         el("div", { class: "meta" },
           el("div", { class: "name", text: ex.name }),
-          el("div", { class: "area" }, ex.area, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
+          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
         ),
+        ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
         el("button", {
           type: "button",
           class: "btn btn-secondary add" + (added ? " added" : ""),
@@ -293,6 +295,7 @@
               el("button", { type: "button", class: "icon-btn remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => removeAt(i) }, icon(ICONS.remove))
             )
           ),
+          ex.custom ? el("p", { class: "own-label" }, el("span", { class: "no-print", text: "Your own exercise · not checked by RepSheet" }), el("span", { class: "print-only", text: "Written by your physio" })) : null,
           el("div", { class: "print-only ex-steps-pics" }, H.picture(ex, "steps").el),
           el("ol", { class: "ex-steps" }, ex.instructions.map((s) => el("li", { text: s }))),
           el("div", { class: "params" },
@@ -343,6 +346,7 @@
       t: $("#contact").value.trim(),
       g: $("#general-notes").value.trim(),
       x: programme.map(H.packItem),
+      ...ownDefs(),
       ...($("#goal").value.trim() ? { go: $("#goal").value.trim() } : {}),
       ...($("#plan").value.trim() ? { pl: $("#plan").value.trim() } : {}),
       ...($("#large-print").checked ? { lp: 1 } : {}),
@@ -398,6 +402,7 @@
       n: name || undefined,
       g: $("#general-notes").value.trim() || undefined,
       x: programme.map(H.packItem),
+      ...ownDefs(),
       ...($("#large-print").checked ? { lp: 1 } : {}),
       ...($("#tick-chart").checked ? { tc: 1 } : {}),
       ...($("#pain-guide").checked ? {} : { npg: 1 }),
@@ -409,7 +414,7 @@
   }
 
   async function updateTemplateLink() {
-    const url = new URL("index.html", location.href);
+    const url = new URL("builder.html", location.href);
     url.hash = "t=" + await H.encode(templateData());
     $("#template-link").value = url.href;
   }
@@ -437,6 +442,9 @@
   // Every option is set, so nothing is left over from the previous handout.
   // The patient's name, goal and plan are cleared: they belong to the last patient.
   function applyTemplate(data) {
+    // Own exercises in a template from another computer are added for now (not saved) so they can be used
+    H.registerCustom((data.cx || []).map(H.unpackCustom).filter(Boolean));
+    renderFilters();
     const items = (data.x || []).map(H.unpackItem).filter((it) => H.byId(it.id));
     if (!items.length) throw new Error("No exercises");
     programme = items.map((it) => Object.assign(it, { key: ++uid }));
@@ -457,6 +465,108 @@
     renderLibrary();
     changed();
     toast("Template loaded" + (data.n ? ": " + data.n : "") + " (" + items.length + " exercise" + (items.length === 1 ? "" : "s") + ")", 4000);
+  }
+
+  // ---------- My own exercises (kept in this browser only) ----------
+  // Only the physio's own wording and an optional photo. Never anything about a patient.
+  const OWN_KEY = "handout-builder:own-exercises";
+  function cleanOwn(o) {
+    const ex = o && H.unpackCustom(H.packCustom(o));
+    if (!ex) return null;
+    const num = (v) => (v === "" || v == null || isNaN(Number(v)) ? "" : String(Math.max(0, Math.round(Number(v)))));
+    const d = o.defaults || {};
+    ex.defaults = { sets: num(d.sets), reps: num(d.reps), hold: num(d.hold), frequency: String(d.frequency || "").slice(0, 40) };
+    ex.image = typeof o.image === "string" && /^data:image\/(jpeg|png|webp);base64,/.test(o.image) ? o.image : "";
+    return ex;
+  }
+  function readOwn() {
+    try { const t = JSON.parse(localStorage.getItem(OWN_KEY) || "[]"); return Array.isArray(t) ? t.map(cleanOwn).filter(Boolean) : []; }
+    catch (e) { return []; }
+  }
+  function writeOwn(list) {
+    try { localStorage.setItem(OWN_KEY, JSON.stringify(list)); return true; }
+    catch (e) { toast("This browser couldn't save it. If you added a photo, try a smaller one.", 5000); return false; }
+  }
+  function ownDefs() {
+    const cx = H.customDefs(programme);
+    return cx.length ? { cx } : {};
+  }
+
+  let ownEditing = null, ownPhoto = "";
+  function showOwnPhoto() {
+    const box = $("#own-photo-preview");
+    box.innerHTML = ""; box.hidden = !ownPhoto; $("#own-photo-remove").hidden = !ownPhoto;
+    if (ownPhoto) box.append(el("img", { src: ownPhoto, alt: "Your picture" }));
+  }
+  function openOwn(ex) {
+    ownEditing = ex || null;
+    $("#own-title").textContent = ex ? "Edit your exercise" : "Make your own exercise";
+    $("#own-name").value = ex ? ex.name : "";
+    $("#own-steps").value = ex ? ex.instructions.join("\n") : "";
+    const d = (ex && ex.defaults) || {};
+    $("#own-sets").value = d.sets || ""; $("#own-reps").value = d.reps || ""; $("#own-hold").value = d.hold || ""; $("#own-freq").value = d.frequency || "";
+    const sel = $("#own-like");
+    sel.innerHTML = "";
+    sel.append(el("option", { value: "", text: "None (a plain placeholder)" }));
+    const stock = LIBRARY.filter((e) => !e.custom);
+    [...new Set(stock.map((e) => e.area))].forEach((area) => {
+      sel.append(el("optgroup", { label: area }, stock.filter((e) => e.area === area).map((e) => el("option", { value: e.id, text: e.name }))));
+    });
+    sel.value = (ex && ex.like) || "";
+    ownPhoto = (ex && ex.image) || ""; $("#own-photo").value = ""; showOwnPhoto();
+    $("#own-delete").hidden = !ex;
+    $("#own-dialog").showModal();
+    $("#own-name").focus();
+  }
+  // Shrink a photo so it fits comfortably in the browser's storage (longest side 640 pixels)
+  function shrinkPhoto(file) {
+    return new Promise((resolve, reject) => {
+      const img = new Image(), url = URL.createObjectURL(file);
+      img.onload = () => {
+        const k = Math.min(1, 640 / Math.max(img.naturalWidth, img.naturalHeight));
+        const c = document.createElement("canvas");
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height);
+        g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url);
+        resolve(c.toDataURL("image/jpeg", 0.82));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("bad image")); };
+      img.src = url;
+    });
+  }
+  function saveOwn(addAfter) {
+    const name = $("#own-name").value.trim();
+    const steps = $("#own-steps").value.split("\n").map((t) => t.trim()).filter(Boolean);
+    if (!name || !steps.length) return false;
+    const id = ownEditing ? ownEditing.id : "my-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    const like = $("#own-like").value;
+    const ex = cleanOwn({
+      id, name, instructions: steps, like, bodyArea: like ? (H.byId(like) || {}).area || "" : "",
+      image: ownPhoto,
+      defaults: { sets: $("#own-sets").value, reps: $("#own-reps").value, hold: $("#own-hold").value, frequency: $("#own-freq").value.trim() }
+    });
+    if (!ex) return false;
+    const mine = readOwn();
+    const i = mine.findIndex((m) => m.id === id);
+    if (i >= 0) mine[i] = ex; else mine.unshift(ex);
+    if (!writeOwn(mine)) return false;
+    H.registerCustom([ex], true);
+    renderFilters(); renderLibrary(); renderProgramme(); changed();
+    if (addAfter) addExercise(ex); else toast((ownEditing ? "Saved changes to " : "Saved ") + ex.name);
+    return true;
+  }
+  function deleteOwn() {
+    if (!ownEditing) return;
+    const ex = ownEditing;
+    writeOwn(readOwn().filter((m) => m.id !== ex.id));
+    const used = programme.some((p) => p.id === ex.id);
+    programme = programme.filter((p) => p.id !== ex.id);
+    H.unregisterCustom(ex.id);
+    if (activeArea === H.OWN_AREA && !LIBRARY.some((e) => e.custom)) activeArea = "All";
+    $("#own-dialog").close();
+    renderFilters(); renderLibrary(); renderProgramme(); changed();
+    toast("Deleted " + ex.name + (used ? " (and took it off this handout)" : ""), 4000);
   }
 
   // ---------- My templates (kept in this browser only) ----------
@@ -554,9 +664,9 @@
   }
 
   function exportTemplates() {
-    const list = readTemplates();
-    if (!list.length) { toast("No templates to back up yet"); return; }
-    const blob = new Blob([JSON.stringify({ kind: "exercise-handout-templates", version: 1, templates: list }, null, 2)], { type: "application/json" });
+    const list = readTemplates(), own = readOwn();
+    if (!list.length && !own.length) { toast("No templates or own exercises to back up yet"); return; }
+    const blob = new Blob([JSON.stringify({ kind: "exercise-handout-templates", version: 2, templates: list, ownExercises: own }, null, 2)], { type: "application/json" });
     const a = el("a", { href: URL.createObjectURL(blob), download: "my-exercise-templates.json" });
     document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
@@ -569,7 +679,14 @@
     try {
       const parsed = JSON.parse(await file.text());
       const incoming = (parsed.templates || []).filter((t) => t && typeof t.name === "string" && t.data && Array.isArray(t.data.x));
-      if (!incoming.length) throw new Error("none");
+      const ownIn = (Array.isArray(parsed.ownExercises) ? parsed.ownExercises : []).map(cleanOwn).filter(Boolean);
+      if (!incoming.length && !ownIn.length) throw new Error("none");
+      if (ownIn.length) {
+        const mine = readOwn();
+        ownIn.forEach((o) => { const i = mine.findIndex((m) => m.id === o.id); if (i >= 0) mine[i] = o; else mine.push(o); });
+        if (writeOwn(mine)) { H.registerCustom(mine, true); renderFilters(); renderLibrary(); toast("Loaded " + ownIn.length + " own exercise" + (ownIn.length === 1 ? "" : "s"), 3000); }
+      }
+      if (!incoming.length) return;
       const list = readTemplates();
       incoming.forEach((t) => {
         const entry = { name: t.name.slice(0, 60), saved: t.saved || new Date().toISOString(), data: t.data };
@@ -826,6 +943,23 @@
   $("#btn-mt-save").addEventListener("click", saveMyTemplate);
   $("#mt-name").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); saveMyTemplate(); } });
   $("#btn-mt-export").addEventListener("click", exportTemplates);
+  // Own exercises
+  H.registerCustom(readOwn(), true);
+  $("#btn-own-new").addEventListener("click", () => openOwn(null));
+  $("#own-delete").addEventListener("click", deleteOwn);
+  $("#own-photo-remove").addEventListener("click", () => { ownPhoto = ""; $("#own-photo").value = ""; showOwnPhoto(); });
+  $("#own-photo").addEventListener("change", async (e) => {
+    const f = e.target.files[0];
+    if (!f) return;
+    try { ownPhoto = await shrinkPhoto(f); showOwnPhoto(); }
+    catch (err) { toast("That file couldn't be opened as a picture.", 4000); e.target.value = ""; }
+  });
+  $("#own-form").addEventListener("submit", (e) => {
+    const how = e.submitter && e.submitter.value;
+    if (how !== "save" && how !== "add") return;
+    e.preventDefault();
+    if (saveOwn(how === "add")) $("#own-dialog").close();
+  });
   $("#mt-import").addEventListener("change", importTemplates);
   ["#general-notes", "#handout-date", "#goal", "#plan", "#duration"].forEach((s) => $(s).addEventListener("input", changed));
   window.addEventListener("beforeprint", fillPrintMeta);

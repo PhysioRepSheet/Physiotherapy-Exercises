@@ -21,6 +21,8 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - Works offline once opened, and can be installed as an app (manifest.webmanifest, sw.js). **When you change any file, change VERSION at the top of sw.js** so devices fetch the new files.
 - Opens patient links on older phones without built-in decompression (vendor/tiny-inflate.js, MIT licence).
 - "My templates": save programmes in the physio's own browser (no patient details), start a new handout from one, and download or load a backup file.
+- "Make your own exercise": physios write their own exercise (name, steps, dose, optional photo, and a similar library drawing for the patient's phone). Saved in their browser only, included in the backup file. In links only the words travel, never the photo. Labelled "not checked by RepSheet" in the builder and "Written by your physio" for patients.
+- Pages: index.html is the landing page for physios, builder.html is the handout builder, view.html is the patient page. Old template links (index.html#t=...) forward to the builder.
 - "Copy for notes": a clinical summary (sets x reps, load, progressions given) to paste into the patient record. Copied on the device only.
 - "Weight or band" per exercise, and "How long to keep going" for the whole programme.
 - Search understands clinical terms (e.g. SLR, STS, glute med, Codman, DNF) via `aliases` in exercises.js.

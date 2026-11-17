@@ -96,7 +96,9 @@
     const readBtn = canSpeak ? el("button", { type: "button", class: "btn btn-secondary p-read no-print", "aria-pressed": "false" }, "🔊 Read aloud") : null;
     const li = el("li", { class: "p-card" },
       el("div", { class: "p-card-head" }, el("h2", { text: ex.name }), readBtn),
+      ex.custom ? el("p", { class: "p-own", text: "Written by your physio" }) : null,
       el("div", { class: "p-media" }, pic.el, pauseBtn),
+      ex.custom ? el("p", { class: "p-own-pic hint", text: ex.like ? "The picture shows a similar exercise. Follow your physio's steps below." : "Your physio will show you how to do this one." }) : null,
       el("div", { class: "p-steps-pics" }, H.picture(ex, "steps").el),
       dose ? el("p", { class: "p-dose", text: dose }) : null,
       el("ol", { class: "p-steps" }, ex.instructions.map((s) => el("li", { text: s }))),
@@ -213,6 +215,7 @@
     try {
       if (!code) throw new Error("No programme in link");
       const data = await H.decode(code);
+      H.registerCustom((data.cx || []).map(H.unpackCustom).filter(Boolean));
       const items = (data.x || []).map(H.unpackItem).filter((it) => H.byId(it.id));
       minutes = items.length ? H.estimateMinutes(items) : 0;
       const meta = [H.formatDate(data.d), data.c, data.t].filter(Boolean).join(" · ");

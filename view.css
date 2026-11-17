@@ -105,3 +105,8 @@ body.patient.large-print { font-size: 22px; line-height: 1.5; }
 .p-goal { margin-top: 20px; }
 #pain-wrap, .p-reminder { margin-bottom: 20px; }
 .p-reminder-row .btn { white-space: normal; text-align: center; }
+
+/* A physio's own exercise */
+.p-own { display: inline-block; margin: 4px 0 8px; padding: 2px 10px; border-radius: 999px; background: var(--accent-tint, #fff1e6); color: #9a3412; font-size: .8125rem; font-weight: 700; }
+.p-own-pic { margin: 6px 0 0; font-size: .875rem; }
+@media print { .p-own-pic { display: none; } .p-steps-pics img { height: 34mm; width: auto; max-width: 100%; } }
