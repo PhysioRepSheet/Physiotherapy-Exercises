@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.github.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Add photos and videos · RepSheet</title>
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20261117h">
+  <link rel="stylesheet" href="media.css?v=20261117h">
+</head>
+<body class="info-page media-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap media-main" id="main">
+    <h1>Add your own photos and videos</h1>
+    <p class="lead">Pick an exercise, drag your photos or a video onto it and check how it looks. When you're happy, press <strong>Put on the website</strong>.</p>
+
+    <div class="no-patient" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 8.1-7 9.5-4-1.4-7-5.1-7-9.5V6z"/><path d="M12 8v4.5M12 16h.01"/></svg>
+      <p><strong>Never use photos or videos of patients.</strong> Only show yourself or a colleague who has agreed to be on a public website. Hidden details such as where a photo was taken are removed before anything is uploaded.</p>
+    </div>
+
+    <!-- Connect (once per computer) -->
+    <section class="mx-card" id="connect" aria-labelledby="connect-h">
+      <div class="mx-connect-head">
+        <h2 id="connect-h">Connect to your website</h2>
+        <span class="mx-status" id="connect-status">Not connected</span>
+      </div>
+      <div id="connect-body">
+        <p>You only do this once on each computer. It lets this page put files on your website for you. Without it, this page can't change anything.</p>
+        <ol class="mx-steps">
+          <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub's "new key" page</a> (sign in as PhysioRepSheet if it asks).</li>
+          <li><strong>Token name:</strong> type <em>RepSheet photos</em>. <strong>Expiration:</strong> pick 1 year (or the longest it offers).</li>
+          <li><strong>Repository access:</strong> choose <em>Only select repositories</em>, then pick <em>Physiotherapy-Exercises</em>.</li>
+          <li><strong>Permissions:</strong> open <em>Repository permissions</em>, find <em>Contents</em> and set it to <em>Read and write</em>. Leave everything else alone.</li>
+          <li>Press <strong>Generate token</strong> at the bottom, copy the long code it shows (it starts <code>github_pat_</code>) and paste it below.</li>
+        </ol>
+        <div class="field">
+          <label for="key">Your key</label>
+          <input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…">
+        </div>
+        <label class="remember"><input type="checkbox" id="remember" checked> <span>Remember it on this computer (don't tick on a shared computer)</span></label>
+        <div class="mx-row">
+          <button type="button" class="btn btn-primary" id="btn-connect">Connect</button>
+          <p class="mx-msg" id="connect-msg" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+      <div id="connected-body" hidden>
+        <p>This page can put files on your website. The key is only kept in this browser on this computer.</p>
+        <button type="button" class="btn btn-ghost" id="btn-forget">Forget the key on this computer</button>
+      </div>
+    </section>
+
+    <div class="mx-layout">
+      <!-- 1. Choose the exercise -->
+      <section class="mx-card mx-pick" aria-labelledby="pick-h">
+        <h2 id="pick-h"><span class="mx-num">1</span> Choose the exercise</h2>
+        <div class="mx-filters">
+          <label class="visually-hidden" for="q">Search exercises</label>
+          <input id="q" type="search" placeholder="Search, e.g. bridge or knee" autocomplete="off">
+          <label class="visually-hidden" for="area">Body area</label>
+          <select id="area"><option value="">All areas</option></select>
+        </div>
+        <ul class="mx-list" id="list" aria-label="Exercises"></ul>
+      </section>
+
+      <!-- 2. Add photos or a video -->
+      <section class="mx-card mx-edit" aria-labelledby="edit-h">
+        <h2 id="edit-h"><span class="mx-num">2</span> Add photos or a video</h2>
+        <p class="mx-empty" id="edit-empty">Choose an exercise on the left first.</p>
+        <div id="edit" hidden>
+          <h3 class="mx-exname" id="ex-name"></h3>
+
+          <div class="mx-drop" id="drop" tabindex="0" role="button" aria-describedby="drop-hint">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+            <strong>Drag photos or a video here</strong>
+            <span id="drop-hint">or click to choose files. Up to 3 photos (start, middle, finish) and 1 video.</span>
+            <input type="file" id="file" accept="image/*,video/*,.heic,.mov" multiple hidden>
+          </div>
+          <p class="mx-msg mx-warn" id="drop-msg" role="alert" hidden></p>
+
+          <div class="mx-chosen" id="chosen" hidden>
+            <div id="photos-box" hidden>
+              <h4>Photos</h4>
+              <p class="hint">They're joined side by side and numbered, so patients see the steps in order.</p>
+              <ol class="mx-thumbs" id="photos"></ol>
+            </div>
+            <div id="video-box" hidden>
+              <h4>Video</h4>
+              <div class="mx-vid-row"><span id="video-info"></span> <button type="button" class="btn btn-ghost btn-sm" id="btn-drop-video">Remove</button></div>
+            </div>
+          </div>
+
+          <div class="mx-current" id="current" hidden>
+            <h4>Already on the website</h4>
+            <div class="mx-row">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-del-image" hidden>Remove my photo (go back to the drawing)</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-del-video" hidden>Remove my video</button>
+            </div>
+          </div>
+
+          <h4>How it will look</h4>
+          <div class="mx-preview" id="preview"></div>
+
+          <label class="remember confirm" id="consent-row">
+            <input type="checkbox" id="consent">
+            <span>Everyone shown has agreed to be on a public website, and no patients are shown.</span>
+          </label>
+          <div class="mx-row">
+            <button type="button" class="btn btn-primary" id="btn-add" disabled>Add to my list</button>
+            <button type="button" class="btn btn-ghost" id="btn-clear">Start again</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- 3. Put on the website -->
+    <section class="mx-card" aria-labelledby="queue-h">
+      <h2 id="queue-h"><span class="mx-num">3</span> Put on the website</h2>
+      <p class="mx-empty" id="queue-empty">Nothing waiting yet. Changes you add appear here, so you can do several exercises in one go.</p>
+      <ul class="mx-queue" id="queue"></ul>
+      <div class="mx-row" id="publish-row" hidden>
+        <button type="button" class="btn btn-primary" id="btn-publish">Put on the website</button>
+        <span class="hint" id="publish-hint">This makes the changes public. They show on the site about 2 minutes later.</span>
+      </div>
+      <p class="mx-msg" id="publish-msg" role="status" aria-live="polite"></p>
+    </section>
+
+    <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a></p>
+  </main>
+
+  <script src="exercises.js?v=20261117h"></script>
+  <script src="illustrations.js?v=20261117h"></script>
+  <script src="figures.js?v=20261117h"></script>
+  <script src="media.js?v=20261117h"></script>
+  <script src="common.js?v=20261117h"></script>
+  <script src="media-tool.js?v=20261117h"></script>
+</body>
+</html>
