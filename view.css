@@ -271,3 +271,36 @@ body.patient.easy-read { font-size: 21px; line-height: 1.6; }
 .p-stage-next { background: var(--accent-tint); border-radius: 16px; padding: 16px 18px; margin: 16px 0; }
 .p-stage-next h2 { font-size: 1.15rem; margin: 0 0 6px; color: #9a3412; }
 .p-stage-next .btn { margin-top: 6px; }
+
+/* ---------- Physio's message (17 Nov 2026) ---------- */
+.patient-message { background: #fff; color: var(--ink); border-radius: var(--radius); border-left: 6px solid var(--accent, #c2410c); padding: 12px 16px 14px; margin: 18px 0 0; position: relative; box-shadow: 0 8px 22px -14px rgba(0,0,0,.5); }
+.patient-message h2 { margin: 0 0 4px; font-size: .78rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand-ink); }
+.patient-message p { margin: 0; font-size: 1.08rem; font-weight: 600; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+body.high-contrast .patient-message { border: 2px solid #fff; border-left-width: 6px; background: #000; color: #fff; }
+body.high-contrast .patient-message h2 { color: #fff; }
+@media print {
+  .patient-message { box-shadow: none; border: .5mm solid var(--brand); border-left-width: 2mm; }
+}
+
+/* ---------- Add to home screen (install.js) ---------- */
+/* A small card that slides up at the bottom of the screen. Never printed. */
+.p-install { position: fixed; z-index: 40; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); max-width: 520px; margin: 0 auto; display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: var(--radius-lg, 18px); background: var(--brand-ink, #0a4f48); color: #fff; box-shadow: 0 18px 40px -12px rgba(0,0,0,.55); animation: p-install-in .35s ease-out; }
+.p-install[hidden] { display: none; }
+@keyframes p-install-in { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .p-install { animation: none; } }
+.p-install img { flex: none; width: 40px; height: 40px; border-radius: 10px; background: #fff; }
+.p-install-body { min-width: 0; flex: 1; }
+.p-install-title { margin: 0; font-weight: 700; font-size: 1.02rem; }
+.p-install-text { margin: 3px 0 0; font-size: .95rem; line-height: 1.45; color: rgba(255,255,255,.92); }
+.p-install-text .share-icon { display: inline-block; vertical-align: -4px; width: 20px; height: 20px; margin: 0 2px; }
+.p-install-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.p-install .btn-primary { background: #fff; color: var(--brand-ink); border-color: #fff; }
+.p-install .btn-primary:hover { background: var(--brand-tint); color: var(--brand-ink); }
+.p-install .btn-ghost { color: #fff; border-color: rgba(255,255,255,.55); background: transparent; font-size: .95rem; padding: 8px 16px; }
+.p-install .btn-ghost:hover { background: rgba(255,255,255,.14); border-color: #fff; }
+body.high-contrast .p-install { background: #000; border: 2px solid #fff; }
+body.large-print .p-install-title { font-size: 1.2rem; }
+body.large-print .p-install-text { font-size: 1.1rem; }
+/* Leave room at the bottom so the card never hides the last part of the page */
+body.install-open main { padding-bottom: 170px; }
+@media print { .p-install { display: none !important; } }

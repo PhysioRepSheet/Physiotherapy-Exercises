@@ -76,6 +76,12 @@
           </div>
         </div>
 
+        <!-- The physio's short personal message, printed at the top (typed in the details panel) -->
+        <div id="print-message" class="print-message print-only" hidden>
+          <h2>A message from your physio</h2>
+          <p id="print-message-text"></p>
+        </div>
+
         <div class="field general-notes-field">
           <p class="print-only" id="print-general-notes"></p>
         </div>
@@ -203,6 +209,7 @@
           <button type="button" class="btn btn-secondary" id="btn-my-templates">My templates</button>
           <button type="button" class="btn btn-secondary" id="btn-template">Share as template</button>
           <button type="button" class="btn btn-secondary" id="btn-notes" title="Copy a summary of this programme to paste into your clinical notes">Copy for notes</button>
+          <button type="button" class="btn btn-secondary" id="btn-copy-patient" title="Copy the patient page link, to paste into a text, email or letter" disabled>Copy patient page link</button>
           <button type="button" class="btn btn-secondary" id="btn-email">Email</button>
           <button type="button" class="btn btn-primary" id="btn-print">Print or save as PDF</button>
         </div>
@@ -278,6 +285,11 @@
           </div>
 
           <h3 class="settings-group">Advice and goals</h3>
+          <div class="field message-field">
+          <label for="patient-message">Message for your patient <span class="hint">(optional, 2 or 3 lines)</span></label>
+          <textarea id="patient-message" rows="3" maxlength="240" aria-describedby="message-hint" placeholder="e.g. Great work today. Little and often is the key. See you in 2 weeks."></textarea>
+          <p id="message-hint" class="hint">Shown at the top of the handout and the patient page. <span id="message-count">240</span> characters left. It goes in the patient link, so no names or NHS numbers.</p>
+          </div>
           <div class="field general-notes-field">
           <label for="general-notes">General advice for the patient</label>
           <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>

@@ -528,6 +528,8 @@
       const iso1 = (v) => (v && I.lang !== "en" ? "\u2068" + v + "\u2069" : v);
       const meta = [I.formatDate(data.d), iso1(data.c), iso1(data.t)].filter(Boolean).join(" · ");
       $("#meta").textContent = meta + (minutes ? (meta ? " · " : "") + T("intro.minutes", { n: minutes }) : "");
+      // The physio's own short message, shown as typed (never translated)
+      if (data.pm) { $("#physio-message-text").textContent = String(data.pm).slice(0, 300); $("#physio-message-text").dir = "auto"; $("#physio-message").hidden = false; }
       if (data.go) { $("#goal-text").textContent = data.go; $("#goal-box").hidden = false; }
       if (data.pl) { $("#plan-text").textContent = data.pl; $("#plan-box").hidden = false; }
       if (data.du) { $("#du-text").textContent = data.du; $("#du-box").hidden = false; }

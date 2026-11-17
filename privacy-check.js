@@ -34,7 +34,7 @@
   }
   // Boxes that travel in the patient link. The patient's name is never in the link, and the physio's own
   // name and contact details are meant to be there, so those are not checked.
-  const WATCHED = "#programme-list textarea, #programme-list input[type=text], #general-notes, #goal, #plan, #duration, #stage-editor input, #stage-editor textarea";
+  const WATCHED = "#programme-list textarea, #programme-list input[type=text], #patient-message, #general-notes, #goal, #plan, #duration, #stage-editor input, #stage-editor textarea";
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
   function warnFor(f) {

@@ -129,6 +129,17 @@
     return { list: pool.filter((e) => fuzzyMatch(searchText(e), q)), fuzzy: true };
   }
 
+  // When a search finds an exercise by another name (e.g. "shoulder bridge" finds "Bridge"),
+  // say which name matched. The exercise keeps its own name everywhere else.
+  function alsoCalled(ex) {
+    const q = $("#search").value.trim().toLowerCase();
+    if (!q || !ex.aliases || ex.name.toLowerCase().includes(q)) return null;
+    const names = String(ex.aliases).split(",").map((x) => x.trim()).filter(Boolean);
+    const words = q.split(/\s+/).filter(Boolean);
+    const hit = names.find((n) => n.toLowerCase().includes(q)) || names.find((n) => words.every((w) => n.toLowerCase().includes(w)));
+    return hit ? el("div", { class: "also-called", text: "Also called: " + hit }) : null;
+  }
+
   function renderLibrary() {
     const list = $("#library-list");
     list.innerHTML = "";
@@ -147,7 +158,8 @@
         el("div", { class: "meta" },
           el("button", { type: "button", class: "name name-btn", text: ex.name, title: "Preview " + ex.name, onclick: () => openPreview(ex) }),
           ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
-          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
+          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
+          alsoCalled(ex)
         ),
         ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
         el("button", { type: "button", class: "icon-btn fav" + (fav ? " on" : ""), "aria-pressed": String(fav), "aria-label": (fav ? "Remove " : "Add ") + ex.name + (fav ? " from" : " to") + " favourites", title: fav ? "Favourite" : "Add to favourites", onclick: () => toggleFavourite(ex) }, icon(ICONS.star)),
@@ -577,6 +589,8 @@
     clearTimeout(linkTimer);
     linkTimer = setTimeout(updateLink, 250);
     saveDraftSoon();
+    const m = $("#patient-message"), mc = $("#message-count");
+    if (m && mc) mc.textContent = String(m.maxLength - m.value.length);
   }
 
   // ---------- Keep the handout if the page is refreshed ----------
@@ -594,7 +608,7 @@
         v: 1, t: templateData(),
         name: $("#patient-name").value, date: $("#handout-date").value,
         c: $("#clinician").value, ct: $("#contact").value,
-        goal: $("#goal").value, plan: $("#plan").value
+        goal: $("#goal").value, plan: $("#plan").value, msg: $("#patient-message").value
       }));
     } catch (e) { /* storage unavailable or full: carry on without it */ }
   }
@@ -609,7 +623,8 @@
     if (d.ct) $("#contact").value = d.ct;
     $("#goal").value = d.goal || "";
     $("#plan").value = d.plan || "";
-    ["#patient-name", "#goal", "#plan", "#clinician", "#contact"].forEach((sel) => $(sel).dispatchEvent(new Event("input", { bubbles: true })));
+    $("#patient-message").value = d.msg || "";
+    ["#patient-name", "#goal", "#plan", "#patient-message", "#clinician", "#contact"].forEach((sel) => $(sel).dispatchEvent(new Event("input", { bubbles: true })));
     changed();
     toast("Your handout is back as you left it. Press Clear to start a new one.", 5000);
     return true;
@@ -624,6 +639,8 @@
       g: $("#general-notes").value.trim(),
       x: programme.map(H.packItem),
       ...ownDefs(),
+      // Physio's short message to this patient (shown at the top). Not kept in templates.
+      ...($("#patient-message").value.trim() ? { pm: $("#patient-message").value.trim() } : {}),
       ...($("#goal").value.trim() ? { go: $("#goal").value.trim() } : {}),
       ...($("#plan").value.trim() ? { pl: $("#plan").value.trim() } : {}),
       ...($("#large-print").checked ? { lp: 1 } : {}),
@@ -640,13 +657,14 @@
 
   async function updateLink() {
     const box = $("#share");
-    if (!programme.length) { currentLink = ""; box.hidden = true; $("#print-qr").hidden = true; return; }
+    if (!programme.length) { currentLink = ""; box.hidden = true; $("#print-qr").hidden = true; $("#btn-copy-patient").disabled = true; return; }
     const data = programmeData();
     const code = await H.encode(data);
     if (window.RepSheetI18nBuilder) window.RepSheetI18nBuilder.update(data);
     const url = new URL("view.html", location.href);
     url.hash = code;
     currentLink = url.href;
+    $("#btn-copy-patient").disabled = false;
     box.hidden = false;
     $("#share-link").value = currentLink;
     $("#share-open").href = currentLink;
@@ -667,13 +685,28 @@
     $("#print-qr").hidden = !svg;
   }
 
-  async function copyLink() {
-    try {
-      await navigator.clipboard.writeText(currentLink);
-      toast("Link copied");
-    } catch (e) {
-      $("#share-link").select();
-      toast("Press Ctrl+C to copy");
+  // Both "Copy" buttons (patient link box, and "Copy patient page link" in the actions row).
+  // The button itself says "Copied!" for a moment, so it's clear it worked.
+  async function copyLink(e) {
+    const btn = e && e.currentTarget;
+    if (!programme.length || !currentLink) { toast("Add at least one exercise first"); return; }
+    await updateLink(); // make sure the link has the very latest changes
+    let ok = false;
+    try { await navigator.clipboard.writeText(currentLink); ok = true; } catch (err) {
+      // Older browsers: copy from a hidden selection instead
+      const box = $("#share-link");
+      box.value = currentLink;
+      box.select();
+      try { ok = document.execCommand("copy"); } catch (err2) { ok = false; }
+    }
+    if (!ok) { $("#share-link").select(); toast("Press Ctrl+C to copy"); return; }
+    toast("Patient page link copied");
+    if (btn) {
+      if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+      btn.textContent = "Copied!";
+      btn.classList.add("copied");
+      clearTimeout(btn._copiedTimer);
+      btn._copiedTimer = setTimeout(() => { btn.textContent = btn.dataset.label; btn.classList.remove("copied"); }, 2000);
     }
   }
 
@@ -738,6 +771,7 @@
     $("#patient-name").value = "";
     $("#goal").value = "";
     $("#plan").value = "";
+    $("#patient-message").value = "";
     $("#general-notes").value = data.g || "";
     $("#duration").value = data.du || "";
     const set = (id, on, cls) => { $(id).checked = !!on; if (cls) document.body.classList.toggle(cls, !!on); };
@@ -1017,6 +1051,9 @@
     dl.innerHTML = "";
     rows.forEach(([k, v]) => dl.append(el("div", {}, el("dt", { text: k }), el("dd", { text: v }))));
     $("#print-general-notes").textContent = $("#general-notes").value.trim();
+    const msg = $("#patient-message").value.trim();
+    $("#print-message-text").textContent = msg;
+    $("#print-message").hidden = !msg;
     // Goal and plan: blank means "write it in yourself", so leave a line to write on
     [["#goal", "#print-goal"], ["#plan", "#print-plan"]].forEach(([src, out]) => {
       const v = $(src).value.trim();
@@ -1100,6 +1137,8 @@
     });
     const general = $("#general-notes").value.trim();
     if (general) lines.push("Advice given: " + general);
+    const msgN = $("#patient-message").value.trim();
+    if (msgN) lines.push("Message on handout: " + msgN);
     if ($("#pain-guide").checked) {
       const lvl = $("#pain-level").value;
       lines.push("Pain guide given: " + (lvl === "1" ? "mild ache only" : "up to " + lvl + "/10 during exercise, settling by next morning") + "; stop and contact if sharp or worsening pain.");
@@ -1125,6 +1164,8 @@
     const lines = [];
     const name = $("#patient-name").value.trim();
     lines.push(name ? "Dear " + name + "," : "Hello,");
+    const msg = $("#patient-message").value.trim();
+    if (msg) lines.push("", msg);
     lines.push("", "Here is your home exercise programme.");
     if (currentLink && location.protocol !== "file:") {
       lines.push("", "Watch your exercises (with moving pictures) here:", currentLink);
@@ -1190,6 +1231,7 @@
     $("#general-notes").value = "";
     $("#goal").value = "";
     $("#plan").value = "";
+    $("#patient-message").value = "";
     $("#duration").value = "";
     $("#pain-level").value = "1";
     applyPainLevel();
@@ -1398,6 +1440,7 @@
   $("#btn-email").addEventListener("click", openEmail);
   $("#btn-clear").addEventListener("click", clearAll);
   $("#btn-copy").addEventListener("click", copyLink);
+  $("#btn-copy-patient").addEventListener("click", copyLink);
   $("#btn-template").addEventListener("click", openTemplate);
   $("#btn-template-copy").addEventListener("click", copyTemplate);
   $("#template-name").addEventListener("input", updateTemplateLink);
@@ -1451,7 +1494,11 @@
     if (saveOwn(how === "add")) $("#own-dialog").close();
   });
   $("#mt-import").addEventListener("change", importTemplates);
-  ["#general-notes", "#handout-date", "#goal", "#plan", "#duration"].forEach((s) => $(s).addEventListener("input", changed));
+  ["#general-notes", "#handout-date", "#goal", "#plan", "#duration", "#patient-message"].forEach((s) => $(s).addEventListener("input", changed));
+  // Characters left in the patient message
+  const msgCount = () => { const m = $("#patient-message"); $("#message-count").textContent = String(m.maxLength - m.value.length); };
+  $("#patient-message").addEventListener("input", msgCount);
+  msgCount();
   window.addEventListener("beforeprint", fillPrintMeta);
 
   loadClinician();

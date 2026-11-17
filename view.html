@@ -40,12 +40,29 @@
     <section id="intro" class="patient-intro">
       <h1 data-i18n="intro.title">Your home exercise programme</h1>
       <p id="meta" class="patient-meta"></p>
+      <div id="physio-message" class="patient-message" hidden>
+        <h2 data-i18n="msg.title">A message from your physio</h2>
+        <p id="physio-message-text"></p>
+      </div>
       <p id="general" class="patient-general" hidden></p>
       <div id="fa-start-wrap" class="fa-start-wrap no-print" hidden>
         <button type="button" class="btn fa-start" id="btn-follow"><span aria-hidden="true">&#9654;</span> <span data-i18n="fa.start" data-i18n-plain>Start my exercises</span></button>
         <p class="fa-start-hint" data-i18n="fa.startHint">Go through them one at a time, with a counter and a timer.</p>
       </div>
     </section>
+
+    <!-- "Add to home screen" (install.js): shown only on phones that can do it, and only until it's done or closed -->
+    <div id="install" class="p-install no-print" role="region" aria-labelledby="install-title" hidden>
+      <img src="icons/icon-192.png" alt="" width="40" height="40">
+      <div class="p-install-body">
+        <p class="p-install-title" id="install-title" data-i18n="install.title" data-i18n-plain>Keep your exercises one tap away</p>
+        <p class="p-install-text" id="install-text" aria-live="polite"></p>
+        <div class="p-install-actions">
+          <button type="button" class="btn btn-primary" id="btn-install" hidden data-i18n="install.button" data-i18n-plain>Add to home screen</button>
+          <button type="button" class="btn-ghost" id="btn-install-close" data-i18n="install.close" data-i18n-plain>Not now</button>
+        </div>
+      </div>
+    </div>
 
     <section id="goal-plan" class="p-goal panel" hidden>
       <div id="goal-box" hidden><h2 data-i18n="goal.title">My goal</h2><p id="goal-text"></p></div>
@@ -144,11 +161,13 @@
   <script src="illustrations.js"></script>
   <script src="figures.js"></script>
   <script src="vendor/tiny-inflate.js"></script>
+  <script src="install-start.js"></script>
   <script src="i18n.js"></script>
   <script src="common.js"></script>
   <script src="voice.js"></script>
   <script src="view.js"></script>
   <script src="patient-extras.js"></script>
+  <script src="install.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

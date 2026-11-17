@@ -99,6 +99,7 @@
     const gp = document.querySelectorAll(".gp-print h2");
     swap(gp[0], "goal.title");
     swap(gp[1], "plan.title");
+    swap($("#print-message h2"), "msg.title");
     swap($("#print-ticks h2"), "ticks.printTitle");
     document.querySelectorAll("#print-ticks thead th").forEach((th, i) => { if (i) { th.setAttribute("data-en-html", th.innerHTML); th.textContent = I.weekdayShort(new Date(2024, 0, i)); } });
     document.querySelectorAll("#print-ticks tbody th").forEach((th, i) => swap(th, "ticks.week", { n: i + 1 }));

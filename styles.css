@@ -986,3 +986,16 @@ body { font-optical-sizing: auto; }
   .view-simple .ex-more .params > .freq { grid-column: 1 / -1; }
   .view-simple .ex-top { flex-wrap: wrap; row-gap: 6px; }
 }
+
+/* ---------- Physio's message to the patient (17 Nov 2026) ---------- */
+.message-field textarea { min-height: 4.2em; }
+#btn-copy-patient.copied, #btn-copy.copied { background: var(--brand); border-color: var(--brand); color: #fff; }
+@media print {
+  .print-message[hidden] { display: none !important; }
+  .print-message { border: .5mm solid var(--brand); border-left-width: 2mm; border-radius: 2.5mm; padding: 3mm 4mm; margin: 0 0 3mm; break-inside: avoid; }
+  .print-message h2 { font-size: 7.5pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); margin: 0 0 1mm; }
+  .print-message p { margin: 0; font-size: 1.08em; font-weight: 600; white-space: pre-wrap; }
+  body.bw-print .print-message { border-color: #000; }
+  body.bw-print .print-message h2 { color: #000; }
+}
+.lib-item .also-called { font-size: .78rem; color: var(--brand-ink); font-style: italic; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
