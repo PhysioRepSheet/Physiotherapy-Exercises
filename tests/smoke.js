@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
   };
 
   console.log("Pages load without errors");
-  const pages = ["index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "contact.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html"]
+  const pages = ["index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "contact.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html", "pacing.html"]
     .filter((f) => fs.existsSync(path.join(ROOT, f)));
   for (const f of pages) {
     const page = await browser.newPage(); const errs = []; watch(page, errs);

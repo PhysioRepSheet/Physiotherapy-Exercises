@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My pacing diary · RepSheet</title>
+  <meta name="description" content="A free activity pacing diary. Write down what you do and how you feel, set limits with your physio, and see your week. Saved only on your own phone.">
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="pacing.css">
+</head>
+<body class="pace-page">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header no-print">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html" aria-label="RepSheet home"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+      <button type="button" class="btn-ghost" id="big-text" aria-pressed="false">Larger text</button>
+    </div>
+  </header>
+
+  <main id="main" class="pace-main wrap no-print">
+    <h1>My pacing diary</h1>
+    <p class="pace-lede">Pacing means doing a steady amount each day, on good days and bad days. It can help you have fewer crashes.</p>
+    <p class="pace-private"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 8.1-7 9.5-4-1.4-7-5.1-7-9.5V6z"/></svg> Saved only on this phone. Nothing is sent to anyone.</p>
+
+    <!-- Limits sent by a physio in the link -->
+    <section class="pace-card preset" id="preset" hidden aria-labelledby="preset-title">
+      <h2 id="preset-title">Your physio has set some limits for you</h2>
+      <ul id="preset-list"></ul>
+      <div class="row">
+        <button type="button" class="btn btn-primary" id="preset-use">Use these limits</button>
+        <button type="button" class="btn btn-secondary" id="preset-no">No thanks</button>
+      </div>
+    </section>
+
+    <div class="tabs" role="tablist" aria-label="Diary sections">
+      <button type="button" role="tab" id="tab-today" aria-controls="panel-today" aria-selected="true">Today</button>
+      <button type="button" role="tab" id="tab-week" aria-controls="panel-week" aria-selected="false" tabindex="-1">My week</button>
+      <button type="button" role="tab" id="tab-limits" aria-controls="panel-limits" aria-selected="false" tabindex="-1">My limits</button>
+      <button type="button" role="tab" id="tab-help" aria-controls="panel-help" aria-selected="false" tabindex="-1">Help</button>
+    </div>
+
+    <!-- ============ TODAY ============ -->
+    <section role="tabpanel" id="panel-today" aria-labelledby="tab-today">
+      <div class="day-nav">
+        <button type="button" class="nav-btn" id="day-prev" aria-label="Day before">‹</button>
+        <h2 id="day-title" aria-live="polite">Today</h2>
+        <button type="button" class="nav-btn" id="day-next" aria-label="Next day">›</button>
+      </div>
+
+      <div class="pace-card">
+        <h3>How is your energy?</h3>
+        <div class="scale" id="energy" role="radiogroup" aria-label="Energy, 0 is none, 10 is lots"></div>
+        <div class="scale-ends" aria-hidden="true"><span>0 = none</span><span>10 = lots</span></div>
+        <h3 class="mt">How bad are your symptoms?</h3>
+        <p class="hint">For example pain, tiredness or feeling unwell.</p>
+        <div class="scale scale-sym" id="symptoms" role="radiogroup" aria-label="Symptoms, 0 is none, 10 is the worst"></div>
+        <div class="scale-ends" aria-hidden="true"><span>0 = none</span><span>10 = the worst</span></div>
+      </div>
+
+      <div class="pace-card">
+        <h3>What I did</h3>
+        <ul class="acts" id="acts"></ul>
+        <p class="hint" id="acts-empty">Nothing written down yet.</p>
+        <p class="day-sum" id="day-sum"></p>
+      </div>
+
+      <form class="pace-card" id="add-form" autocomplete="off">
+        <h3 id="add-title">Add something I did</h3>
+        <label class="lbl" for="act-name">What did you do?</label>
+        <div class="chips" id="quick-acts" aria-label="Quick choices"></div>
+        <input type="text" id="act-name" maxlength="40" placeholder="For example: Walk to the shop" required>
+
+        <label class="lbl" for="act-min">For how long? (minutes)</label>
+        <div class="stepper">
+          <button type="button" class="step-btn" data-step="-5" aria-label="5 minutes less">−</button>
+          <input type="number" id="act-min" inputmode="numeric" min="1" max="600" value="10" required>
+          <button type="button" class="step-btn" data-step="5" aria-label="5 minutes more">+</button>
+        </div>
+        <div class="chips small" id="quick-mins"></div>
+
+        <fieldset class="effort" id="effort-set">
+          <legend class="lbl">How hard was it?</legend>
+          <label class="eff eff-1"><input type="radio" name="lvl" value="1"><span><b>Easy</b> I could keep going</span></label>
+          <label class="eff eff-2"><input type="radio" name="lvl" value="2" checked><span><b>Medium</b> I needed a rest after</span></label>
+          <label class="eff eff-3"><input type="radio" name="lvl" value="3"><span><b>Hard</b> It wore me out</span></label>
+        </fieldset>
+        <p class="limit-note" id="limit-note" hidden></p>
+        <button type="submit" class="btn btn-primary btn-wide">Add to my day</button>
+      </form>
+
+      <div class="pace-card" id="timer-card">
+        <h3>Activity timer</h3>
+        <p class="hint">Set a timer before you start, so you stop before you get tired.</p>
+        <div id="timer-set">
+          <label class="lbl" for="timer-pick">What are you doing?</label>
+          <select id="timer-pick"></select>
+          <label class="lbl" for="timer-min">Stop after (minutes)</label>
+          <input type="number" id="timer-min" inputmode="numeric" min="1" max="240" value="10">
+          <button type="button" class="btn btn-primary btn-wide" id="timer-start">Start the timer</button>
+        </div>
+        <div id="timer-run" hidden>
+          <p class="timer-what" id="timer-what"></p>
+          <p class="timer-clock" id="timer-clock" role="timer" aria-live="off">10:00</p>
+          <p class="timer-msg" id="timer-msg" aria-live="assertive"></p>
+          <div class="row">
+            <button type="button" class="btn btn-secondary" id="timer-pause">Pause</button>
+            <button type="button" class="btn btn-primary" id="timer-stop">Stop and save</button>
+          </div>
+          <button type="button" class="link-btn" id="timer-cancel">Cancel without saving</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WEEK ============ -->
+    <section role="tabpanel" id="panel-week" aria-labelledby="tab-week" hidden>
+      <div class="day-nav">
+        <button type="button" class="nav-btn" id="week-prev" aria-label="Week before">‹</button>
+        <h2 id="week-title" aria-live="polite">This week</h2>
+        <button type="button" class="nav-btn" id="week-next" aria-label="Next week">›</button>
+      </div>
+      <div class="pace-card">
+        <div class="chart" id="chart"></div>
+        <ul class="legend" aria-hidden="true">
+          <li><i class="k1"></i>Easy</li><li><i class="k2"></i>Medium</li><li><i class="k3"></i>Hard</li><li><i class="k0"></i>Rest</li><li><i class="ken"></i>Energy (0 to 10)</li>
+        </ul>
+        <table class="visually-hidden" id="week-table"></table>
+      </div>
+      <div class="pace-card" id="week-tip" hidden></div>
+      <div class="pace-card">
+        <h3>My week in numbers</h3>
+        <dl class="nums" id="week-nums"></dl>
+      </div>
+      <div class="row">
+        <button type="button" class="btn btn-secondary" id="print-week">Print this week for my physio</button>
+        <button type="button" class="btn btn-secondary" id="print-blank">Print a blank paper diary</button>
+      </div>
+    </section>
+
+    <!-- ============ LIMITS ============ -->
+    <section role="tabpanel" id="panel-limits" aria-labelledby="tab-limits" hidden>
+      <div class="pace-card">
+        <h2>My limits</h2>
+        <p>A limit is how long you can do something <b>on a bad day</b> without feeling worse later. Stay inside it on good days too.</p>
+        <p>Your physio can help you set your limits. Only change them after talking to your physio.</p>
+        <ul class="limits" id="limits"></ul>
+        <p class="hint" id="limits-empty">No limits set yet.</p>
+      </div>
+      <form class="pace-card" id="limit-form" autocomplete="off">
+        <h3 id="limit-form-title">Add a limit</h3>
+        <label class="lbl" for="lim-name">Activity</label>
+        <input type="text" id="lim-name" maxlength="40" list="lim-suggest" placeholder="For example: Walking" required>
+        <datalist id="lim-suggest"></datalist>
+        <label class="lbl" for="lim-min">Most minutes at one time</label>
+        <input type="number" id="lim-min" inputmode="numeric" min="1" max="600" value="10" required>
+        <label class="lbl" for="lim-rest">Then rest for (minutes, optional)</label>
+        <input type="number" id="lim-rest" inputmode="numeric" min="0" max="240" placeholder="For example: 10">
+        <div class="row">
+          <button type="submit" class="btn btn-primary" id="lim-save">Save limit</button>
+          <button type="button" class="btn btn-secondary" id="lim-cancel" hidden>Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ============ HELP ============ -->
+    <section role="tabpanel" id="panel-help" aria-labelledby="tab-help" hidden>
+      <div class="pace-card prose">
+        <h2>Tips for pacing</h2>
+        <ul>
+          <li><b>Do about the same each day.</b> On a good day, don't do lots more. On a bad day, try to do a little.</li>
+          <li><b>Rest before you get tired,</b> not after.</li>
+          <li><b>Break big jobs into small parts.</b> For example, hoover one room, then rest.</li>
+          <li><b>Mix it up.</b> Put an easy job after a hard one.</li>
+          <li><b>Plan your week.</b> Spread out the busy things.</li>
+          <li><b>Rest means real rest.</b> Sit or lie down somewhere quiet. Phones and TV are not always restful.</li>
+        </ul>
+        <h3>Watch out for "boom and bust"</h3>
+        <p>Doing a lot on a good day, then crashing for a few days after, is called boom and bust. Your week chart can help you spot it.</p>
+        <h3>Doing more</h3>
+        <p>Only make your limits bigger after talking to your physio. If you have ME/CFS or long COVID, don't push yourself to do more each week. Stay within your energy.</p>
+        <h3>Get help</h3>
+        <p>Contact your GP, physio or NHS 111 if you have new symptoms, or you are getting worse. In an emergency, call 999.</p>
+      </div>
+
+      <div class="pace-card prose">
+        <h2>Your diary and your privacy</h2>
+        <p>Your diary is saved in this web browser, on this phone or computer only. It is not sent to RepSheet or anyone else. If you clear your browser's data, the diary is deleted.</p>
+        <p>To share it, print it or show your phone to your physio.</p>
+        <button type="button" class="btn btn-secondary danger" id="wipe">Delete my whole diary</button>
+      </div>
+
+      <details class="pace-card physio">
+        <summary><h2>For physios: give a patient starting limits</h2></summary>
+        <p>Type the activities and limits you agreed. Your patient scans the QR code, and the limits are added to their diary when they say yes. The link holds only these activities and minutes. Never type anything that identifies the patient.</p>
+        <div class="ph-rows" id="ph-rows"></div>
+        <button type="button" class="btn btn-secondary btn-sm" id="ph-add">Add another activity</button>
+        <div class="ph-out" id="ph-out" hidden>
+          <div class="ph-qr" id="ph-qr"></div>
+          <label class="lbl" for="ph-link">Link</label>
+          <input type="text" id="ph-link" readonly>
+          <div class="row">
+            <button type="button" class="btn btn-secondary btn-sm" id="ph-copy">Copy link</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="ph-print">Print with QR code</button>
+          </div>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <!-- Filled in only when printing -->
+  <div id="print-area" class="print-area" aria-hidden="true"></div>
+
+  <footer class="site-footer no-print">
+    <div class="wrap">
+      <p>RepSheet · free home exercise handouts</p>
+      <p class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="accessibility.html">Accessibility</a>
+      </p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="vendor/qrcode.js"></script>
+  <script src="pacing.js"></script>
+</body>
+</html>
