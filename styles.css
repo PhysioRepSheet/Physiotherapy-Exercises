@@ -88,16 +88,6 @@ a:hover { color: var(--brand-dark); text-decoration-thickness: 2px; }
   .library-list { max-height: 420px; }
 }
 @media (max-width: 560px) { .panel { padding: 18px; border-radius: var(--radius); } }
-/* Library list fix (17 Nov 2026): on screens under 1000px tall the library stops sticking,
-   and the list always shows at least a few exercises however many filter chips sit above it. */
-.library-foot { flex-shrink: 0; }
-@media (min-width: 961px) and (max-height: 999px) {
-  .library { position: static; max-height: none; }
-  .library-list { max-height: 460px; }
-}
-.library-list { min-height: 240px; flex-shrink: 0; }
-@media (min-width: 961px) and (min-height: 1000px) { .library-list { flex-shrink: 1; } .library { overflow-y: auto; } }
-
 
 /* ---------- Form fields ---------- */
 input[type="text"], input[type="search"], input[type="email"], input[type="date"], input[type="number"], textarea {
@@ -178,6 +168,16 @@ textarea { resize: vertical; }
 .lib-item .add.added { background: var(--brand-tint); color: var(--brand-ink); border-color: transparent; box-shadow: none; }
 .lib-empty { color: var(--ink-soft); padding: 8px; }
 .library-foot { margin: 0; font-size: .875rem; padding-top: 10px; border-top: 1px solid var(--line); }
+/* Short screens (17 Nov 2026): if the window is not tall enough, the library stops sticking
+   so the list never squashes to nothing and the bottom link cannot spill onto the footer. */
+.library-foot { flex-shrink: 0; }
+@media (min-width: 961px) and (max-height: 999px) {
+  .library { position: static; max-height: none; }
+  .library-list { max-height: 460px; }
+}
+/* The list must always show at least a few exercises, however many filter chips sit above it. */
+.library-list { min-height: 240px; flex-shrink: 0; }
+@media (min-width: 961px) and (min-height: 1000px) { .library-list { flex-shrink: 1; } .library { overflow-y: auto; } }
 
 /* ---------- Programme ---------- */
 .programme-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--line); }
@@ -294,6 +294,24 @@ textarea { resize: vertical; }
 .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
 .footer-links a { color: var(--ink-soft); text-decoration: none; font-weight: 500; }
 .footer-links a:hover { color: var(--brand); text-decoration: underline; }
+
+/* Grouped footer (17 Nov 2026): short intro on the left, links in three small groups */
+.site-footer .wrap.footer-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px 48px; align-items: start; justify-content: stretch; }
+.footer-about { max-width: 38ch; display: flex; flex-direction: column; gap: 6px; line-height: 1.5; }
+.footer-brand { font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; }
+.footer-brand span { color: var(--brand); }
+.footer-nav { display: grid; grid-template-columns: repeat(3, auto); gap: 20px 48px; }
+.footer-col h2 { margin: 0 0 8px; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+.footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.footer-col a { color: var(--ink-soft); text-decoration: none; font-weight: 500; display: inline-block; padding: 2px 0; }
+.footer-col a:hover, .footer-col a:focus-visible { color: var(--brand); text-decoration: underline; }
+@media (max-width: 760px) {
+  .site-footer .wrap.footer-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .footer-about { max-width: none; }
+  .footer-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 12px; }
+  .footer-col a { padding: 4px 0; }
+}
+@media (max-width: 380px) { .footer-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
 /* ---------- Dialog and toast ---------- */
 dialog { border: none; border-radius: var(--radius-lg); padding: 0; max-width: 480px; width: calc(100% - 32px); box-shadow: var(--shadow-lg); }
