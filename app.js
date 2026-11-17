@@ -186,13 +186,19 @@
     $("#search").focus();
   }
 
+  // Size and colour set on the icon itself, so it never shows as a big black dot if the styles load late.
+  function startIcon() {
+    const s = icon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>');
+    [["width", "22"], ["height", "22"], ["fill", "none"], ["stroke", "currentColor"], ["stroke-width", "2"], ["stroke-linecap", "round"]].forEach(([k, v]) => s.setAttribute(k, v));
+    return s;
+  }
   function renderStart(list, inProgramme) {
     const pickArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
     const areas = QUICK_AREAS.filter((a) => LIBRARY.some((e) => e.area === a));
     list.append(el("li", { class: "lib-start" },
-      el("span", { class: "lib-start-icon", "aria-hidden": "true" }, icon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')),
-      el("p", { class: "lib-start-title", text: "Find an exercise" }),
-      el("p", { class: "lib-start-text", text: "Start typing, like knee, squat or calf. Or pick a body area and a goal above." }),
+      el("span", { class: "lib-start-icon", "aria-hidden": "true" }, startIcon()),
+      el("p", { class: "lib-start-title", text: "Start typing an exercise" }),
+      el("p", { class: "lib-start-text", text: "Suggestions will appear as you type. Or pick a body area and a goal above." }),
       el("div", { class: "lib-quick", role: "group", "aria-label": "Popular body areas" },
         areas.map((a) => el("button", { type: "button", class: "lib-quick-btn", text: a, onclick: () => pickArea(a) })))
     ));
