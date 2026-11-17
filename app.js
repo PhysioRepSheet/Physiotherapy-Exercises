@@ -285,7 +285,7 @@
       const ticked = item.prog.length + item.reg.length;
 
       list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : ""), "data-key": item.key },
-        el("div", { class: "ex-media no-print" }, H.picture(ex, "anim", { offset: i * 0.4 }).el),
+        el("div", { class: "ex-media no-print" }, H.mediaSwitch(ex, H.picture(ex, "anim", { offset: i * 0.4 }))),
         el("div", { class: "ex-body" },
           el("div", { class: "ex-top" },
             el("h3", { class: "ex-title", text: ex.name }),

@@ -167,6 +167,25 @@ textarea { resize: vertical; }
 .ex-card:hover { box-shadow: var(--shadow); border-color: var(--line-strong); }
 @keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .ex-media .pic { width: 160px; border-radius: 12px; } /* smaller at Alex's request, 16 Nov 2026 */
+/* Picture / video switch (only shown when an exercise has a video) */
+.media-pic { position: relative; }
+.media-toggle { display: inline-flex; align-items: center; gap: 7px; margin-top: 8px; font-size: .8125rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; user-select: none; position: relative; }
+.media-toggle input { position: absolute; opacity: 0; width: 34px; height: 20px; left: 50%; margin: 0 0 0 -17px; cursor: pointer; }
+.mt-track { width: 34px; height: 20px; border-radius: 999px; background: var(--line-strong, #c9cfcb); position: relative; flex: none; transition: background .2s var(--ease); }
+.mt-track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .2s var(--ease); }
+.media-toggle input:checked + .mt-track { background: var(--brand); }
+.media-toggle input:checked + .mt-track::after { transform: translateX(14px); }
+.media-toggle input:focus-visible + .mt-track { outline: 3px solid var(--brand); outline-offset: 2px; }
+.mt-pic { color: var(--brand-ink); }
+.showing-video .mt-pic { color: var(--ink-soft); }
+.showing-video .mt-vid { color: var(--brand-ink); }
+.video-frame { position: relative; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #000; }
+.video-frame iframe, .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-host { margin: 6px 0 0; font-size: .75rem; }
+/* In the builder the video takes the full width of the card while it is showing */
+.ex-card:has(.showing-video) .ex-media { grid-column: 1 / -1; max-width: 520px; }
+.ex-card:has(.showing-video) .ex-body { grid-column: 1 / -1; }
+@media print { .media-toggle, .media-video { display: none !important; } }
 .ex-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .ex-title { font-size: 1.125rem; display: flex; align-items: center; gap: 10px; }
 .ex-title::before {
@@ -569,6 +588,7 @@ dialog::backdrop { background: rgba(23, 35, 43, .4); backdrop-filter: blur(3px);
   @container (max-width: 620px) {
     .ex-card { grid-template-columns: 100px minmax(0, 1fr); gap: 14px; padding: 14px; }
     .ex-media .pic { width: 100px; max-width: none; margin: 0; }
+    .ex-media .mt-pic { display: none; }
     .params { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .params .freq, .params .load { grid-column: 1 / -1; }
     .options-grid { grid-template-columns: 1fr; }

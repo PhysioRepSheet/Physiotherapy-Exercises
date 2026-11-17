@@ -69,6 +69,82 @@
     return null;
   }
 
+  // ---------- picture / video switch ----------
+  // A small "Picture | Video" toggle under the moving picture. Only shown when the exercise has a video
+  // (set "video" in exercises.js). YouTube/Vimeo players only load once someone flips the switch.
+  function mediaSwitch(ex, pic, opts = {}) {
+    const wrap = document.createElement("div");
+    wrap.className = "media-switch-wrap";
+    const picHolder = document.createElement("div");
+    picHolder.className = "media-pic";
+    picHolder.append(pic.el);
+    if (opts.extra) picHolder.append(opts.extra);
+    wrap.append(picHolder);
+    const info = videoInfo(ex.video);
+    if (!info) return wrap;
+
+    const vidHolder = document.createElement("div");
+    vidHolder.className = "media-video";
+    vidHolder.hidden = true;
+    const frame = document.createElement("div");
+    frame.className = "video-frame";
+    vidHolder.append(frame);
+    if (info.host) {
+      const hint = document.createElement("p");
+      hint.className = "hint video-host";
+      hint.textContent = "The video plays from " + info.host + ".";
+      vidHolder.append(hint);
+    }
+    wrap.append(vidHolder);
+
+    const label = document.createElement("label");
+    label.className = "media-toggle";
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.setAttribute("role", "switch");
+    input.setAttribute("aria-label", "Show video of " + ex.name);
+    const left = document.createElement("span"); left.className = "mt-word mt-pic"; left.textContent = "Picture";
+    const track = document.createElement("span"); track.className = "mt-track"; track.setAttribute("aria-hidden", "true");
+    const right = document.createElement("span"); right.className = "mt-word mt-vid"; right.textContent = "Video";
+    label.append(left, input, track, right);
+    wrap.append(label);
+
+    let wasPaused = false;
+    input.addEventListener("change", () => {
+      const showVideo = input.checked;
+      wrap.classList.toggle("showing-video", showVideo);
+      picHolder.hidden = showVideo;
+      vidHolder.hidden = !showVideo;
+      if (showVideo) {
+        if (pic.controls) { wasPaused = pic.controls.paused; pic.controls.pause(); }
+        if (!frame.firstChild) {
+          if (info.kind === "file") {
+            const v = document.createElement("video");
+            v.src = info.src; v.controls = true; v.preload = "metadata";
+            v.setAttribute("playsinline", "");
+            frame.append(v);
+          } else {
+            const f = document.createElement("iframe");
+            f.src = info.src;
+            f.title = "Video: " + ex.name;
+            f.allow = "fullscreen; picture-in-picture";
+            f.setAttribute("allowfullscreen", "");
+            f.referrerPolicy = "strict-origin-when-cross-origin";
+            frame.append(f);
+          }
+        }
+      } else {
+        const v = frame.querySelector("video");
+        if (v) v.pause();
+        const f = frame.querySelector("iframe");
+        if (f) f.remove(); // stops a YouTube/Vimeo video playing in the background
+        if (pic.controls && !wasPaused) pic.controls.play();
+      }
+      if (opts.onChange) opts.onChange(showVideo);
+    });
+    return wrap;
+  }
+
   // ---------- packing a programme into a link (nothing is stored anywhere) ----------
   function toBase64Url(bytes) {
     let bin = "";
@@ -189,6 +265,6 @@
     return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  window.Handout = { LIBRARY, byId, describe, picture, videoInfo, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
+  window.Handout = { LIBRARY, byId, describe, picture, videoInfo, mediaSwitch, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
     OWN_AREA, packCustom, unpackCustom, registerCustom, unregisterCustom, customDefs };
 })();

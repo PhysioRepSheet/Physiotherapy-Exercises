@@ -42,6 +42,7 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - `styles.css`: colours and look (brand colour is at the top).
 - `images/`: your own pictures, photos or GIFs. Set `image: "images/your-file.gif"` in `exercises.js` to use one instead of the drawing.
 - `videos/`: your own video files. Or use a YouTube/Vimeo link in the `video` field.
+  Adding a video to an exercise makes a little "Picture | Video" switch appear under its moving picture, in the builder and on the patient page. Exercises with no video show no switch.
 
 ## Files you shouldn't need to touch
 `app.js` (builder), `view.js` / `view.html` / `view.css` (patient page), `figures.js` (drawing engine),

@@ -19,29 +19,6 @@
     return n;
   };
 
-  function videoBlock(ex) {
-    const info = H.videoInfo(ex.video);
-    if (!info) return null;
-    const box = el("div", { class: "p-video" });
-    if (info.kind === "file") {
-      box.append(el("div", { class: "p-video-frame" }, el("video", { src: info.src, controls: "", preload: "none", playsinline: "" })));
-      return box;
-    }
-    // Only load the video player when the patient asks for it
-    const btn = el("button", {
-      type: "button", class: "btn btn-secondary p-video-btn",
-      onclick: () => {
-        box.innerHTML = "";
-        box.append(el("div", { class: "p-video-frame" }, el("iframe", {
-          src: info.src + (info.src.includes("?") ? "&" : "?") + "autoplay=1",
-          title: "Video: " + ex.name, allow: "autoplay; fullscreen; picture-in-picture", allowfullscreen: "", referrerpolicy: "strict-origin-when-cross-origin"
-        })));
-      }
-    }, "▶ Watch video");
-    box.append(btn, el("p", { class: "hint", text: "The video plays from " + info.host + "." }));
-    return box;
-  }
-
   // ---------- Read aloud ----------
   // Uses the phone's own built-in voice. Nothing is recorded or sent anywhere.
   const canSpeak = "speechSynthesis" in window && typeof SpeechSynthesisUtterance === "function";
@@ -97,7 +74,7 @@
     const li = el("li", { class: "p-card" },
       el("div", { class: "p-card-head" }, el("h2", { text: ex.name }), readBtn),
       ex.custom ? el("p", { class: "p-own", text: "Written by your physio" }) : null,
-      el("div", { class: "p-media" }, pic.el, pauseBtn),
+      el("div", { class: "p-media" }, H.mediaSwitch(ex, pic, { extra: pauseBtn })),
       ex.custom ? el("p", { class: "p-own-pic hint", text: ex.like ? "The picture shows a similar exercise. Follow your physio's steps below." : "Your physio will show you how to do this one." }) : null,
       el("div", { class: "p-steps-pics" }, H.picture(ex, "steps").el),
       dose ? el("p", { class: "p-dose", text: dose }) : null,
@@ -106,8 +83,7 @@
       harder.length || easier.length ? el("div", { class: "p-options" },
         harder.length ? [el("h3", { text: "To make it harder" }), el("ul", {}, harder.map((t) => el("li", { text: t })))] : null,
         easier.length ? [el("h3", { text: "To make it easier" }), el("ul", {}, easier.map((t) => el("li", { text: t })))] : null
-      ) : null,
-      videoBlock(ex)
+      ) : null
     );
     if (readBtn) readBtn.addEventListener("click", () => readCard(readBtn, li));
     return li;

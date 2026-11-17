@@ -21,7 +21,9 @@
     progressions  Ways to make it harder. The physio can tick which to show the patient.
     regressions   Ways to make it easier. Same as above.
     video         Optional. A YouTube or Vimeo link, or a file in the "videos" folder
-                  (e.g. "videos/bridge.mp4"). Shown on the patient's online page.
+                  (e.g. "videos/knee-static-quads.mp4"). When set, a little "Picture | Video"
+                  switch appears under the moving picture in the builder and on the patient's
+                  page. Leave as "" and there is no switch, just the moving picture.
 */
 
 window.EXERCISES = [
