@@ -90,7 +90,7 @@ const server = http.createServer((req, res) => {
     const page = await phone.newPage(); const errs = []; watch(page, errs);
     await page.goto(BASE + "builder.html"); await page.waitForTimeout(500);
     await page.fill("#search", "sit to stand"); await page.press("#search", "Enter"); await page.waitForTimeout(400);
-    await page.click("#btn-print");
+    await page.click("#btn-pdf");
     await page.waitForSelector(".pdf-ready:not([hidden]), .pdf-error:not([hidden])", { timeout: 60000 });
     const size = await page.evaluate(() => (window.RepSheetPdf.lastFile() || { size: 0 }).size);
     ok(size > 20000 && errs.length === 0, "PDF made on the phone (" + Math.round(size / 1024) + " KB)" + (errs.length ? " -> " + errs.join(" | ") : ""));

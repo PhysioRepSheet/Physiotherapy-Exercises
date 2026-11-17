@@ -1,10 +1,9 @@
 /*
-  RepSheet: "Your handout is ready" on phones and tablets.
-  On an iPhone, iPad or Android device, "Print or save as PDF" makes a real PDF file on the device,
-  then shows clear buttons: Save or share, Open, Download, or Print instead.
+  RepSheet: "Save as PDF".
+  Makes a real PDF file on the device from the printed layout. On a computer it opens in a new tab.
+  On an iPhone, iPad or Android device (or if new tabs are blocked) it shows clear buttons: Save or share, Open, Download, or Print instead.
   The PDF is made from the same printed layout, entirely on this device. Nothing is sent anywhere.
   Libraries (MIT licence): vendor/jspdf.umd.min.js, vendor/html2canvas.min.js. They only load when needed.
-  On computers the normal print window is used, which already has "Save as PDF".
 */
 (function () {
   "use strict";
@@ -16,8 +15,20 @@
   // ?pdf=1 forces this on a computer (for testing). ?pdf=0 turns it off.
   const wanted = () => params.get("pdf") === "1" || (params.get("pdf") !== "0" && isTouch);
 
-  const btn = $("#btn-print");
-  if (btn && wanted()) btn.textContent = "Make handout PDF";
+  // Computers: open a new tab right away (while the click still counts) and show the PDF there when it's made.
+  // Phones and tablets, or if the browser blocks new tabs: the "Your handout is ready" box instead.
+  function openTab() {
+    if (wanted()) return null;
+    let w = null;
+    try { w = window.open("", "_blank"); } catch (e) { w = null; }
+    if (!w) return null;
+    try {
+      w.document.title = "Making your handout PDF…";
+      w.document.body.style.cssText = "font:18px system-ui,sans-serif;color:#17232b;background:#f6f5f1;display:grid;place-items:center;height:100vh;margin:0";
+      w.document.body.textContent = "Making your handout PDF…";
+    } catch (e) { /* the tab still works without the message */ }
+    return w;
+  }
 
   let libs = null;
   function loadScript(src) {
@@ -215,8 +226,9 @@
     return starts.map((s, i) => ({ top: s, height: Math.min((starts[i + 1] != null ? starts[i + 1] : total) - s, pageH) })).filter((p) => p.height > 4);
   }
 
-  async function make() {
-    if (busy) return;
+  async function make(opts) {
+    const tab = opts && opts.tab;
+    if (busy) { if (tab) tab.close(); return; }
     busy = true;
     if (url) { URL.revokeObjectURL(url); url = ""; }
     show("making"); progress("Getting ready", 0.04);
@@ -272,10 +284,18 @@
                  : "\"Save or share\" lets you save it, print it, or send it in another app.")
         : isIOS ? "Open it, then tap the Share button to save it to Files, print it or send it."
                 : "Download it, or open it to print or share.";
+      if (tab && !tab.closed) {
+        // Show it in the new tab. Keep the file for a few minutes so the tab can save or print it.
+        tab.location.href = url;
+        const u = url; url = ""; setTimeout(() => URL.revokeObjectURL(u), 10 * 60000);
+        dlg.close();
+        return;
+      }
       show("ready");
       dlg.querySelector(".pdf-ready-title").focus();
     } catch (e) {
       console.warn("PDF", e);
+      if (tab && !tab.closed) tab.close();
       show("error");
     } finally {
       if (built) built.frame.remove();
@@ -283,5 +303,5 @@
     }
   }
 
-  window.RepSheetPdf = { wanted, make, lastFile: () => file };
+  window.RepSheetPdf = { wanted, make, openTab, lastFile: () => file };
 })();

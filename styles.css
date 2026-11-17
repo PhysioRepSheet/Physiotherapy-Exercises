@@ -1086,10 +1086,11 @@ body { font-optical-sizing: auto; }
 @media (prefers-reduced-motion: reduce) { .options-fold-chev { transition: none; } }
 
 /* ---------- Handout details buttons: compact grid (17 Nov 2026) ---------- */
-.settings .settings-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
-.settings .settings-actions #btn-print { grid-column: 1 / -1; order: 0; flex-basis: auto; }
+.settings .settings-actions { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.settings .settings-actions #btn-print, .settings .settings-actions #btn-pdf { grid-column: span 3; order: 0; flex-basis: auto; min-width: 0; padding-left: 8px; padding-right: 8px; }
+.settings .settings-actions .btn-secondary { grid-column: span 2; }
 .settings .settings-actions .btn-secondary { padding: 6px 4px; font-size: .8125rem; min-height: 34px; min-width: 0; width: 100%; line-height: 1.15; white-space: normal; text-wrap: balance; justify-content: center; text-align: center; }
-@media (max-width: 330px) { .settings .settings-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 330px) { .settings .settings-actions .btn-secondary { grid-column: span 3; } }
 
 /* ---------- Change the steps (Advanced view) ---------- */
 .steps-edited-mark { display: inline-flex; align-items: center; flex: none; font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent, #c2410c); background: var(--accent-tint, #fff1e8); border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; line-height: 1.5; }

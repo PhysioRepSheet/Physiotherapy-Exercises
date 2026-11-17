@@ -1128,14 +1128,25 @@
   }
 
   // ---------- Print / email ----------
+  // Print: the browser's print window. Save as PDF: a real PDF made on this device (pdf-maker.js),
+  // opened in a new tab on computers; on phones and tablets the "Your handout is ready" box offers save, share or open.
   async function printHandout() {
     if (!programme.length) { toast("Add at least one exercise first"); return; }
+    await readyToPrint();
+    window.print();
+  }
+  async function pdfHandout() {
+    if (!programme.length) { toast("Add at least one exercise first"); return; }
+    // The new tab has to be opened straight away, while the click still counts, or the browser blocks it
+    const tab = window.RepSheetPdf && window.RepSheetPdf.openTab();
+    await readyToPrint();
+    if (window.RepSheetPdf) window.RepSheetPdf.make({ tab }); else { if (tab) tab.close(); window.print(); }
+  }
+  async function readyToPrint() {
     clearTimeout(linkTimer);
     await updateLink();
     fillPrintMeta();
     if (window.RepSheetI18nBuilder) await window.RepSheetI18nBuilder.prepare(programmeData());
-    if (window.RepSheetPdf && window.RepSheetPdf.wanted()) { window.RepSheetPdf.make(); return; }
-    window.print();
   }
 
   // ---------- Pain level ----------
@@ -1494,6 +1505,7 @@
     try { localStorage.setItem("handout-builder:news-seen", NEWS); } catch (e) { /* storage unavailable */ }
   });
   $("#btn-print").addEventListener("click", printHandout);
+  $("#btn-pdf").addEventListener("click", pdfHandout);
   // Soft shadow under the header only once the page has scrolled under it
   const onScroll = () => document.documentElement.classList.toggle("is-scrolled", window.scrollY > 4);
   window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
