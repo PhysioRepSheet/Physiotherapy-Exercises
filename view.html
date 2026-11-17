@@ -11,11 +11,11 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="apple-mobile-web-app-title" content="My exercises">
-  <link rel="stylesheet" href="styles.css?v=20261117g">
-  <link rel="stylesheet" href="view.css?v=20261117g">
-  <link rel="stylesheet" href="i18n.css?v=20261117g">
-  <link rel="stylesheet" href="dark.css?v=20261117g">
-  <script src="theme.js?v=20261117g"></script>
+  <link rel="stylesheet" href="styles.css?v=20261117h">
+  <link rel="stylesheet" href="view.css?v=20261117h">
+  <link rel="stylesheet" href="i18n.css?v=20261117h">
+  <link rel="stylesheet" href="dark.css?v=20261117h">
+  <script src="theme.js?v=20261117h"></script>
 </head>
 <body class="patient">
   <header class="site-header no-print">
@@ -24,19 +24,21 @@
         <svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark" data-i18n="page.title" data-i18n-plain>Your exercises</span>
       </div>
       <div class="header-right">
-        <button type="button" class="btn-ghost a11y-toggle" id="btn-a11y" aria-expanded="false" aria-controls="a11y-panel"><svg class="a11y-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M4.5 8.5 12 10l7.5-1.5M12 10v4.5M12 14.5 8.5 21M12 14.5l3.5 6.5"/></svg><span data-i18n="a11y.button" data-i18n-plain>Accessibility</span><svg class="a11y-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-        <button type="button" class="btn-ghost" id="btn-print" data-i18n="hdr.print" data-i18n-plain>Print</button>
-      </div>
-      <!-- Accessibility menu (a11y-menu.js): opens and closes; open or closed is remembered on this phone only -->
-      <div id="a11y-panel" class="a11y-panel" role="group" aria-labelledby="btn-a11y" hidden>
-        <div class="a11y-row">
-          <button type="button" class="btn-ghost" id="btn-large" aria-pressed="false">Larger text</button>
-          <button type="button" class="btn-ghost" id="btn-easy" aria-pressed="false" data-i18n="disp.easy" data-i18n-plain>Easier reading</button>
-          <button type="button" class="btn-ghost" id="btn-contrast" aria-pressed="false" data-i18n="disp.contrast" data-i18n-plain>High contrast</button>
-          <button type="button" class="btn-ghost" id="btn-theme" aria-pressed="false">Dark screen</button>
-          <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause pictures</button>
+        <div class="a11y-menu">
+          <button type="button" class="btn-ghost a11y-toggle" id="btn-a11y" aria-expanded="false" aria-controls="a11y-panel"><svg class="a11y-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M4.5 8.5 12 10l7.5-1.5M12 10v4.5M12 14.5 8.5 21M12 14.5l3.5 6.5"/></svg><span data-i18n="a11y.button" data-i18n-plain>Accessibility</span><svg class="a11y-chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+          <!-- Accessibility menu (a11y-menu.js): a small dropdown; closes with Escape or a click elsewhere -->
+          <div id="a11y-panel" class="a11y-panel" role="group" aria-labelledby="btn-a11y" hidden>
+            <div class="a11y-row">
+              <button type="button" class="btn-ghost" id="btn-large" aria-pressed="false">Larger text</button>
+              <button type="button" class="btn-ghost" id="btn-easy" aria-pressed="false" data-i18n="disp.easy" data-i18n-plain>Easier reading</button>
+              <button type="button" class="btn-ghost" id="btn-contrast" aria-pressed="false" data-i18n="disp.contrast" data-i18n-plain>High contrast</button>
+              <button type="button" class="btn-ghost" id="btn-theme" aria-pressed="false">Dark screen</button>
+              <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause pictures</button>
+            </div>
+            <p class="hint a11y-hint" data-i18n="disp.hint">Easier reading uses a cream background and more space between lines. These choices are saved on this phone only.</p>
+          </div>
         </div>
-        <p class="hint a11y-hint" data-i18n="disp.hint">Easier reading uses a cream background and more space between lines. These choices are saved on this phone only.</p>
+        <button type="button" class="btn-ghost" id="btn-print" data-i18n="hdr.print" data-i18n-plain>Print</button>
       </div>
     </div>
   </header>
@@ -160,18 +162,18 @@
     </nav>
   </section>
 
-  <script src="exercises.js?v=20261117g"></script>
-  <script src="illustrations.js?v=20261117g"></script>
-  <script src="figures.js?v=20261117g"></script>
-  <script src="vendor/tiny-inflate.js?v=20261117g"></script>
-  <script src="install-start.js?v=20261117g"></script>
-  <script src="i18n.js?v=20261117g"></script>
-  <script src="common.js?v=20261117g"></script>
-  <script src="voice.js?v=20261117g"></script>
-  <script src="view.js?v=20261117g"></script>
-  <script src="patient-extras.js?v=20261117g"></script>
-  <script src="install.js?v=20261117g"></script>
-  <script src="a11y-menu.js?v=20261117g"></script>
+  <script src="exercises.js?v=20261117h"></script>
+  <script src="illustrations.js?v=20261117h"></script>
+  <script src="figures.js?v=20261117h"></script>
+  <script src="vendor/tiny-inflate.js?v=20261117h"></script>
+  <script src="install-start.js?v=20261117h"></script>
+  <script src="i18n.js?v=20261117h"></script>
+  <script src="common.js?v=20261117h"></script>
+  <script src="voice.js?v=20261117h"></script>
+  <script src="view.js?v=20261117h"></script>
+  <script src="patient-extras.js?v=20261117h"></script>
+  <script src="install.js?v=20261117h"></script>
+  <script src="a11y-menu.js?v=20261117h"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

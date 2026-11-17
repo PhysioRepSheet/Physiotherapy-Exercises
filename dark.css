@@ -101,3 +101,6 @@
   :root[data-theme="dark"] select option, :root[data-theme="dark"] select optgroup { background-color: #172124; color: #e7ecea; }
   :root[data-theme="dark"] select option:checked { background-color: #17332f; color: #a9e6dc; }
 }
+/* Accessibility dropdown: the Light/Dark screen item looks like the other items */
+:root[data-theme="dark"] .a11y-row #btn-theme[aria-pressed="true"] { border-color: transparent; background: transparent; }
+:root[data-theme="dark"] .a11y-row #btn-theme[aria-pressed="true"]:hover { background: var(--brand-tint-2); }
