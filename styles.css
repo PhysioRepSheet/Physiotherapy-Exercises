@@ -221,6 +221,14 @@ textarea { resize: vertical; }
 .progressions summary:hover { background: var(--brand-tint-2); }
 .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 4px 14px 14px; }
 .options { border: none; margin: 0; padding: 0; min-width: 0; }
+.own-prog { padding: 4px 14px 14px; }
+.options-grid + .own-prog { border-top: 1px solid var(--line); padding-top: 12px; }
+.own-prog-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; }
+@container (max-width: 560px) { .own-prog-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .own-prog-grid { grid-template-columns: 1fr; } }
+.own-prog label { display: block; font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 6px; }
+.own-prog textarea { width: 100%; min-height: 42px; }
+.own-prog .hint { margin: 6px 0 0; font-size: .8125rem; }
 .options legend { font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); padding: 0; margin-bottom: 6px; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: .875rem; padding: 4px 0; }
 .check input { margin-top: 2px; flex: none; }
@@ -716,4 +724,33 @@ body { font-optical-sizing: auto; }
   .ex-steps-pics img { height: 28mm; width: auto; max-width: 100%; margin: 2.5mm 0 .5mm; border-radius: 2mm; }
   .large-print .ex-steps-pics img { height: 58mm; }
   .paper-saver .ex-steps-pics img { height: 22mm; }
+}
+
+/* Card tidy-up (17 Nov 2026, from Alex's screenshot):
+   picture beside the title and steps, everything else full width underneath;
+   dose boxes in two even rows whose labels can never run into each other;
+   a clearer "can't move further" arrow. */
+@media screen {
+  .ex-more { grid-column: 1 / -1; min-width: 0; }
+  .ex-media { align-self: start; }
+  .ex-steps { margin-bottom: 0; }
+  .ex-more .params { margin-top: 2px; }
+  /* Sets, reps, hold on one row; how often and weight on the next. Every box lines up. */
+  .params { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .params > .field { grid-column: span 2; min-width: 0; }
+  .params > .freq, .params > .load { grid-column: span 3; }
+  .params .field label { overflow: hidden; text-overflow: ellipsis; }
+  .move-btn:disabled { opacity: 1; color: var(--line-strong); border-color: var(--line); background: var(--bg); }
+}
+
+/* Long exercise names in the library (17 Nov 2026): wrap or hyphenate inside their own space,
+   never under the Add button */
+.lib-item .meta { overflow: hidden; }
+.lib-item .name { overflow-wrap: break-word; hyphens: auto; -webkit-hyphens: auto; }
+/* When the library column is narrow, give the name more room: smaller picture and button */
+.library-list { container-type: inline-size; }
+@container (max-width: 290px) {
+  .lib-item { gap: 8px; }
+  .lib-item .pic { width: 50px; height: 42px; }
+  .lib-item .add { padding: 5px 10px; }
 }

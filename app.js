@@ -126,7 +126,9 @@
       frequency: ex.defaults.frequency ?? "",
       notes: "",
       prog: [],
-      reg: []
+      reg: [],
+      progText: "",
+      regText: ""
     });
     enteringKey = uid;
     renderProgramme();
@@ -231,17 +233,21 @@
   }
 
   // Ticks for "make it harder / easier". Only ticked options go on the handout.
-  function optionList(item, ex, key, listKey, title) {
+  // extra() gives the physio's own written line (free-text progression), printed after the ticked ones.
+  function optionList(item, ex, key, listKey, title, extra) {
     const options = ex[listKey] || [];
-    if (!options.length) return null;
+    if (!options.length && !extra) return null;
     const printList = el("ul");
     const printBox = el("div", { class: "print-only options-print" }, el("strong", { text: title + ":" }), printList);
     const refreshPrint = () => {
       printList.innerHTML = "";
       item[key].slice().sort((a, b) => a - b).forEach((i) => printList.append(el("li", { text: options[i] })));
-      printBox.hidden = !item[key].length;
+      const own = extra ? String(extra() || "").trim() : "";
+      if (own) printList.append(el("li", { text: own }));
+      printBox.hidden = !printList.children.length;
     };
     refreshPrint();
+    if (!options.length) return [null, printBox, refreshPrint];
     const group = el("fieldset", { class: "options no-print" }, el("legend", { text: title }),
       options.map((text, i) => {
         const id = "o-" + item.key + "-" + key + "-" + i;
@@ -258,7 +264,7 @@
         );
       })
     );
-    return [group, printBox];
+    return [group, printBox, refreshPrint];
   }
 
   function updateSummary() {
@@ -279,10 +285,18 @@
       if (!ex) return;
       const notesId = "n-" + item.key;
       const notesPrint = el("p", { class: "print-only", text: item.notes });
-      const harder = optionList(item, ex, "prog", "progressions", "To make it harder");
-      const easier = optionList(item, ex, "reg", "regressions", "To make it easier");
+      const harder = optionList(item, ex, "prog", "progressions", "To make it harder", () => item.progText);
+      const easier = optionList(item, ex, "reg", "regressions", "To make it easier", () => item.regText);
       const optionCount = (ex.progressions || []).length + (ex.regressions || []).length;
       const ticked = item.prog.length + item.reg.length;
+      // The physio's own progression and regression, in their words. They go in the link, so no patient details.
+      const ownBox = (prop, id, label, placeholder, refresh) => el("div", { class: "own-prog-field" },
+        el("label", { for: id, text: label }),
+        el("textarea", {
+          id, class: "own-prog-text", "data-prop": prop, rows: "2", maxlength: "300", placeholder, "aria-describedby": "own-hint-" + item.key,
+          oninput: (e) => { item[prop] = e.target.value; refresh(); changed(); }
+        })
+      );
 
       list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : ""), "data-key": item.key },
         el("div", { class: "ex-media no-print" }, H.mediaSwitch(ex, H.picture(ex, "anim", { offset: i * 0.4 }))),
@@ -297,13 +311,16 @@
           ),
           ex.custom ? el("p", { class: "own-label" }, el("span", { class: "no-print", text: "Your own exercise · not checked by RepSheet" }), el("span", { class: "print-only", text: "Written by your physio" })) : null,
           el("div", { class: "print-only ex-steps-pics" }, H.picture(ex, "steps").el),
-          el("ol", { class: "ex-steps" }, ex.instructions.map((s) => el("li", { text: s }))),
+          el("ol", { class: "ex-steps" }, ex.instructions.map((s) => el("li", { text: s })))
+        ),
+        // Dose, note and progressions run the full width of the card, so there's no gap under the picture
+        el("div", { class: "ex-more" },
           el("div", { class: "params" },
             paramField(item, "sets", "Sets", "number"),
             paramField(item, "reps", "Reps", "number"),
             paramField(item, "hold", "Hold (secs)", "number"),
             paramField(item, "frequency", "How often", "text", "freq"),
-            paramField(item, "load", "Weight or band", "text", "load", "e.g. 2 kg, red band")
+            paramField(item, "load", "Weight or band", "text", "load", "e.g. 2 kg")
           ),
           el("p", { class: "param-summary", text: H.describe(item) }),
           fillDose(el("div", { class: "print-only dose-panel" }), item),
@@ -319,14 +336,23 @@
             ),
             notesPrint
           ),
-          optionCount ? el("details", { class: "progressions no-print", open: ticked > 0 },
-            el("summary", {}, "Progressions and regressions ", el("span", { class: "hint", text: "(tick to include)" })),
-            el("div", { class: "options-grid" }, harder && harder[0], easier && easier[0])
-          ) : null,
+          el("details", { class: "progressions no-print", open: ticked > 0 || !!item.progText || !!item.regText },
+            el("summary", {}, "Progressions and regressions ",
+              el("span", { class: "hint", text: optionCount ? "(tick, or write your own)" : "(optional)" })),
+            optionCount ? el("div", { class: "options-grid" }, harder && harder[0], easier && easier[0]) : null,
+            el("div", { class: "own-prog" },
+              el("div", { class: "own-prog-grid" },
+                ownBox("progText", "pt-" + item.key, "Your own progression", "e.g. When this feels easy, hold a 1 kg weight", harder[2]),
+                ownBox("regText", "rt-" + item.key, "Your own regression", "e.g. If this is too hard, hold on to a chair", easier[2])
+              ),
+              el("p", { class: "hint", id: "own-hint-" + item.key, text: "These show under \u201cTo make it harder\u201d and \u201cTo make it easier\u201d. Please don\u2019t include any patient details." })
+            )
+          ),
           harder && harder[1], easier && easier[1]
         )
       ));
       list.lastChild.querySelector("textarea").value = item.notes;
+      list.lastChild.querySelectorAll(".own-prog-text").forEach((t) => { t.value = item[t.dataset.prop] || ""; });
     });
   }
 
@@ -792,8 +818,10 @@
       if (String(item.load || "").trim()) dose.push(String(item.load).trim());
       if (String(item.frequency || "").trim()) dose.push(String(item.frequency).trim().toLowerCase());
       let line = (i + 1) + ". " + ex.name + (dose.length ? ": " + dose.join(", ") : "");
-      if (item.prog.length) line += ". Progressions given: " + item.prog.map((x) => ex.progressions[x]).join("; ");
-      if (item.reg.length) line += ". Regressions given: " + item.reg.map((x) => ex.regressions[x]).join("; ");
+      const progs = [...item.prog.map((x) => ex.progressions[x]), String(item.progText || "").trim()].filter(Boolean);
+      if (progs.length) line += ". Progressions given: " + progs.join("; ");
+      const regs = [...item.reg.map((x) => ex.regressions[x]), String(item.regText || "").trim()].filter(Boolean);
+      if (regs.length) line += ". Regressions given: " + regs.join("; ");
       if (item.notes.trim()) line += ". Notes: " + item.notes.trim();
       lines.push(line);
     });
@@ -837,8 +865,10 @@
       const d = H.describe(item);
       if (d) lines.push(d);
       if (item.notes.trim()) lines.push("Note: " + item.notes.trim());
-      if (item.prog.length) lines.push("To make it harder: " + item.prog.map((x) => ex.progressions[x]).join("; "));
-      if (item.reg.length) lines.push("To make it easier: " + item.reg.map((x) => ex.regressions[x]).join("; "));
+      const progs = [...item.prog.map((x) => ex.progressions[x]), String(item.progText || "").trim()].filter(Boolean);
+      if (progs.length) lines.push("To make it harder: " + progs.join("; "));
+      const regs = [...item.reg.map((x) => ex.regressions[x]), String(item.regText || "").trim()].filter(Boolean);
+      if (regs.length) lines.push("To make it easier: " + regs.join("; "));
     });
     lines.push("", "Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.");
     const who = [$("#clinician").value.trim(), $("#contact").value.trim()].filter(Boolean);

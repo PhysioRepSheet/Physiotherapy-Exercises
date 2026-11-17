@@ -183,14 +183,14 @@
     return JSON.parse(new TextDecoder().decode(raw));
   }
 
-  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions]]
+  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions], load, own progression, own regression]
   function packItem(it) {
-    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || ""];
+    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || "", String(it.progText || "").trim(), String(it.regText || "").trim()];
     while (arr.length > 5 && (arr[arr.length - 1] === "" || (Array.isArray(arr[arr.length - 1]) && !arr[arr.length - 1].length))) arr.pop();
     return arr;
   }
   function unpackItem(a) {
-    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "" };
+    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "", progText: String(a[9] || "").slice(0, 300), regText: String(a[10] || "").slice(0, 300) };
   }
 
   // Rough time for one session: about 4 seconds a rep plus any hold, 30 seconds rest
