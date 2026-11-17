@@ -1,0 +1,73 @@
+/* TUTORIAL PAGE (tutorial.html): a guide for clinicians. Uses the shared info-page styles from styles.css. */
+.tut-main { max-width: 1120px; padding-top: 40px; padding-bottom: 56px; }
+.tut-main h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); letter-spacing: -0.03em; margin: 0 0 8px; }
+.tut-lede { font-size: 1.1rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 22px; }
+.tut-layout { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 40px; align-items: start; }
+.tut-toc { position: sticky; top: 96px; font-size: .93rem; }
+.tut-toc h2 { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); margin: 0 0 8px; }
+.tut-toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+.tut-toc li { counter-increment: toc; }
+.tut-toc a { display: flex; gap: 10px; padding: 6px 10px; border-radius: 8px; color: var(--ink); text-decoration: none; }
+.tut-toc a::before { content: counter(toc); color: var(--brand); font-weight: 700; min-width: 1.2em; }
+.tut-toc a:hover, .tut-toc a:focus-visible { background: var(--brand-tint); }
+.tut-toc a[aria-current="true"] { background: var(--brand-tint); font-weight: 650; }
+.tut-body { min-width: 0; }
+.tut-body > section { scroll-margin-top: 96px; padding-bottom: 8px; border-bottom: 1px solid var(--line); margin-bottom: 30px; }
+.tut-body > section:last-child { border-bottom: 0; }
+.tut-body h2 { font-size: 1.45rem; letter-spacing: -0.02em; margin: 0 0 6px; display: flex; align-items: baseline; gap: 12px; }
+.tut-body h2 .tut-num { flex: none; display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--brand); color: #fff; font-size: 1rem; transform: translateY(-3px); }
+.tut-body h3 { font-size: 1.08rem; margin: 24px 0 6px; }
+.tut-body p, .tut-body li { max-width: 70ch; color: #2c3a43; line-height: 1.6; }
+.tut-body ul, .tut-body ol { padding-left: 22px; }
+.tut-body li + li { margin-top: 5px; }
+.tut-body li::marker { color: var(--brand); font-weight: 700; }
+.tut-why { margin: 0 0 14px; color: var(--ink-soft); }
+.tut-ui { display: inline-block; font-weight: 650; color: var(--brand-ink); background: var(--brand-tint); border-radius: 6px; padding: 0 6px; }
+@media (min-width: 640px) { .tut-ui { white-space: nowrap; } }
+.tut-tip, .tut-note { border-radius: 12px; padding: 12px 16px; margin: 14px 0; max-width: 70ch; }
+.tut-tip { background: var(--brand-tint-2); border-left: 4px solid var(--brand); }
+.tut-note { background: var(--warn-bg); border-left: 4px solid var(--accent); }
+.tut-tip p, .tut-note p { margin: 0; }
+.tut-quick { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin: 0 0 32px; }
+.tut-quick h2 { margin: 0 0 12px; font-size: 1.2rem; }
+.tut-quick ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; counter-reset: q; }
+.tut-quick li { counter-increment: q; margin: 0; padding-left: 40px; position: relative; max-width: none; }
+.tut-quick li::before { content: counter(q); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: .9rem; }
+.tut-quick strong { display: block; color: var(--ink); }
+.tut-quick span { color: var(--ink-soft); font-size: .93rem; }
+.tut-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.tut-opts { width: 100%; border-collapse: collapse; margin: 10px 0 14px; font-size: .95rem; }
+.tut-opts th, .tut-opts td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+.tut-opts th { background: var(--card); font-weight: 650; }
+.tut-opts td:first-child { font-weight: 650; white-space: nowrap; }
+/* Screenshots: added once the new builder is live */
+.tut-shot { margin: 16px 0 20px; max-width: 760px; }
+.tut-shot img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); background: var(--card); }
+.tut-shot figcaption { font-size: .88rem; color: var(--ink-soft); margin-top: 8px; }
+.tut-top { font-size: .9rem; }
+
+@media (max-width: 860px) {
+  .tut-layout { grid-template-columns: 1fr; gap: 8px; }
+  .tut-toc { position: static; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 20px; }
+  .tut-toc ol { columns: 2; column-gap: 16px; }
+  .tut-toc a { padding: 5px 4px; break-inside: avoid; }
+}
+@media (max-width: 420px) {
+  .tut-toc ol { columns: 1; }
+  .tut-quick { padding: 16px; }
+  .tut-opts td:first-child { white-space: normal; }
+  .tut-body h2 { font-size: 1.25rem; }
+}
+@media print {
+  .tut-toc, .tut-cta, .tut-top, .site-header, .site-footer { display: none !important; }
+  .tut-layout { display: block; }
+  .tut-body > section { break-inside: auto; }
+}
+/* Tables become stacked cards on narrow phones */
+@media (max-width: 560px) {
+  .tut-opts, .tut-opts tbody, .tut-opts tr, .tut-opts td { display: block; width: 100%; }
+  .tut-opts thead { display: none; }
+  .tut-opts tr { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; padding: 4px 0; background: var(--card); }
+  .tut-opts td { border-bottom: 0; padding: 5px 12px; }
+  .tut-opts td:first-child { color: var(--brand-ink); }
+}

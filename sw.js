@@ -6,14 +6,14 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17-library-fix";
+const VERSION = "repsheet-2026-11-18-two-step-builder";
 // Natural-voice recordings (audio/...) are kept in their own store. Each file's name comes from its words,
 // so a file never changes: they are saved the first time they play and are not re-downloaded on updates.
 const AUDIO = "repsheet-audio-1";
 const FILES = [
-  "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html", "pacing.html",
-  "styles.css", "view.css", "landing.css", "pacing.css", "i18n.css", "dark.css",
-  "config.js", "counter.js", "theme.js", "i18n.js", "i18n-builder.js", "exercises.js", "media.js", "illustrations.js", "figures.js", "starters.js", "common.js", "voice.js", "feedback.js", "app.js", "view.js", "privacy-check.js", "bodymap.js", "patient-extras.js", "pdf-maker.js", "pacing.js", "install-start.js", "install.js", "a11y-menu.js", "options-fold.js", "vendor/jspdf.umd.min.js", "vendor/html2canvas.min.js",
+  "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html", "pacing.html", "tutorial.html",
+  "styles.css", "view.css", "landing.css", "pacing.css", "i18n.css", "dark.css", "tutorial.css",
+  "config.js", "counter.js", "theme.js", "i18n.js", "i18n-builder.js", "exercises.js", "media.js", "illustrations.js", "figures.js", "starters.js", "common.js", "voice.js", "feedback.js", "app.js", "view.js", "privacy-check.js", "bodymap.js", "patient-extras.js", "pdf-maker.js", "pacing.js", "install-start.js", "install.js", "a11y-menu.js", "options-fold.js", "tutorial.js", "vendor/jspdf.umd.min.js", "vendor/html2canvas.min.js",
   "vendor/qrcode.js", "vendor/tiny-inflate.js",
   "manifest.webmanifest", "view.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
   "images/landing/builder.jpg", "images/landing/phone.jpg", "images/landing/handout.jpg"

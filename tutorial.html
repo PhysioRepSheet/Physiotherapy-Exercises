@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.goatcounter.com; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>How to use RepSheet · RepSheet</title>
+  <meta name="description" content="A step-by-step guide for physiotherapists: build, tailor and share a home exercise handout with RepSheet.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="tutorial.css">
+</head>
+<body class="info-page">
+  <a class="skip-link" href="#tut-body">Skip to the guide</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html" aria-label="RepSheet home"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap tut-main">
+    <!-- KEEP THIS PAGE UP TO DATE: whenever a feature is added, removed or renamed, update this guide in the same publish and change the date below. -->
+    <h1 id="top">How to use RepSheet</h1>
+    <p class="hint">Last updated: 17 November 2026</p>
+    <p class="tut-lede">A guide for physiotherapists. It walks through every part of the builder, and the small extras that help patients actually do their exercises.</p>
+
+    <section class="tut-quick" aria-labelledby="quick-title">
+      <h2 id="quick-title">The short version</h2>
+      <ol>
+        <li><strong>Find exercises</strong><span>Type in the search box, or pick a body area.</span></li>
+        <li><strong>Add them</strong><span>Press Add. They collect in "Your handout" on the right.</span></li>
+        <li><strong>Press Next</strong><span>"Next: edit and print" takes you to step 2.</span></li>
+        <li><strong>Set the dose</strong><span>Sets, reps, holds and how often, on each card.</span></li>
+        <li><strong>Hand it over</strong><span>Print, save as PDF, or give the link or QR code.</span></li>
+      </ol>
+      <div class="tut-cta">
+        <a class="btn btn-primary" href="builder.html">Open the handout builder</a>
+        <a class="btn btn-secondary" href="#find">Read the full guide</a>
+      </div>
+    </section>
+
+    <div class="tut-layout">
+      <nav class="tut-toc" aria-labelledby="toc-title">
+        <h2 id="toc-title">In this guide</h2>
+        <ol>
+          <li><a href="#find">Find exercises</a></li>
+          <li><a href="#quick-start">Templates and your own</a></li>
+          <li><a href="#dose">Set the dose</a></li>
+          <li><a href="#tailor">Tailor each exercise</a></li>
+          <li><a href="#stages">Stages</a></li>
+          <li><a href="#options">Handout options</a></li>
+          <li><a href="#advice">Advice and goals</a></li>
+          <li><a href="#share">Print and share</a></li>
+          <li><a href="#patient">What the patient sees</a></li>
+          <li><a href="#pacing">Pacing diary</a></li>
+          <li><a href="#access">Accessibility and dark mode</a></li>
+          <li><a href="#tips">Tips that help patients</a></li>
+          <li><a href="#privacy">Privacy in a minute</a></li>
+        </ol>
+      </nav>
+
+      <div class="tut-body" id="tut-body">
+
+        <!-- 1 -->
+        <section id="find" aria-labelledby="find-h">
+          <h2 id="find-h"><span class="tut-num" aria-hidden="true">1</span>Find exercises</h2>
+          <p class="tut-why">The builder has two steps, shown at the top: <span class="tut-ui">1 Choose exercises</span> and <span class="tut-ui">2 Edit and print</span>. This part is step 1.</p>
+          <!-- SCREENSHOT: step 1 with a search typed (add once the two-step builder is live) -->
+          <h3>Search</h3>
+          <ul>
+            <li>Start typing in <span class="tut-ui">Type to search…</span> on the left. Matching exercises appear in the middle as you type.</li>
+            <li>Search understands other names too. Try "superman", "Kegel" or "shoulder bridge". If an exercise matched by another name, it says "Also called…".</li>
+            <li>Use the <span class="tut-ui">Body area</span> and <span class="tut-ui">Goal</span> dropdowns to narrow the list, for example Knee and Strength. You can use them without typing anything.</li>
+            <li>Before you type, quick buttons for common areas (Knee, Back, Shoulder, Hip, Ankle, Neck) are shown, with your favourites and recently used exercises underneath.</li>
+            <li>Keyboard: press <kbd>/</kbd> to jump to the search box, and <kbd>Esc</kbd> to clear it.</li>
+          </ul>
+          <h3>Look before you add</h3>
+          <ul>
+            <li>Tap an exercise's name or picture to preview it: the moving picture, the steps and the usual dose. You can add it from the preview with <span class="tut-ui">Add to handout</span>.</li>
+            <li>Press <span class="tut-ui">Add</span> to put it on the handout. It appears in <span class="tut-ui">Your handout</span> on the right, where you can move it up or down or remove it.</li>
+            <li>An orange <span class="tut-ui">Awaiting check</span> label means a newer exercise that has not yet had a clinical review. Read it through before you use it.</li>
+          </ul>
+          <h3>Favourites and recently used</h3>
+          <ul>
+            <li>Press the star on any exercise to make it a favourite. Favourites are shown first, before you start typing.</li>
+            <li>Exercises you have used lately show under <span class="tut-ui">Recently used</span>.</li>
+            <li>Both are saved in this browser only, on this computer.</li>
+          </ul>
+          <div class="tut-tip"><p><strong>When you're done:</strong> press <span class="tut-ui">Next: edit and print →</span>. On a phone it sits in the bar at the bottom, next to the number of exercises chosen. You can always go back with <span class="tut-ui">← Back to exercises</span>, or the browser's Back button.</p></div>
+        </section>
+
+        <!-- 2 -->
+        <section id="quick-start" aria-labelledby="qs-h">
+          <h2 id="qs-h"><span class="tut-num" aria-hidden="true">2</span>Templates and your own exercises</h2>
+          <p class="tut-why">Save time on the programmes you give again and again.</p>
+          <h3>Ready-made templates</h3>
+          <ul>
+            <li>With nothing chosen yet, <span class="tut-ui">Your handout</span> offers <span class="tut-ui">Or start from a ready-made template</span>. Pick a condition, such as knee osteoarthritis or low back pain, and its exercises are added for you.</li>
+            <li>They are starting points only. Check every exercise and dose suits your patient.</li>
+          </ul>
+          <h3>Your own templates</h3>
+          <ul>
+            <li>In step 2, press <span class="tut-ui">Templates</span> to save the current programme under a name, such as "ACL week 6". It keeps the exercises, doses, notes and options. It never keeps the patient's name, date, goal or message.</li>
+            <li>Load a saved template from the same button, or from the start screen.</li>
+            <li>Templates are saved in this browser. To move them to another computer, use <span class="tut-ui">Download backup</span> and <span class="tut-ui">Load backup</span> in the Templates window.</li>
+            <li><span class="tut-ui">Share template</span> makes a link a colleague can open to get the same programme. It has no patient details in it.</li>
+          </ul>
+          <h3>Make your own exercise</h3>
+          <ul>
+            <li>Can't find what you need? Press <span class="tut-ui">+ Make your own exercise</span> under the library. Give it a name, steps (one per line) and a usual dose, and add a photo if you like.</li>
+            <li>It is saved in this browser and appears in your searches like any other exercise.</li>
+            <li>The patient link carries your words, but never your photo. The photo only appears on the printed handout and PDF.</li>
+            <li>You can also <a href="#" data-request="exercise">ask for an exercise to be added</a> to the library for everyone.</li>
+          </ul>
+        </section>
+
+        <!-- 3 -->
+        <section id="dose" aria-labelledby="dose-h">
+          <h2 id="dose-h"><span class="tut-num" aria-hidden="true">3</span>Set the dose</h2>
+          <p class="tut-why">Step 2 shows a card for each exercise. Everything on it can be changed.</p>
+          <!-- SCREENSHOT: step 2, one exercise card in Advanced view -->
+          <ul>
+            <li><strong>Sets</strong> (rounds), <strong>Reps</strong> (times) and <strong>Hold</strong> (seconds). Leave Hold at 0 for no hold. The handout writes this in plain words, such as "10 times, 3 rounds".</li>
+            <li><strong>How often</strong>: pick a suggestion like "Twice a day", or type your own.</li>
+            <li><strong>Weight or band</strong>: for example "2 kg" or "red band".</li>
+            <li><strong>Side</strong>: left, right or both.</li>
+            <li>The handout shows a rough time for the whole programme, so you can see if it's realistic.</li>
+          </ul>
+          <h3>Change several exercises at once</h3>
+          <p>Open <span class="tut-ui">Change several exercises at once</span> above the cards. Fill in only the boxes you want to change, tick which exercises, and press Apply. Handy for "3 sets of 10, twice a day" across the board.</p>
+          <h3>Simple or Advanced view</h3>
+          <p>The <span class="tut-ui">Simple</span> and <span class="tut-ui">Advanced</span> switch above the cards changes how much you see. Simple shows just the picture, name and dose, so it's quick to check. Advanced shows everything. It only changes the screen, not the handout.</p>
+        </section>
+
+        <!-- 4 -->
+        <section id="tailor" aria-labelledby="tailor-h">
+          <h2 id="tailor-h"><span class="tut-num" aria-hidden="true">4</span>Tailor each exercise</h2>
+          <p class="tut-why">These are in Advanced view, on each card.</p>
+          <h3>Note for this exercise</h3>
+          <p>A short tip that prints under the exercise, such as "Keep your knee over your toes".</p>
+          <h3>Edit exercise instructions</h3>
+          <p>Open <span class="tut-ui">Edit exercise instructions (for this handout only)</span> to rewrite the steps, one step per line. The card shows an orange <span class="tut-ui">Edited</span> label. <span class="tut-ui">Reset to standard</span> puts the library wording back. The library itself never changes.</p>
+          <h3>Progressions and regressions</h3>
+          <ul>
+            <li>Open <span class="tut-ui">Progressions and regressions</span> and tick a harder or easier version from the library, or write your own.</li>
+            <li>They print under "To make it harder" and "To make it easier", so the patient can step up or down between appointments without calling you.</li>
+          </ul>
+          <h3>Duplicate, reorder and undo</h3>
+          <ul>
+            <li><strong>Duplicate</strong> an exercise to give the left and right sides different doses.</li>
+            <li>Change the order by dragging the grip handle, or with the up and down arrows. Keyboard users can use the arrow keys.</li>
+            <li>Removed something by mistake? Press <span class="tut-ui">Undo</span> in the bar that appears at the bottom.</li>
+          </ul>
+        </section>
+
+        <!-- 5 -->
+        <section id="stages" aria-labelledby="stages-h">
+          <h2 id="stages-h"><span class="tut-num" aria-hidden="true">5</span>Stages</h2>
+          <p class="tut-why">One handout and one QR code that covers a whole recovery, for example after surgery.</p>
+          <ol>
+            <li>In <span class="tut-ui">Patient, physio, advice and stages</span> on the right, tick <span class="tut-ui">Split into stages</span>.</li>
+            <li>Name each stage and say when it is, for example "Weeks 0 to 2". Add up to 6 stages.</li>
+            <li>Optionally write <span class="tut-ui">Move on when</span>, such as "You can stand up from a chair without using your hands".</li>
+            <li>On each exercise card, choose its <span class="tut-ui">Stage</span>.</li>
+          </ol>
+          <p>The printed handout shows every stage. The patient page shows one stage at a time, and the patient chooses when to move on.</p>
+        </section>
+
+        <!-- 6 -->
+        <section id="options" aria-labelledby="options-h">
+          <h2 id="options-h"><span class="tut-num" aria-hidden="true">6</span>Handout options</h2>
+          <p class="tut-why">Open <span class="tut-ui">Handout options</span> on the right in step 2. Each option affects the printout, and most also change the patient page.</p>
+          <table class="tut-opts">
+            <thead><tr><th scope="col">Option</th><th scope="col">What it does</th><th scope="col">Good for</th></tr></thead>
+            <tbody>
+              <tr><td>Language</td><td>Translates the handout and patient page. You can show English underneath too. Words you typed yourself stay in English.</td><td>Patients more at home in another language. Translations are in beta, so check with an interpreter if in doubt.</td></tr>
+              <tr><td>Large print</td><td>Bigger text and pictures.</td><td>Low vision, older patients.</td></tr>
+              <tr><td>Easy read</td><td>Very large text, big step pictures, one exercise per page.</td><td>Learning disability, dementia, low literacy.</td></tr>
+              <tr><td>Tick chart</td><td>Boxes to tick each day, on paper and on the patient page.</td><td>Building a habit, and checking how it went at review.</td></tr>
+              <tr><td>Black &amp; white</td><td>No colour fills, crisp black lines.</td><td>Mono printers, saving ink.</td></tr>
+              <tr><td>Paper saver</td><td>Two columns with smaller pictures.</td><td>Long programmes, fewer pages.</td></tr>
+            </tbody>
+          </table>
+          <p>The handout preview in the middle updates as you go, so you can see the effect before printing.</p>
+        </section>
+
+        <!-- 7 -->
+        <section id="advice" aria-labelledby="advice-h">
+          <h2 id="advice-h"><span class="tut-num" aria-hidden="true">7</span>Advice and goals</h2>
+          <p class="tut-why">Open <span class="tut-ui">Patient, physio, advice and stages</span> on the right.</p>
+          <h3>Patient and physio</h3>
+          <ul>
+            <li><strong>Patient name</strong> and <strong>Date</strong> print on the handout only. They are never put in the link or QR code, and are forgotten when you close the tab.</li>
+            <li><strong>Physiotherapist</strong> and <strong>Contact details</strong> print at the bottom so the patient knows who to call. Tick <span class="tut-ui">Remember my name and contact details on this device</span> to skip typing them next time.</li>
+          </ul>
+          <h3>Advice and goals</h3>
+          <ul>
+            <li><strong>Message</strong>: a short personal note, such as "Great work today. See you in 2 weeks." It shows in a box at the top of the handout and patient page.</li>
+            <li><strong>General advice</strong>: anything that applies to the whole programme, such as "Some aching is normal. Stop if pain is sharp."</li>
+            <li><strong>Goal</strong>, <strong>When</strong> and <strong>How long</strong>: what the patient is working towards, when in their day they'll do the exercises, and for how long. Left blank, the handout prints lines for the patient to fill in themselves.</li>
+          </ul>
+          <div class="tut-note"><p>These boxes go into the patient link. Keep names, NHS numbers and dates of birth out of them. RepSheet warns you if something looks like it could identify the patient.</p></div>
+        </section>
+
+        <!-- 8 -->
+        <section id="share" aria-labelledby="share-h">
+          <h2 id="share-h"><span class="tut-num" aria-hidden="true">8</span>Print and share</h2>
+          <p class="tut-why">The buttons are at the top of <span class="tut-ui">Handout details</span> in step 2.</p>
+          <!-- SCREENSHOT: Handout details panel with the action buttons -->
+          <table class="tut-opts">
+            <thead><tr><th scope="col">Button</th><th scope="col">What it does</th></tr></thead>
+            <tbody>
+              <tr><td>Print</td><td>Opens the print window. The printout has step-by-step pictures, a QR code to the patient page, and your contact details.</td></tr>
+              <tr><td>Save as PDF</td><td>Makes a PDF to save, attach to a letter or upload to records.</td></tr>
+              <tr><td>Copy link</td><td>Copies the patient page link, to paste into a text, email or letter.</td></tr>
+              <tr><td>Email</td><td>Opens your own email program with the link filled in. RepSheet sends nothing itself.</td></tr>
+              <tr><td>Copy notes</td><td>Copies a plain summary of the programme to paste into your clinical notes.</td></tr>
+              <tr><td>Templates</td><td>Save this programme for next time, or load one.</td></tr>
+              <tr><td>Share template</td><td>A link for colleagues with the programme but no patient details.</td></tr>
+              <tr><td>Clear</td><td>Starts a new handout.</td></tr>
+            </tbody>
+          </table>
+          <h3>The QR code</h3>
+          <p>Under the handout there's a <span class="tut-ui">Patient link</span> box with a QR code. The patient can scan it in clinic, or from the printed sheet at home, to open their exercises with moving pictures. Press <span class="tut-ui">Preview</span> to see exactly what they will see.</p>
+          <div class="tut-tip"><p><strong>Tip:</strong> give both. Paper gets lost and phones get changed, but between the sheet and the link most patients keep hold of one.</p></div>
+        </section>
+
+        <!-- 9 -->
+        <section id="patient" aria-labelledby="patient-h">
+          <h2 id="patient-h"><span class="tut-num" aria-hidden="true">9</span>What the patient sees</h2>
+          <p class="tut-why">The link and QR code open a patient page on their own phone. It's worth showing them once in clinic.</p>
+          <!-- SCREENSHOT: patient page on a phone, and follow-along mode -->
+          <ul>
+            <li><strong>Start my exercises</strong>: a follow-along mode that shows one exercise at a time. It counts reps, times holds with a beep (with a <span class="tut-ui">Sound on</span> switch), and gives a short rest between rounds. The screen stays on while they use it.</li>
+            <li><strong>Read aloud</strong>: the phone reads the steps out, in the handout's language where the phone has a voice for it.</li>
+            <li><strong>Moving pictures</strong>, and a Picture or Video switch where an exercise has a video.</li>
+            <li><strong>Tick chart</strong> (if you turned it on): they tick each day, and it's saved on their phone.</li>
+            <li><strong>Remind me</strong>: <span class="tut-ui">Add a reminder to my calendar</span> puts a reminder in their phone's calendar for the next 6 weeks, on the days and time they choose.</li>
+            <li><strong>Add to home screen</strong>: phones offer to add the programme as an app icon, so it's one tap to open.</li>
+            <li><strong>Accessibility</strong>: Larger text, Easier reading, High contrast and <span class="tut-ui">Pause pictures</span>, saved on their phone.</li>
+            <li>With stages, they see the current stage and choose when to move on.</li>
+          </ul>
+          <p>The page works offline once opened, and the programme lives in the link itself. Nothing is stored on a server.</p>
+        </section>
+
+        <!-- 10 -->
+        <section id="pacing" aria-labelledby="pacing-h">
+          <h2 id="pacing-h"><span class="tut-num" aria-hidden="true">10</span>Pacing diary</h2>
+          <p class="tut-why">For patients with persistent pain or fatigue, where boom and bust is the problem.</p>
+          <p>The <a href="pacing.html">pacing diary</a> lets a patient record a steady daily amount of activity and track how it goes. It is saved on their own phone only. Send them the link, or open it on their phone in clinic. It's also in the footer of every page.</p>
+        </section>
+
+        <!-- 11 -->
+        <section id="access" aria-labelledby="access-h">
+          <h2 id="access-h"><span class="tut-num" aria-hidden="true">11</span>Accessibility and dark mode</h2>
+          <ul>
+            <li>The <span class="tut-ui">Dark mode</span> switch at the top of the builder is easier on the eyes in a dim room. Printouts are always on white.</li>
+            <li>The <span class="tut-ui">Accessibility</span> menu next to it has <span class="tut-ui">Pause animations</span>, which stops the moving pictures.</li>
+            <li>Everything in the builder works with a keyboard and a screen reader. See the <a href="accessibility.html">accessibility statement</a>.</li>
+          </ul>
+        </section>
+
+        <!-- 12 -->
+        <section id="tips" aria-labelledby="tips-h">
+          <h2 id="tips-h"><span class="tut-num" aria-hidden="true">12</span>Tips that help patients do their exercises</h2>
+          <ul>
+            <li><strong>Fewer is better.</strong> Aim for 3 to 5 exercises. People do a few well rather than lots badly. RepSheet shows a tip if you add more.</li>
+            <li><strong>Tie it to their goal.</strong> A goal in their own words, like "Walk to the shop", keeps them going.</li>
+            <li><strong>Pick a time.</strong> "After breakfast" in the When box links the exercises to something they already do.</li>
+            <li><strong>Make it visible.</strong> The tick chart and Remind me both help build a habit.</li>
+            <li><strong>Show the follow-along mode in clinic.</strong> Patients who've tried it once are much more likely to use it.</li>
+            <li><strong>Match the format to the person.</strong> Easy read, large print or another language can make the difference.</li>
+            <li><strong>Give them a way up and down.</strong> Progressions and regressions mean they don't stall or flare between appointments.</li>
+          </ul>
+        </section>
+
+        <!-- 13 -->
+        <section id="privacy" aria-labelledby="privacy-h">
+          <h2 id="privacy-h"><span class="tut-num" aria-hidden="true">13</span>Privacy in a minute</h2>
+          <ul>
+            <li>Nothing you type leaves your computer. There are no accounts and no database.</li>
+            <li>The patient's name and the date are never put in the link or QR code.</li>
+            <li>Your templates, own exercises and favourites are saved in your browser only.</li>
+            <li>For the full details, see the <a href="privacy.html">privacy notice</a> and <a href="for-nhs-teams.html">For NHS teams</a>.</li>
+          </ul>
+          <div class="tut-cta">
+            <a class="btn btn-primary" href="builder.html">Make a handout now</a>
+            <a class="btn btn-secondary" href="#" data-request="feedback">Something unclear? Tell us</a>
+          </div>
+          <p class="tut-top"><a href="#top">Back to the top</a></p>
+        </section>
+
+      </div>
+    </div>
+
+    <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a> · <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a></p>
+  </main>
+  <script src="config.js"></script>
+  <script src="counter.js"></script>
+  <script src="feedback.js"></script>
+  <script src="tutorial.js"></script>
+  <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
+</body>
+</html>

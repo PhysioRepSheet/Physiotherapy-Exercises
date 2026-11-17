@@ -74,6 +74,26 @@ const server = http.createServer((req, res) => {
     await page.close(); await p2.close();
   }
 
+  console.log("Two steps: choose, then edit and print");
+  {
+    const page = await browser.newPage({ viewport: { width: 1300, height: 900 } }); const errs = []; watch(page, errs);
+    await page.goto(BASE + "builder.html"); await page.waitForTimeout(500);
+    const idle = await page.$$eval("#library-list .lib-item", (n) => n.length);
+    ok(idle === 0 && await page.isDisabled("#btn-next"), "library starts empty and Next is off (" + idle + ")");
+    await page.fill("#search", "calf"); await page.waitForTimeout(200);
+    const found = await page.$$eval("#library-list .lib-item", (n) => n.length);
+    ok(found > 0, "typing shows suggestions (" + found + ")");
+    await page.locator("#library-list .lib-item .add").first().click(); await page.waitForTimeout(200);
+    const picked = await page.$$eval("#picked-list > li", (n) => n.length);
+    ok(picked === 1, "summary lists the chosen exercise (" + picked + ")");
+    await page.click("#btn-next"); await page.waitForTimeout(300);
+    ok(await page.isVisible("#btn-print") && await page.isVisible("#programme-list > li") && !(await page.isVisible("#search")), "Next opens edit and print");
+    await page.goBack(); await page.waitForTimeout(300);
+    ok(await page.isVisible("#search") && (await page.$$eval("#picked-list > li", (n) => n.length)) === 1, "browser Back returns to choosing, handout kept");
+    ok(errs.length === 0, "no errors" + (errs.length ? " -> " + errs.join(" | ") : ""));
+    await page.close();
+  }
+
   console.log("Refresh keeps the handout in the tab");
   {
     const page = await browser.newPage({ viewport: { width: 1300, height: 900 } }); const errs = []; watch(page, errs);
@@ -90,6 +110,7 @@ const server = http.createServer((req, res) => {
     const page = await phone.newPage(); const errs = []; watch(page, errs);
     await page.goto(BASE + "builder.html"); await page.waitForTimeout(500);
     await page.fill("#search", "sit to stand"); await page.press("#search", "Enter"); await page.waitForTimeout(400);
+    await page.click("#next-bar .btn"); await page.waitForTimeout(300); // step 2: edit and print
     await page.click("#btn-pdf");
     await page.waitForSelector(".pdf-ready:not([hidden]), .pdf-error:not([hidden])", { timeout: 60000 });
     const size = await page.evaluate(() => (window.RepSheetPdf.lastFile() || { size: 0 }).size);

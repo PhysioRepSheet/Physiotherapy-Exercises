@@ -1177,3 +1177,131 @@ body { font-optical-sizing: auto; }
 .lib-group { list-style: none; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px 8px 2px; font-size: .6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
 .lib-group-more, .lib-clear { border: 0; background: none; padding: 2px 4px; font: inherit; font-size: .8125rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--brand); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
 .lib-count { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px 4px; font-size: .8125rem; color: var(--ink-soft); }
+
+/* ---------- Two steps (18 Nov 2026): 1 choose exercises, 2 edit and print ----------
+   Step 1: search (left) | matching exercises (centre) | "Your handout" summary (right).
+   Step 2: handout cards (centre) | handout details, print and options (right).
+   Screen only: printing always prints the handout. */
+.steps-bar { grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 12px; margin: -6px 0 -4px; }
+.step-tab { display: inline-flex; align-items: center; gap: 9px; border: 0; background: none; padding: 6px 10px; border-radius: 999px; font: inherit; font-size: .9375rem; font-weight: 600; color: var(--ink-soft); cursor: pointer; }
+.step-tab:hover:not(:disabled) { color: var(--ink); background: var(--brand-tint-2); }
+.step-tab:disabled { cursor: default; opacity: .55; }
+.step-tab:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(14, 107, 98, .25); }
+.step-n { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--line-strong); font-size: .8125rem; font-weight: 700; }
+.step-tab[aria-current="step"] { color: var(--ink); }
+.step-tab[aria-current="step"] .step-n { background: var(--brand); border-color: var(--brand); color: #fff; }
+.step-line { width: 48px; height: 2px; border-radius: 2px; background: var(--line-strong); }
+
+@media screen {
+  html:not([data-step="edit"]) .programme, html:not([data-step="edit"]) .settings { display: none !important; }
+  html[data-step="edit"] .library, html[data-step="edit"] .results, html[data-step="edit"] .picked, html[data-step="edit"] .next-bar { display: none !important; }
+}
+@media print { .steps-bar, .results, .picked, .next-bar { display: none !important; } }
+
+/* Step 1 columns */
+@media (min-width: 961px) {
+  html:not([data-step="edit"]) .layout { grid-template-columns: 270px minmax(0, 1fr) 290px; gap: 22px; }
+  html:not([data-step="edit"]) .library, html:not([data-step="edit"]) .picked { grid-row: auto; grid-column: auto; }
+  .picked { position: sticky; top: 92px; max-height: calc(100vh - 112px); }
+}
+@media (min-width: 1240px) {
+  html:not([data-step="edit"]) .layout { grid-template-columns: 300px minmax(0, 1fr) 320px; gap: 24px; }
+}
+
+/* Centre: results as cards */
+.results { padding: 20px; min-height: 420px; }
+.results .library-list { max-height: none; min-height: 0; overflow: visible; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; container-type: normal; }
+.results .lib-start, .results .lib-group, .results .lib-count, .results .lib-note, .results .lib-empty { grid-column: 1 / -1; }
+.results .lib-start { padding: 48px 20px 40px; margin: 0; }
+.results .lib-start-icon { width: 60px; height: 60px; }
+.results .lib-start-icon svg { width: 28px; height: 28px; }
+.results .lib-start-title { font-size: 1.375rem; }
+.results .lib-start-text { font-size: 1rem; max-width: 40ch; }
+.results .lib-quick-btn { min-height: 38px; padding: 6px 16px; font-size: .9375rem; }
+.results .lib-group { padding: 10px 2px 0; }
+.results .lib-count { padding: 0 2px; font-size: .875rem; }
+.results .lib-item { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "pic pic" "meta meta" "fav add"; align-items: center; gap: 8px 6px; padding: 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); }
+.results .lib-item:hover { border-color: var(--line-strong); background: var(--card); box-shadow: var(--shadow); }
+.results .lib-item .lib-preview { grid-area: pic; width: 100%; }
+.results .lib-item .pic { width: 100%; height: auto; aspect-ratio: 4 / 3; border-radius: 12px; }
+.results .lib-item .meta { grid-area: meta; }
+.results .lib-item .name { font-size: 1rem; }
+.results .lib-item .fav { grid-area: fav; justify-self: start; }
+.results .lib-item .own-edit { position: absolute; top: 14px; right: 14px; background: var(--card); }
+.results .lib-item .add { grid-area: add; min-height: 38px; padding: 6px 20px; font-size: .875rem; }
+.results .lib-item .also-called { white-space: normal; }
+
+/* Right: "Your handout" summary */
+.picked { display: flex; flex-direction: column; gap: 12px; padding: 20px; }
+.picked-head { display: flex; align-items: center; gap: 10px; }
+.picked-head h2 { font-size: 1.25rem; }
+.picked-count { display: inline-grid; place-items: center; min-width: 26px; height: 26px; padding: 0 8px; border-radius: 999px; background: var(--brand); color: #fff; font-size: .8125rem; font-weight: 700; }
+.picked-count:empty { display: none; }
+.picked-empty { margin: 0; padding: 18px 12px; text-align: center; color: var(--ink-soft); font-size: .875rem; border: 1.5px dashed var(--line-strong); border-radius: 14px; }
+.picked-list { list-style: none; margin: 0 -4px; padding: 0 4px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; scrollbar-width: thin; counter-reset: picked; }
+.picked-item { display: flex; align-items: center; gap: 10px; padding: 6px; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+.picked-pic { flex: none; width: 48px; height: 38px; border-radius: 8px; overflow: hidden; }
+.picked-pic .pic { width: 100%; height: 100%; }
+.picked-pic svg, .picked-pic img { width: 100%; height: 100%; }
+.picked-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.picked-name { font-weight: 600; font-size: .875rem; line-height: 1.3; overflow-wrap: break-word; }
+.picked-dose { font-size: .75rem; color: var(--ink-faint); }
+.picked-btns { flex: none; display: flex; gap: 0; }
+.picked-btns .icon-btn { width: 28px; height: 28px; }
+.picked-btns .icon-btn svg { width: 15px; height: 15px; }
+.picked-btns .icon-btn:disabled { opacity: .3; }
+.picked-time { margin: 0; font-size: .8125rem; color: var(--ink-soft); }
+.btn-next { width: 100%; min-height: 48px; font-size: 1rem; }
+.btn-next:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+.picked-templates { border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 12px; font-size: .875rem; }
+.picked-templates .starter-row { display: flex; gap: 8px; }
+.picked-templates .starter-row select { flex: 1; min-width: 0; min-height: 40px; }
+.picked.has-items .picked-templates { display: none; }
+
+/* Step 2 columns */
+.btn-back { min-height: 36px; padding: 6px 14px; font-size: .875rem; margin-right: auto; }
+html[data-step="edit"] .programme-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+html[data-step="edit"] .programme-toolbar h2 { flex-basis: 100%; order: 2; }
+html[data-step="edit"] .programme-toolbar .view-switch { order: 1; }
+@media (min-width: 961px) {
+  html[data-step="edit"] .layout { grid-template-columns: minmax(0, 1fr) 320px; }
+  html[data-step="edit"] .programme { grid-column: 1; grid-row: 2; }
+  html[data-step="edit"] .settings { grid-column: 2; grid-row: 2; }
+  html[data-step="edit"] .settings .field-grid { grid-template-columns: 1fr; }
+  html[data-step="edit"] .settings .goal-plan { grid-template-columns: 1fr; }
+  html[data-step="edit"] .settings .tick-row { flex-direction: column; }
+}
+@media (min-width: 1240px) {
+  html[data-step="edit"] .layout { grid-template-columns: minmax(0, 1fr) 360px; max-width: 1360px; }
+}
+.empty-state .btn { margin-top: 6px; }
+
+/* Phones and tablets: one column, with a bar at the bottom to move on */
+.next-bar { display: none; }
+@media (max-width: 960px) {
+  .steps-bar { gap: 6px; margin: 0; }
+  .step-tab { font-size: .875rem; padding: 4px 6px; gap: 6px; }
+  .step-line { width: 20px; }
+  .results { padding: 14px; min-height: 0; }
+  .results .library-list { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .results .lib-start { padding: 28px 14px 24px; }
+  .picked-list { overflow: visible; }
+  html:not([data-step="edit"]) .next-bar:not([hidden]) { display: flex; position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 30; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 10px 10px 18px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 8px 28px rgba(23, 35, 43, .18); font-weight: 600; font-size: .9375rem; }
+  html:not([data-step="edit"]) .next-bar .btn { min-height: 42px; white-space: nowrap; }
+  html:not([data-step="edit"]) body { padding-bottom: 80px; }
+  html[data-step="edit"] .settings { order: 1; }
+  html[data-step="edit"] .programme { order: 2; }
+}
+@media (max-width: 420px) {
+  .results .library-list { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .results .lib-item { padding: 8px; gap: 6px 4px; }
+  .results .lib-item .add { padding: 5px 12px; }
+  .next-bar #next-bar-count { font-size: .8125rem; }
+}
+.picked-templates .hint { font-weight: 400; }
+@media (max-width: 960px) { html:not([data-step="edit"]) .toast { bottom: 92px; } }
+@media (min-width: 961px) { .results .library-list { grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); } .results .lib-item .pic { aspect-ratio: 3 / 2; } }
+.tut-link { position: absolute; right: 0; font-size: .8125rem; font-weight: 600; color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+.steps-bar { position: relative; }
+@media (max-width: 1100px) { .tut-link { position: static; margin-left: 8px; } }
+@media (max-width: 960px) { .steps-bar { flex-wrap: wrap; } .tut-link { flex-basis: 100%; text-align: center; margin: 2px 0 0; } }

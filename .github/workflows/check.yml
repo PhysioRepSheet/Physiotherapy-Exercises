@@ -21,3 +21,5 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run smoke tests
         run: node tests/smoke.js
+      - name: Check the tutorial mentions every feature (warning only)
+        run: node tools/check-tutorial.js

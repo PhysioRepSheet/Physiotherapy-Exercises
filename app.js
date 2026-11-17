@@ -1,5 +1,6 @@
 /*
   RepSheet: exercise handout builder
+  If you add, remove or rename a feature, update tutorial.html too (run node tools/check-tutorial.js).
   Everything runs in the browser. Patient details are never saved or sent anywhere.
   Only the physio's own name and contact details are remembered, and only if they tick the box.
 */
@@ -352,7 +353,7 @@
     const item = programme[index];
     if (!item) return;
     // Leave the way it came in (fade and drop slightly), then close the gap
-    if (card && !reduceMotion() && card.animate) {
+    if (card && card.offsetParent !== null && !reduceMotion() && card.animate) {
       card.style.pointerEvents = "none";
       card.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(6px) scale(.985)" }],
         { duration: 160, easing: "cubic-bezier(.4, 0, 1, 1)", fill: "forwards" }).finished.then(finish, finish);
@@ -1393,7 +1394,7 @@
   // Keyboard: "/" jumps to search; Ctrl+Z undoes a removal while the Undo button shows
   document.addEventListener("keydown", (e) => {
     const typing = e.target.matches && e.target.matches("input, textarea, select, [contenteditable]");
-    if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !document.querySelector("dialog[open]")) { e.preventDefault(); $("#search").focus(); $("#search").select(); }
+    if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !document.querySelector("dialog[open]")) { e.preventDefault(); if (window.RepSheetStep && window.RepSheetStep() === "edit") window.RepSheetGoStep("choose"); $("#search").focus(); $("#search").select(); }
     if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z" && undoFn && !typing) { e.preventDefault(); runUndo(); }
   });
   $("#undo-btn").addEventListener("click", runUndo);
@@ -1465,6 +1466,49 @@
       });
       list.append(el("li", {}, b));
     });
+    renderPicked();
+  }
+
+  // ---------- Step 1 summary: "Your handout" (18 Nov 2026) ----------
+  // Lists what has been added so far, with move and remove, and the button on to step 2.
+  let pickedFocus = null;
+  function renderPicked() {
+    const list = $("#picked-list");
+    if (!list) return;
+    const n = programme.length;
+    list.innerHTML = "";
+    $("#picked-empty").hidden = n > 0;
+    $("#picked-count").textContent = n ? String(n) : "";
+    $("#picked-time").hidden = !n;
+    $("#picked-time").textContent = n ? "About " + H.estimateMinutes(programme) + " minutes each time" : "";
+    $("#btn-next").disabled = !n;
+    $("#step-tab-edit").disabled = !n;
+    document.querySelector(".picked").classList.toggle("has-items", n > 0);
+    const bar = $("#next-bar");
+    bar.hidden = !n;
+    $("#next-bar-count").textContent = n + (n === 1 ? " exercise" : " exercises") + " chosen";
+    programme.forEach((it, i) => {
+      const ex = H.byId(it.id);
+      if (!ex) return;
+      const side = H.sideLabel(it);
+      list.append(el("li", { class: "picked-item" },
+        el("span", { class: "picked-pic", "aria-hidden": "true" }, H.picture(ex, "thumb").el),
+        el("span", { class: "picked-meta" },
+          el("span", { class: "picked-name", text: ex.name + (side ? " (" + side.toLowerCase().replace(" side", "") + ")" : "") }),
+          el("span", { class: "picked-dose", text: shortDose(it) || "No dose set" })),
+        el("span", { class: "picked-btns" },
+          el("button", { type: "button", class: "icon-btn picked-up", "aria-label": "Move " + ex.name + " up", title: "Move up", disabled: i === 0, onclick: () => { pickedFocus = [i - 1, ".picked-up"]; moveTo(i, i - 1); } }, icon(ICONS.up)),
+          el("button", { type: "button", class: "icon-btn picked-down", "aria-label": "Move " + ex.name + " down", title: "Move down", disabled: i === n - 1, onclick: () => { pickedFocus = [i + 1, ".picked-down"]; moveTo(i, i + 1); } }, icon(ICONS.down)),
+          el("button", { type: "button", class: "icon-btn picked-remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => { pickedFocus = [Math.min(i, n - 2), ".picked-remove"]; removeAt(i); } }, icon(ICONS.remove)))
+      ));
+    });
+    if (pickedFocus) {
+      const [at, sel] = pickedFocus; pickedFocus = null;
+      const row = list.children[at];
+      let f = row && row.querySelector(sel);
+      if (f && f.disabled) f = row.querySelector(".picked-remove");
+      if (f) f.focus({ preventScroll: true }); else if (!programme.length) $("#search").focus({ preventScroll: true });
+    }
   }
   $("#exs-toggle").addEventListener("click", () => {
     exsHidden = !exsHidden;
@@ -1559,7 +1603,7 @@
   });
 
   // "What's new" note, shown once per update (only the update name is remembered)
-  const NEWS = "2026-11-17-builder";
+  const NEWS = "2026-11-18-two-steps";
   try {
     if (localStorage.getItem("handout-builder:news-seen") !== NEWS) $("#whats-new").hidden = false;
   } catch (e) { /* storage unavailable */ }
@@ -1659,6 +1703,36 @@
   if (!location.hash.startsWith("#t=")) restoreDraft();
   draftReady = true;
   loadTemplateFromLink();
+
+  // ---------- Two steps (18 Nov 2026): 1 choose exercises, 2 edit and print ----------
+  // One page, so the handout never has to be passed anywhere. "#edit" in the address means step 2,
+  // so the browser's Back button returns to step 1. Printing always prints the handout, whatever step.
+  let step = "choose";
+  function setStep(s, push) {
+    step = s === "edit" && programme.length ? "edit" : "choose";
+    document.documentElement.setAttribute("data-step", step);
+    $("#step-tab-choose").setAttribute("aria-current", step === "choose" ? "step" : "false");
+    $("#step-tab-edit").setAttribute("aria-current", step === "edit" ? "step" : "false");
+    const url = location.pathname + location.search + (step === "edit" ? "#edit" : "");
+    if (push) history.pushState({ repsheetStep: step }, "", url);
+    else if ((location.hash === "#edit") !== (step === "edit")) history.replaceState({ repsheetStep: step }, "", url);
+    window.scrollTo(0, 0);
+    window.dispatchEvent(new Event("resize")); // sticky columns re-measure
+  }
+  window.RepSheetStep = () => step;
+  window.RepSheetGoStep = (s) => { if (s !== step) setStep(s, true); };
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest && e.target.closest("[data-goto]");
+    if (!b || b.disabled) return;
+    e.preventDefault();
+    const to = b.getAttribute("data-goto");
+    if (to === step) return;
+    setStep(to, true);
+    if (step === "edit") { const h = $("#programme-title"); h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+    else $("#search").focus({ preventScroll: true });
+  });
+  window.addEventListener("popstate", () => setStep(location.hash === "#edit" ? "edit" : "choose", false));
+  setStep(location.hash === "#edit" ? "edit" : "choose", false);
   // Save on any typing or option change, and just before the page goes away
   document.addEventListener("input", saveDraftSoon, true);
   document.addEventListener("change", saveDraftSoon, true);

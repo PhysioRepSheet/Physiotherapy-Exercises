@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- If you add, remove or rename a feature, update tutorial.html too (run node tools/check-tutorial.js). -->
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
@@ -10,10 +11,10 @@
   <meta name="theme-color" content="#0e6b62">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261117m">
-  <link rel="stylesheet" href="i18n.css?v=20261117m">
-  <link rel="stylesheet" href="dark.css?v=20261117m">
-  <script src="theme.js?v=20261117m"></script>
+  <link rel="stylesheet" href="styles.css?v=20261118a">
+  <link rel="stylesheet" href="i18n.css?v=20261118a">
+  <link rel="stylesheet" href="dark.css?v=20261118a">
+  <script src="theme.js?v=20261118a"></script>
 </head>
 <body>
   <a class="skip-link" href="#programme">Skip to handout</a>
@@ -46,6 +47,13 @@
   <div class="page-frame" aria-hidden="true"></div>
   <main class="wrap layout">
     <h1 class="visually-hidden no-print">RepSheet: make a home exercise handout</h1>
+    <!-- Two steps (18 Nov 2026): 1 choose exercises, 2 edit and print. One page; app.js switches html[data-step]. -->
+    <nav class="steps-bar no-print" aria-label="Steps">
+      <button type="button" class="step-tab" id="step-tab-choose" data-goto="choose"><span class="step-n" aria-hidden="true">1</span> Choose exercises</button>
+      <span class="step-line" aria-hidden="true"></span>
+      <button type="button" class="step-tab" id="step-tab-edit" data-goto="edit"><span class="step-n" aria-hidden="true">2</span> Edit and print</button>
+      <a class="tut-link" href="tutorial.html">New here? See how it works</a>
+    </nav>
     <!-- LEFT: Exercise library -->
     <section class="panel library no-print" aria-labelledby="library-title">
       <h2 id="library-title">Exercise library</h2>
@@ -56,16 +64,54 @@
         <label class="lib-filter"><span>Body area</span><select id="area-filter"></select></label>
         <label class="lib-filter"><span>Goal</span><select id="type-filter"></select></label>
       </div>
-      <ul id="library-list" class="library-list" aria-live="polite"></ul>
       <div class="library-foot">
         <button type="button" class="btn btn-secondary btn-own" id="btn-own-new">+ Make your own exercise</button>
         <a href="#" data-request="exercise">Or ask for one to be added to the library</a>
       </div>
     </section>
 
+    <!-- CENTRE (step 1): matching exercises fill in as you type -->
+    <section class="panel results no-print" aria-labelledby="results-title">
+      <h2 id="results-title" class="visually-hidden">Matching exercises</h2>
+      <ul id="library-list" class="library-list" aria-live="polite"></ul>
+    </section>
+
+    <!-- RIGHT (step 1): what's in the handout so far, and the way on to step 2 -->
+    <aside class="panel picked no-print" aria-labelledby="picked-title">
+      <div class="picked-head">
+        <h2 id="picked-title">Your handout</h2>
+        <span id="picked-count" class="picked-count"></span>
+      </div>
+      <p id="picked-empty" class="picked-empty">Exercises you add will show here.</p>
+      <ol id="picked-list" class="picked-list"></ol>
+      <p id="picked-time" class="picked-time" hidden></p>
+      <button type="button" class="btn btn-primary btn-next" id="btn-next" data-goto="edit" disabled>Next: edit and print <span aria-hidden="true">→</span></button>
+      <div class="picked-templates" id="picked-templates">
+        <div class="empty-templates starter-pick">
+          <label for="starter-select">Or start from a ready-made template</label>
+          <div class="starter-row">
+            <select id="starter-select"><option value="">Choose a condition…</option></select>
+            <button type="button" class="btn btn-secondary" id="btn-starter">Use</button>
+          </div>
+          <p class="hint">Starting points only. Check each exercise and dose suits your patient.</p>
+        </div>
+        <div id="empty-templates" class="empty-templates" hidden>
+          <p>Or start from one of your templates:</p>
+          <div id="empty-templates-list" class="mt-chips"></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Phones and tablets (step 1): a bar at the bottom of the screen to move on -->
+    <div class="next-bar no-print" id="next-bar" hidden>
+      <span id="next-bar-count"></span>
+      <button type="button" class="btn btn-primary" data-goto="edit">Next: edit and print <span aria-hidden="true">→</span></button>
+    </div>
+
     <!-- MIDDLE: The handout being built -->
     <section class="panel programme" id="programme" aria-labelledby="programme-title">
       <div class="programme-toolbar no-print">
+        <button type="button" class="btn btn-secondary btn-back" data-goto="choose"><span aria-hidden="true">←</span> Back to exercises</button>
         <h2 id="programme-title">Patient handout</h2>
         <div class="view-switch" role="group" aria-label="How much to show on each exercise">
           <button type="button" class="view-btn" id="view-simple" aria-pressed="false" title="Just the picture, name and dose">Simple</button>
@@ -106,7 +152,7 @@
         </div>
 
         <div id="whats-new" class="whats-new no-print" role="status" hidden>
-          <p><strong>New:</strong> left, right or both sides; duplicate an exercise; undo; favourites and recent exercises; a body map and type filter; tap any library exercise to preview it; and a warning if a note looks like it could identify your patient.</p>
+          <p><strong>New:</strong> choose your exercises first, then edit and print them here. Press <strong>Back to exercises</strong> to add more. Your handout is kept as you go between the two.</p>
           <button type="button" class="icon-btn" id="whats-new-close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         </div>
         <p id="programme-summary" class="programme-summary no-print" hidden></p>
@@ -145,24 +191,9 @@
         <ol id="programme-list" class="programme-list"></ol>
 
         <div id="empty-state" class="empty-state no-print">
-          <h3>Build a handout in three steps</h3>
-          <ol class="empty-steps">
-            <li><span class="step-num">1</span><strong>Choose exercises</strong><span>Pick from the library on the left.</span></li>
-            <li><span class="step-num">2</span><strong>Tailor them</strong><span>Set reps, holds, notes and progressions.</span></li>
-            <li><span class="step-num">3</span><strong>Share</strong><span>Print, save as PDF, email or give the QR code.</span></li>
-          </ol>
-          <div class="empty-templates starter-pick">
-            <label for="starter-select">Or start from a ready-made template</label>
-            <div class="starter-row">
-              <select id="starter-select"><option value="">Choose a condition…</option></select>
-              <button type="button" class="btn btn-secondary" id="btn-starter">Use</button>
-            </div>
-            <p class="hint">Starting points only. Check each exercise and dose suits your patient.</p>
-          </div>
-          <div id="empty-templates" class="empty-templates" hidden>
-            <p>Or start from one of your templates:</p>
-            <div id="empty-templates-list" class="mt-chips"></div>
-          </div>
+          <h3>No exercises yet</h3>
+          <p>Go back to step 1 to search for exercises, or start from a template.</p>
+          <button type="button" class="btn btn-primary" data-goto="choose"><span aria-hidden="true">←</span> Choose exercises</button>
         </div>
 
         <!-- Patient link and QR code -->
@@ -377,6 +408,7 @@
         <div class="footer-col">
           <h2>Help</h2>
           <ul>
+            <li><a href="tutorial.html">How to use RepSheet</a></li>
             <li><a href="#" data-request="feedback">Send feedback</a></li>
             <li><a href="#" data-request="exercise">Request an exercise</a></li>
           </ul>
@@ -532,24 +564,24 @@
     </div>
   </dialog>
 
-  <script src="config.js?v=20261117m"></script>
-  <script src="exercises.js?v=20261117m"></script>
-  <script src="media.js?v=20261117m"></script>
-  <script src="illustrations.js?v=20261117m"></script>
-  <script src="figures.js?v=20261117m"></script>
-  <script src="vendor/qrcode.js?v=20261117m"></script>
-  <script src="starters.js?v=20261117m"></script>
-  <script src="vendor/tiny-inflate.js?v=20261117m"></script>
-  <script src="i18n.js?v=20261117m"></script>
-  <script src="common.js?v=20261117m"></script>
-  <script src="feedback.js?v=20261117m"></script>
-  <script src="app.js?v=20261117m"></script>
-  <script src="i18n-builder.js?v=20261117m"></script>
-  <script src="pdf-maker.js?v=20261117m"></script>
-  <script src="privacy-check.js?v=20261117m"></script>
-  <script src="a11y-menu.js?v=20261117m"></script>
-  <script src="options-fold.js?v=20261117m"></script>
-  <script src="counter.js?v=20261117m"></script>
+  <script src="config.js?v=20261118a"></script>
+  <script src="exercises.js?v=20261118a"></script>
+  <script src="media.js?v=20261118a"></script>
+  <script src="illustrations.js?v=20261118a"></script>
+  <script src="figures.js?v=20261118a"></script>
+  <script src="vendor/qrcode.js?v=20261118a"></script>
+  <script src="starters.js?v=20261118a"></script>
+  <script src="vendor/tiny-inflate.js?v=20261118a"></script>
+  <script src="i18n.js?v=20261118a"></script>
+  <script src="common.js?v=20261118a"></script>
+  <script src="feedback.js?v=20261118a"></script>
+  <script src="app.js?v=20261118a"></script>
+  <script src="i18n-builder.js?v=20261118a"></script>
+  <script src="pdf-maker.js?v=20261118a"></script>
+  <script src="privacy-check.js?v=20261118a"></script>
+  <script src="a11y-menu.js?v=20261118a"></script>
+  <script src="options-fold.js?v=20261118a"></script>
+  <script src="counter.js?v=20261118a"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>
