@@ -2,6 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RepSheet: home exercise handouts</title>
   <meta name="description" content="Free tool for physiotherapists to build printable home exercise handouts. Nothing you type leaves your browser.">
@@ -36,8 +37,11 @@
     <section class="panel library no-print" aria-labelledby="library-title">
       <h2 id="library-title">Exercise library</h2>
       <label class="visually-hidden" for="search">Search exercises</label>
-      <input id="search" type="search" placeholder="Search exercises…" autocomplete="off">
+      <input id="search" type="search" placeholder="Search exercises…" title="Shortcut: press / to search, Enter to add the top result" autocomplete="off" aria-describedby="search-hint">
+      <p id="search-hint" class="visually-hidden">Press Enter to add the top result.</p>
+      <div id="bodymap-slot"></div>
       <div id="area-filters" class="chips" role="group" aria-label="Filter by body area"></div>
+      <div id="type-filters" class="chips chips-type" role="group" aria-label="Filter by type of exercise"></div>
       <ul id="library-list" class="library-list"></ul>
       <div class="library-foot">
         <button type="button" class="btn btn-secondary btn-own" id="btn-own-new">+ Make your own exercise</button>
@@ -77,7 +81,20 @@
           <div class="gp-print"><h2>My plan: when I'll do them</h2><p id="print-plan"></p></div>
         </div>
 
+        <div id="whats-new" class="whats-new no-print" role="status" hidden>
+          <p><strong>New:</strong> left, right or both sides; duplicate an exercise; undo; favourites and recent exercises; a body map and type filter; tap any library exercise to preview it; and a warning if a note looks like it could identify your patient.</p>
+          <button type="button" class="icon-btn" id="whats-new-close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+        </div>
         <p id="programme-summary" class="programme-summary no-print" hidden></p>
+        <details id="bulk-tools" class="bulk-tools no-print">
+          <summary>Change all exercises</summary>
+          <div class="bulk-row">
+            <label for="bulk-freq">How often, for every exercise</label>
+            <input id="bulk-freq" type="text" placeholder="e.g. Twice a day" list="freq-options">
+            <datalist id="freq-options"><option value="Once a day"><option value="Twice a day"><option value="3 times a day"><option value="Every other day"><option value="3 times a week"></datalist>
+            <button type="button" class="btn btn-secondary" id="bulk-freq-apply">Apply to all</button>
+          </div>
+        </details>
         <p id="too-many-tip" class="tip no-print" hidden><strong>Tip:</strong> people tend to do a few exercises well rather than lots of them badly. Research with older adults found 2 exercises were done better than 8. Aim for about 3 to 5 if you can.</p>
 
         <ol id="programme-list" class="programme-list"></ol>
@@ -197,7 +214,13 @@
               <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
             </label>
             <label class="large-toggle">
+              <input type="checkbox" id="easy-read"> <span><strong>Easy read</strong> <span class="hint">(very large text, big step pictures, one exercise per page, no harder/easier lists; for learning disability, dementia or low literacy)</span></span>
+            </label>
+            <label class="large-toggle">
               <input type="checkbox" id="tick-chart"> <span><strong>Weekly tick chart</strong> <span class="hint">(boxes to tick each day, on the handout and patient page)</span></span>
+            </label>
+            <label class="large-toggle">
+              <input type="checkbox" id="check-in" checked> <span><strong>“How is it going?” check-in</strong> <span class="hint">(patient page only: they mark each exercise too easy, about right or too hard, to show you at review; saved on their phone)</span></span>
             </label>
             <!-- Pain guide (traffic light) removed at Alex's request, 16 Nov 2026. Kept hidden and off so old links still open. -->
             <label class="large-toggle" hidden>
@@ -250,6 +273,12 @@
           </div>
           <p id="goal-hint" class="hint">Agreeing a goal and a time of day helps people keep going. Leave them blank and the handout prints lines for the patient to fill in.</p>
         </div>
+
+        <h3 class="settings-group">Stages</h3>
+        <label class="large-toggle">
+          <input type="checkbox" id="use-stages"> <span><strong>Split into stages</strong> <span class="hint">(for example weeks 0 to 2, then weeks 2 to 6; one QR code covers the whole recovery)</span></span>
+        </label>
+        <div id="stage-editor" class="stage-editor" hidden></div>
         </div>
       </details>
     </aside>
@@ -263,6 +292,9 @@
         <a href="#" data-request="exercise">Request an exercise</a>
         <a href="privacy.html">Privacy</a>
         <a href="disclaimer.html">Disclaimer</a>
+        <a href="accessibility.html">Accessibility</a>
+        <a href="for-nhs-teams.html">For NHS teams</a>
+        <a href="changes.html">What's changed</a>
       </p>
     </div>
   </footer>
@@ -396,6 +428,14 @@
   </dialog>
 
   <div id="toast" class="toast no-print" role="status" aria-live="polite"></div>
+  <div id="undo-bar" class="undo-bar no-print" role="status" aria-live="polite" hidden><span id="undo-msg"></span><button type="button" id="undo-btn">Undo</button></div>
+  <dialog id="preview-dialog" class="preview-dialog no-print" aria-labelledby="preview-title">
+    <div id="preview-body"></div>
+    <div class="preview-actions">
+      <button type="button" class="btn btn-primary" id="preview-add">Add to handout</button>
+      <button type="button" class="btn btn-secondary" id="preview-close">Close</button>
+    </div>
+  </dialog>
 
   <script src="config.js"></script>
   <script src="exercises.js"></script>
@@ -407,6 +447,8 @@
   <script src="common.js"></script>
   <script src="feedback.js"></script>
   <script src="app.js"></script>
+  <script src="privacy-check.js"></script>
+  <script src="bodymap.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

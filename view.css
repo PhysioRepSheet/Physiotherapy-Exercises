@@ -201,3 +201,73 @@ body.fa-open .site-header, body.fa-open .patient-main { display: none; }
   body.fa-open .patient-main { display: block !important; }
   .fa { display: none !important; }
 }
+
+/* =========================================================
+   Patient page additions (17 Nov 2026)
+   ========================================================= */
+.p-kit { margin: 6px 0 0; font-size: .95rem; color: var(--ink-soft); }
+.p-kit strong { color: var(--ink); }
+.p-old-note { background: var(--warn-bg); border-radius: 12px; padding: 10px 14px; color: var(--ink); margin: 10px 0 0; }
+.p-reminder-row select { min-height: 44px; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 10px; background: #fff; }
+.p-display-row, .p-contact-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+.p-display-row .btn[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.p-contact-row .btn { text-decoration: none; }
+
+/* Bigger tap targets for shaky hands */
+@media screen {
+  body.patient .btn, body.patient .btn-ghost, body.patient .p-pause { min-height: 48px; }
+}
+
+/* Check-in */
+.ci h2 { font-size: 1.25rem; }
+.ci-intro { margin: 4px 0 6px; }
+.ci-row { display: grid; grid-template-columns: 76px 1fr; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.ci-row:first-child { border-top: 0; }
+.ci-row .pic { background: var(--brand-tint-2); border-radius: 10px; height: 64px; display: flex; align-items: center; justify-content: center; }
+.ci-row .pic svg, .ci-row .pic img { max-height: 60px; max-width: 100%; width: auto; }
+.ci-row b { display: block; margin-bottom: 6px; }
+.ci-opts { display: flex; gap: 6px; }
+.ci-opts button { flex: 1; min-height: 48px; border: 1px solid var(--line-strong); background: #fff; border-radius: 12px; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; line-height: 1.2; padding: 4px; color: var(--ink); }
+.ci-opts button[aria-pressed=true] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.ci-card { margin-top: 14px; border: 2px solid var(--brand); border-radius: 16px; padding: 16px; }
+.ci-card h3 { font-size: 1.1rem; margin: 0; }
+.ci-big { margin: 8px 0; color: var(--ink-soft); }
+.ci-big b { font-size: 1.8rem; color: var(--brand-ink); margin-right: 4px; }
+.ci-card dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 8px 0 12px; }
+.ci-card dt { color: var(--ink-soft); }
+.ci-card dd { margin: 0; font-weight: 600; }
+.ci-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+
+/* Easier reading: cream background, more space, no justified text */
+body.easy-read-screen { --bg: #fbf6e9; background: #fbf6e9; line-height: 1.75; letter-spacing: .02em; word-spacing: .08em; }
+body.easy-read-screen .panel, body.easy-read-screen .p-card { background: #fffdf6; }
+body.easy-read-screen .p-steps li { margin-bottom: .5em; }
+body.easy-read-screen * { font-style: normal !important; text-align: left; }
+
+/* High contrast: black text, strong borders */
+body.high-contrast { --ink: #000; --ink-soft: #1a1a1a; --ink-faint: #1a1a1a; --line: #000; --line-strong: #000; background: #fff; color: #000; }
+body.high-contrast .panel, body.high-contrast .p-card, body.high-contrast .ci-opts button, body.high-contrast .btn { border: 2px solid #000 !important; background: #fff; color: #000; }
+body.high-contrast .btn-primary, body.high-contrast .ci-opts button[aria-pressed=true], body.high-contrast .p-display-row .btn[aria-pressed="true"] { background: #000 !important; color: #fff !important; }
+body.high-contrast .patient-intro { background: #000 !important; color: #fff; }
+body.high-contrast a { color: #000; text-decoration-thickness: 2px; }
+@media print { .p-display, .p-contact, .ci { display: none !important; } }
+
+/* Easy read (set by the physio) */
+body.patient.easy-read { font-size: 21px; line-height: 1.6; }
+.easy-read .p-card h2 { font-size: 1.7rem; }
+.easy-read .p-steps li { padding: 8px 0; border-bottom: 1px dashed var(--line-strong); }
+.easy-read .p-steps-pics { display: block !important; }
+.easy-read .p-options { display: none; }
+.easy-read .p-dose { font-size: 1.3rem; }
+
+/* Stages */
+.p-stages { display: flex; gap: 6px; flex-wrap: wrap; margin: 18px 0 6px; }
+.p-stage-tab { flex: 1 1 0; min-width: 90px; min-height: 52px; border: 1px solid var(--line-strong); background: #fff; border-radius: 14px; padding: 6px 8px; font: inherit; font-weight: 700; font-size: .9rem; color: var(--ink); cursor: pointer; line-height: 1.25; }
+.p-stage-tab small { display: block; font-weight: 500; color: var(--ink-soft); font-size: .78rem; }
+.p-stage-tab.done { background: var(--brand-tint); }
+.p-stage-tab[aria-current="step"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.p-stage-tab[aria-current="step"] small { color: #d7efe9; }
+.p-stage-now { font-weight: 700; color: var(--brand-ink); margin: 6px 0 10px; }
+.p-stage-next { background: var(--accent-tint); border-radius: 16px; padding: 16px 18px; margin: 16px 0; }
+.p-stage-next h2 { font-size: 1.15rem; margin: 0 0 6px; color: #9a3412; }
+.p-stage-next .btn { margin-top: 6px; }

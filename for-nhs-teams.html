@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>For NHS teams · RepSheet</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="info-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap privacy-main">
+    <h1>For NHS and clinic teams</h1>
+    <p class="hint">Last updated: 17 November 2026</p>
+
+    <div class="summary">
+      <strong>In short</strong>
+      <ul>
+        <li>RepSheet is a plain website. There are no accounts, no database and no server code.</li>
+        <li>Nothing about a patient is stored by RepSheet or sent to RepSheet.</li>
+        <li>No cookies, analytics, advertising or tracking.</li>
+        <li>The physio chooses every exercise and dose, just as with a paper leaflet.</li>
+      </ul>
+    </div>
+
+    <p>This page is for information governance leads, IT teams and clinical leads who want to know whether RepSheet is safe to use. Please also read our <a href="privacy.html">privacy notice</a> and <a href="disclaimer.html">disclaimer</a>.</p>
+
+    <h2>What RepSheet is</h2>
+    <p>A free website that helps physiotherapists make home exercise handouts. The physio picks exercises, sets how many and how often, then prints the handout, saves it as a PDF, or gives the patient a link or QR code that opens their programme on their own phone.</p>
+    <p>It is made of ordinary HTML, CSS and JavaScript files. Everything runs inside the browser on the physio's own computer.</p>
+
+    <h2>What happens to patient information</h2>
+    <ul>
+      <li><strong>Nothing about a patient is stored or sent to RepSheet.</strong> What the physio types stays in their own browser tab.</li>
+      <li>The patient's name and the date are never put into the patient link or QR code. They only appear on the printed handout.</li>
+      <li>The patient link holds the exercise programme itself, after the <code>#</code> in the address. Browsers never send the part after <code>#</code> to the web server.</li>
+      <li>The builder warns the physio if a note looks like it has a name, NHS number, date of birth, phone number or address in it. It never blocks them, and the check happens on their own computer.</li>
+      <li>Email opens the physio's own email program with the text filled in. RepSheet sends nothing.</li>
+    </ul>
+
+    <h2>What is saved on a device</h2>
+    <table class="info-table">
+      <thead><tr><th>Where</th><th>What</th><th>When</th></tr></thead>
+      <tbody>
+        <tr><td>Physio's browser</td><td>Their own name and contact details</td><td>Only if they tick "Remember on this device"</td></tr>
+        <tr><td>Physio's browser</td><td>Their templates, own exercises, favourite and recently used exercises (never patient details)</td><td>When they save or use one</td></tr>
+        <tr><td>Patient's phone</td><td>Ticked days, "How is it going?" answers, which stage they are on, and display choices such as larger text</td><td>Only when the patient uses those parts</td></tr>
+      </tbody>
+    </table>
+    <p>All of this uses the browser's own local storage. It can be cleared at any time by clearing the site's data in the browser.</p>
+
+    <h2>Other services</h2>
+    <table class="info-table">
+      <thead><tr><th>Service</th><th>Why</th><th>What it can see</th></tr></thead>
+      <tbody>
+        <tr><td>GitHub Pages</td><td>Hosts the website files</td><td>Like any web host, the visitor's IP address and the page asked for. Not the part after <code>#</code>.</td></tr>
+        <tr><td>YouTube (privacy-enhanced mode) or Vimeo</td><td>Only if an exercise has a video</td><td>Nothing loads until the patient presses to watch it.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Clinical responsibility</h2>
+    <ul>
+      <li>RepSheet does not make clinical decisions. The physiotherapist chooses every exercise and dose and stays responsible for the advice, as with a paper leaflet.</li>
+      <li>The exercises are general examples in plain English. Newly added exercises are marked "Awaiting check" in the builder until a clinician has reviewed them.</li>
+    </ul>
+
+    <h2>Using it offline or on a shared drive</h2>
+    <ul>
+      <li>Once opened, the builder and patient pages keep working without the internet, and can be installed as an app from the browser menu.</li>
+      <li>For wards with poor wifi, or PCs that block new websites, the whole site can be copied to a shared drive. Open <code>index.html</code> from that folder. Patient links made this way point to the shared drive, so print the handout or use the QR code from the online site instead.</li>
+      <li>The files are public on GitHub, so your IT team can check exactly what the site does.</li>
+    </ul>
+
+    <h2>Questions</h2>
+    <p>A contact email is coming soon. Please never include any patient details when you get in touch.</p>
+
+    <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a> · <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a></p>
+  </main>
+  <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
+</body>
+</html>

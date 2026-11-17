@@ -6,11 +6,11 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17-39-exercises";
+const VERSION = "repsheet-2026-11-17-big-update";
 const FILES = [
-  "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html",
+  "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html",
   "styles.css", "view.css", "landing.css",
-  "config.js", "exercises.js", "illustrations.js", "figures.js", "starters.js", "common.js", "feedback.js", "app.js", "view.js",
+  "config.js", "exercises.js", "illustrations.js", "figures.js", "starters.js", "common.js", "feedback.js", "app.js", "view.js", "privacy-check.js", "bodymap.js", "patient-extras.js",
   "vendor/qrcode.js", "vendor/tiny-inflate.js",
   "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
   "images/landing/builder.jpg", "images/landing/phone.jpg", "images/landing/handout.jpg"

@@ -2,6 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
@@ -80,14 +81,30 @@
     </div>
 
     <section id="reminder" class="panel p-reminder no-print" aria-labelledby="reminder-title">
-      <h2 id="reminder-title">Remind me each day</h2>
+      <h2 id="reminder-title">Remind me</h2>
       <p>Doing your exercises at the same time each day makes them easier to remember.</p>
       <div class="p-reminder-row">
+        <label for="reminder-days">Days</label>
+        <select id="reminder-days">
+          <option value="daily">Every day</option>
+          <option value="weekdays">Monday to Friday</option>
+          <option value="mwf">Monday, Wednesday and Friday</option>
+        </select>
         <label for="reminder-time">Time</label>
         <input id="reminder-time" type="time" value="09:00">
-        <button type="button" class="btn btn-primary" id="btn-reminder">Add a daily reminder to my calendar</button>
+        <button type="button" class="btn btn-primary" id="btn-reminder">Add a reminder to my calendar</button>
       </div>
       <p class="hint">This adds a reminder to your phone's calendar for the next 6 weeks. Nothing is sent to us.</p>
+    </section>
+
+    <section id="display" class="panel p-display no-print" aria-labelledby="display-title">
+      <h2 id="display-title">Make this page easier to read</h2>
+      <div class="p-display-row">
+        <button type="button" class="btn btn-secondary" id="btn-large-2" aria-pressed="false">Larger text</button>
+        <button type="button" class="btn btn-secondary" id="btn-easy" aria-pressed="false">Easier reading</button>
+        <button type="button" class="btn btn-secondary" id="btn-contrast" aria-pressed="false">High contrast</button>
+      </div>
+      <p class="hint">Easier reading uses a cream background and more space between lines. These choices are saved on this phone only.</p>
     </section>
 
     <aside class="panel patient-safety">
@@ -121,6 +138,7 @@
   <script src="vendor/tiny-inflate.js"></script>
   <script src="common.js"></script>
   <script src="view.js"></script>
+  <script src="patient-extras.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

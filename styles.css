@@ -727,6 +727,25 @@ body { font-optical-sizing: auto; }
   .paper-saver .ex-steps-pics img { height: 22mm; }
 }
 
+/* ----- Contact page ----- */
+.contact-main .lead { font-size: 1.0625rem; margin-top: 8px; }
+.no-patient { display: flex; gap: 14px; align-items: flex-start; background: #fff7ed; border: 1px solid #f5d0b0; border-left: 4px solid var(--accent, #c2410c); border-radius: var(--radius); padding: 16px 20px; margin: 22px 0 26px; }
+.no-patient svg { flex: none; width: 26px; height: 26px; fill: none; stroke: #c2410c; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; margin-top: 2px; }
+.no-patient p { margin: 0; color: #4a2a12 !important; }
+.contact-form { display: flex; flex-direction: column; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
+.contact-form .field .hint { margin: 0; }
+.contact-form .field label .hint { font-weight: 400; }
+.contact-form select { min-height: 44px; padding: 8px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: #fff; font-weight: 400; }
+.contact-form select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 4px rgba(14, 107, 98, .16); }
+.contact-form .confirm { color: var(--ink); font-weight: 600; }
+.field-error { margin: 0; color: #b42318 !important; font-size: .875rem; font-weight: 600; }
+.contact-warning { margin: 0; background: #fff2c4; border-radius: var(--radius-sm); padding: 10px 14px; font-size: .9375rem; color: #5a4300 !important; }
+.contact-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.contact-off { background: #fff2c4; border-radius: var(--radius-sm); padding: 10px 14px; font-weight: 600; }
+.contact-done p { margin: 8px 0 0; }
+.trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+@media (max-width: 560px) { .contact-form { padding: 18px; } }
+
 /* Card tidy-up (17 Nov 2026, from Alex's screenshot):
    picture beside the title and steps, everything else full width underneath;
    dose boxes in two even rows whose labels can never run into each other;
@@ -755,3 +774,131 @@ body { font-optical-sizing: auto; }
   .lib-item .pic { width: 50px; height: 42px; }
   .lib-item .add { padding: 5px 10px; }
 }
+
+/* =========================================================
+   Builder additions (17 Nov 2026): side, duplicate, undo, favourites,
+   type filter, body map, preview, bulk change, what's new, privacy check
+   ========================================================= */
+@media screen {
+  .params > .freq, .params > .load, .params > .side { grid-column: span 2; }
+}
+.params select { min-height: 38px; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: #fff; width: 100%; }
+.dose-side { margin: 0 0 4px; font-weight: 700; color: var(--brand-ink); }
+.icon-btn.duplicate:hover { color: var(--brand); background: var(--brand-tint); }
+
+/* Undo bar */
+.undo-bar { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 16px); background: var(--ink); color: #fff; border-radius: 999px; padding: 6px 6px 6px 18px; display: flex; align-items: center; gap: 14px; font-size: .9rem; font-weight: 600; box-shadow: var(--shadow-lg); opacity: 0; transition: opacity .2s var(--ease), transform .2s var(--ease); z-index: 45; }
+.undo-bar.show { opacity: 1; transform: translate(-50%, 0); }
+.undo-bar button { background: #fff; color: var(--ink); border: 0; border-radius: 999px; padding: 7px 16px; font-weight: 700; cursor: pointer; min-height: 36px; }
+
+/* Library: favourites, type chips, preview buttons */
+.chips-type { margin-top: -4px; }
+.chip-small { padding: 3px 10px; font-size: .75rem; }
+.chip-special[aria-pressed="false"] { border-color: #f1c9a8; color: #9a3412; }
+.lib-item .lib-preview { border: 0; padding: 0; background: none; cursor: zoom-in; flex: none; border-radius: 10px; }
+.lib-item .name-btn { border: 0; background: none; padding: 0; text-align: left; cursor: pointer; color: inherit; display: block; width: 100%; }
+.lib-item .name-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+.lib-item .fav { flex: none; width: 32px; height: 32px; }
+.lib-item .fav svg { width: 17px; height: 17px; }
+.lib-item .fav.on { color: #b45309; }
+.lib-item .fav.on svg { fill: #f59e0b; stroke: #b45309; }
+.lib-note { font-size: .8125rem; color: var(--ink-soft); padding: 2px 8px 6px; }
+
+/* Body map */
+.bm-toggle { display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 0; padding: 5px 14px; font-size: .8125rem; min-height: 32px; }
+.bm-toggle svg { width: 15px; height: 15px; fill: currentColor; }
+.bodymap { border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; margin-top: 8px; background: var(--brand-tint-2); text-align: center; }
+.bm-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: .875rem; }
+.bm-side { display: inline-flex; border: 1px solid var(--line-strong); border-radius: 999px; padding: 2px; background: #fff; }
+.bm-side button { border: 0; background: none; border-radius: 999px; padding: 3px 12px; font-weight: 600; font-size: .78rem; cursor: pointer; color: var(--ink-soft); }
+.bm-side button[aria-pressed=true] { background: var(--ink); color: #fff; }
+.bm-body { width: 100%; max-width: 150px; height: auto; margin: 6px auto 0; display: block; }
+.bm-body .bm-sk { fill: #e1e8e4; stroke: #b9c3be; stroke-width: 1.5; }
+.bm-zone { fill: var(--brand); fill-opacity: .14; cursor: pointer; transition: fill-opacity .15s; }
+.bm-zone:hover, .bm-zone:focus-visible { fill-opacity: .4; outline: none; }
+.bm-zone.on { fill: var(--accent); fill-opacity: .65; }
+.bm-hint { margin: 4px 0 0; font-size: .75rem; }
+
+/* Preview dialog */
+.preview-dialog { border: 0; border-radius: var(--radius-lg); padding: 22px; width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 48px); box-shadow: var(--shadow-lg); color: var(--ink); }
+.preview-dialog::backdrop { background: rgba(23, 35, 43, .45); }
+.preview-pic .pic { background: var(--brand-tint-2); border-radius: var(--radius); height: 240px; }
+.preview-pic .pic svg, .preview-pic .pic img { width: 100%; height: 100%; }
+.preview-dialog h2 { font-size: 1.3rem; margin-top: 14px; }
+.preview-dialog .hint { margin: 2px 0 0; }
+.preview-opts { font-size: .9rem; margin-top: 8px; }
+.preview-opts b { font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-soft); }
+.preview-opts ul { margin: 2px 0 0; padding-left: 20px; }
+.preview-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; position: sticky; bottom: 0; }
+
+/* Change all exercises */
+.bulk-tools { margin: 0 0 12px; border: 1px solid var(--line); border-radius: 12px; background: #fcfcfb; }
+.bulk-tools summary { padding: 7px 12px; font-size: .875rem; font-weight: 600; cursor: pointer; }
+.bulk-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; padding: 0 12px 12px; }
+.bulk-row label { width: 100%; font-size: .8125rem; color: var(--ink-soft); }
+.bulk-row input { flex: 1; min-width: 160px; min-height: 38px; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); }
+
+/* What's new */
+.whats-new { display: flex; gap: 10px; align-items: flex-start; background: var(--accent-tint); border: 1px solid #f5d0b5; border-radius: 12px; padding: 10px 8px 10px 14px; margin: 0 0 12px; font-size: .875rem; }
+.whats-new p { margin: 0; flex: 1; }
+
+/* Privacy check */
+.pc-flag { border-color: var(--accent) !important; box-shadow: 0 0 0 3px #fde0cc !important; }
+.pc-warn { background: var(--warn-bg); border: 1px solid #f5c79e; border-radius: var(--radius-sm); padding: 8px 12px; font-size: .84rem; margin: 6px 0 4px; line-height: 1.45; }
+.note-toggle .pc-warn { margin: -4px 12px 12px; }
+.pc-warn b { color: #9a3412; }
+.pc-warn mark { background: #ffd8bf; border-radius: 4px; padding: 0 3px; color: inherit; }
+.pc-fix { margin-left: 4px; border: 1px solid var(--accent); background: #fff; color: #9a3412; border-radius: 999px; padding: 1px 10px; font-weight: 600; font-size: .8rem; cursor: pointer; }
+@media print { .pc-warn, .undo-bar, .whats-new, .bulk-tools, .bodymap, .bm-toggle { display: none !important; } }
+.print-kit { font-size: .85em; margin: 4px 0 0; color: #333; }
+
+/* Easy read handout (17 Nov 2026): one exercise per page, very large text, big step pictures,
+   no harder/easier lists. For people with learning disabilities, dementia or low literacy. */
+@media print {
+  body.easy-read { font-size: 18pt; line-height: 1.5; }
+  .easy-read .ex-card { break-before: page; page-break-before: always; padding-right: 0 !important; }
+  .easy-read .ex-card:first-child { break-before: auto; page-break-before: auto; }
+  .easy-read .ex-title { font-size: 26pt; }
+  .easy-read .ex-steps-pics svg { height: 58mm !important; width: 100%; }
+  .easy-read .ex-steps { font-size: 18pt; color: #000; }
+  .easy-read .ex-steps li { padding: 3mm 0 3mm 11mm; border-bottom: 1px dashed #bbb; }
+  .easy-read .ex-steps li::before { width: 8mm; height: 8mm; font-size: 13pt; }
+  .easy-read .dose-panel { position: static !important; width: auto !important; margin-top: 4mm; }
+  .easy-read .dose-cell b { font-size: 34pt; }
+  .easy-read .dose-cell span, .easy-read .dose-freq, .easy-read .dose-side { font-size: 15pt; }
+  .easy-read .options-print { display: none !important; }
+  .easy-read .print-kit { font-size: 15pt; }
+}
+
+/* Stages (17 Nov 2026) */
+@media screen { .params > .stage { grid-column: span 2; } }
+.stage-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; background: var(--brand); color: #fff; border-radius: 12px; padding: 8px 14px; margin-bottom: 4px; }
+.stage-head .stage-name { font-weight: 800; font-size: 1.05rem; }
+.stage-head .stage-when { opacity: .9; font-weight: 600; }
+.stage-head .stage-move { width: 100%; margin: 2px 0 0; font-size: .875rem; opacity: .95; }
+.stage-editor { display: grid; gap: 10px; margin-top: 8px; }
+.stage-row { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px 12px; margin: 0; }
+.stage-row legend { font-weight: 700; font-size: .8125rem; padding: 0 4px; color: var(--ink-soft); }
+.stage-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stage-row label { display: grid; gap: 4px; font-size: .8125rem; font-weight: 600; color: var(--ink-soft); }
+.stage-row input, .stage-row textarea { font-weight: 400; color: var(--ink); min-height: 38px; padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); width: 100%; }
+.stage-move-field { margin-top: 8px; }
+.stage-remove { margin-top: 6px; font-size: .8125rem; color: var(--danger); }
+@media print {
+  .stage-head { background: none !important; color: #000; border: 2px solid #000; border-radius: 3mm; padding: 2mm 4mm; margin: 0 0 3mm; break-after: avoid; }
+  .ex-card.stage-first { break-before: auto; }
+  .stage-head .stage-name { font-size: 15pt; }
+}
+
+/* ---------- Info pages: tables (For NHS teams) ---------- */
+.info-table { width: 100%; border-collapse: collapse; margin: 12px 0 8px; font-size: .95rem; }
+.info-table th, .info-table td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.info-table th { background: var(--card); font-weight: 650; }
+@media (max-width: 600px) {
+  .info-table, .info-table tbody, .info-table tr, .info-table td { display: block; width: 100%; }
+  .info-table thead { display: none; }
+  .info-table tr { border: 1px solid var(--line); border-radius: 10px; margin-bottom: 10px; padding: 4px 0; }
+  .info-table td { border: 0; padding: 4px 12px; }
+  .info-table td:first-child { font-weight: 650; }
+}
+.privacy-main kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font: inherit; font-size: .9em; background: var(--card); }

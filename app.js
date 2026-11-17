@@ -27,6 +27,8 @@
   // The handout being built. Kept in memory only, so it disappears when the tab closes.
   let programme = [];
   let activeArea = "All";
+  // Optional stages: [{ name, when, move }]. Empty means no stages.
+  let stages = [];
 
   function icon(path) {
     const s = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -41,45 +43,114 @@
     remove: '<path d="M6 6l12 12M18 6L6 18"/>',
     grip: '<circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/>',
     edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
-    video: '<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>'
+    video: '<rect x="3" y="6" width="13" height="12" rx="2"/><path d="M16 10l5-3v10l-5-3"/>',
+    copy: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8"/>',
+    star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z"/>'
   };
 
   // ---------- Library ----------
+  // Favourites and recently added exercises: exercise ids only, kept in this browser (never patient details)
+  const FAV_KEY = "handout-builder:favourites", RECENT_KEY = "handout-builder:recent";
+  const readIds = (k) => { try { const v = JSON.parse(localStorage.getItem(k) || "[]"); return Array.isArray(v) ? v.filter((x) => typeof x === "string") : []; } catch (e) { return []; } };
+  const writeIds = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } };
+  let favourites = readIds(FAV_KEY);
+  function toggleFavourite(ex) {
+    favourites = favourites.includes(ex.id) ? favourites.filter((x) => x !== ex.id) : [ex.id, ...favourites];
+    writeIds(FAV_KEY, favourites);
+    toast(favourites.includes(ex.id) ? ex.name + " added to favourites" : ex.name + " removed from favourites");
+    if (activeArea === "Favourites" && !favourites.length) activeArea = "All";
+    renderFilters(); renderLibrary();
+  }
+  function noteRecent(ex) {
+    const had = readIds(RECENT_KEY).length;
+    writeIds(RECENT_KEY, [ex.id, ...readIds(RECENT_KEY).filter((x) => x !== ex.id)].slice(0, 12));
+    if (!had) renderFilters();
+  }
+
+  const TYPES = ["Strength", "Stretch", "Movement", "Balance", "Breathing"];
+  let activeType = "Any type";
   function renderFilters() {
-    const areas = ["All", ...new Set(LIBRARY.map((e) => e.area))];
+    const special = [];
+    if (favourites.some((id) => H.byId(id))) special.push("Favourites");
+    if (readIds(RECENT_KEY).some((id) => H.byId(id))) special.push("Recent");
+    if (!special.includes(activeArea) && (activeArea === "Favourites" || activeArea === "Recent")) activeArea = "All";
+    const areas = ["All", ...special, ...new Set(LIBRARY.map((e) => e.area))];
     const box = $("#area-filters");
     box.innerHTML = "";
     areas.forEach((a) =>
       box.append(el("button", {
-        type: "button", class: "chip", "aria-pressed": String(a === activeArea), text: a,
-        onclick: () => { activeArea = a; renderFilters(); renderLibrary(); }
+        type: "button", class: "chip" + (a === "Favourites" || a === "Recent" ? " chip-special" : ""), "aria-pressed": String(a === activeArea),
+        text: a === "Favourites" ? "★ Favourites" : a,
+        onclick: () => { activeArea = a; renderFilters(); renderLibrary(); if (window.RepSheetBodyMap) window.RepSheetBodyMap.refresh(); }
       }))
     );
+    const types = $("#type-filters");
+    if (types) {
+      types.innerHTML = "";
+      ["Any type", ...TYPES].forEach((t) => types.append(el("button", {
+        type: "button", class: "chip chip-small", "aria-pressed": String(t === activeType), text: t,
+        onclick: () => { activeType = t; renderFilters(); renderLibrary(); }
+      })));
+    }
+  }
+  // Called by the body map
+  window.RepSheetSetArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
+  window.RepSheetArea = () => activeArea;
+
+  // ---------- Search ----------
+  // Exact words first. If nothing matches, allow small spelling slips ("hamstrng", "calve", "sholder").
+  const searchText = (e) => (e.name + " " + e.area + " " + (e.type || "") + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ") + (e.checked === false ? " awaiting check" : "")).toLowerCase();
+  const stem = (w) => w.replace(/(ies)$/, "y").replace(/(es|s)$/, "");
+  function near(a, b) {
+    if (a === b) return true;
+    if (Math.abs(a.length - b.length) > 1 || a.length < 4) return false;
+    let i = 0, j = 0, edits = 0;
+    while (i < a.length && j < b.length) {
+      if (a[i] === b[j]) { i++; j++; continue; }
+      if (++edits > 1) return false;
+      if (a.length > b.length) i++; else if (b.length > a.length) j++; else { i++; j++; }
+    }
+    return edits + (a.length - i) + (b.length - j) <= 1;
+  }
+  function fuzzyMatch(text, q) {
+    const words = text.split(/[^a-z0-9]+/).filter(Boolean).map(stem);
+    return q.split(/\s+/).filter(Boolean).every((w) => { const sw = stem(w); return words.some((x) => x.startsWith(sw) || near(x, sw)); });
+  }
+  function libraryMatches() {
+    const q = $("#search").value.trim().toLowerCase();
+    const recent = readIds(RECENT_KEY);
+    let pool = LIBRARY.filter((e) => activeType === "Any type" || e.type === activeType);
+    if (activeArea === "Favourites") pool = favourites.map(H.byId).filter((e) => e && pool.includes(e));
+    else if (activeArea === "Recent") pool = recent.map(H.byId).filter((e) => e && pool.includes(e));
+    else if (activeArea !== "All") pool = pool.filter((e) => e.area === activeArea);
+    if (!q) return { list: pool, fuzzy: false };
+    const exact = pool.filter((e) => searchText(e).includes(q));
+    if (exact.length) return { list: exact, fuzzy: false };
+    return { list: pool.filter((e) => fuzzyMatch(searchText(e), q)), fuzzy: true };
   }
 
   function renderLibrary() {
-    const q = $("#search").value.trim().toLowerCase();
     const list = $("#library-list");
     list.innerHTML = "";
-    const matches = LIBRARY.filter((e) =>
-      (activeArea === "All" || e.area === activeArea) &&
-      (!q || (e.name + " " + e.area + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ") + (e.checked === false ? " awaiting check" : "")).toLowerCase().includes(q))
-    );
+    const { list: matches, fuzzy } = libraryMatches();
     if (!matches.length) {
-      list.append(el("li", { class: "lib-empty", text: "No exercises match your search." }));
+      list.append(el("li", { class: "lib-empty", text: activeArea === "Favourites" ? "Tap the star on any exercise to add it here." : "No exercises match your search." }));
       return;
     }
+    if (fuzzy) list.append(el("li", { class: "lib-note", text: "No exact match. Showing close spellings." }));
     const inProgramme = new Set(programme.map((p) => p.id));
     matches.forEach((ex) => {
       const added = inProgramme.has(ex.id);
+      const fav = favourites.includes(ex.id);
       list.append(el("li", { class: "lib-item" },
-        H.picture(ex, "thumb").el,
+        el("button", { type: "button", class: "lib-preview", "aria-label": "Preview " + ex.name, title: "Preview", onclick: () => openPreview(ex) }, H.picture(ex, "thumb").el),
         el("div", { class: "meta" },
-          el("div", { class: "name", text: ex.name }),
+          el("button", { type: "button", class: "name name-btn", text: ex.name, title: "Preview " + ex.name, onclick: () => openPreview(ex) }),
           ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
-          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
+          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
         ),
         ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
+        el("button", { type: "button", class: "icon-btn fav" + (fav ? " on" : ""), "aria-pressed": String(fav), "aria-label": (fav ? "Remove " : "Add ") + ex.name + (fav ? " from" : " to") + " favourites", title: fav ? "Favourite" : "Add to favourites", onclick: () => toggleFavourite(ex) }, icon(ICONS.star)),
         el("button", {
           type: "button",
           class: "btn btn-secondary add" + (added ? " added" : ""),
@@ -89,6 +160,26 @@
         })
       ));
     });
+  }
+
+  // ---------- Preview a library exercise before adding it ----------
+  function openPreview(ex) {
+    const dlg = $("#preview-dialog");
+    if (!dlg || typeof dlg.showModal !== "function") { addExercise(ex); return; }
+    const body = $("#preview-body");
+    body.innerHTML = "";
+    const pic = H.picture(ex, "anim");
+    body.append(
+      el("div", { class: "preview-pic" }, H.mediaSwitch(ex, pic)),
+      el("h2", { id: "preview-title", text: ex.name }),
+      el("p", { class: "hint", text: [ex.area, ex.type].filter(Boolean).join(" · ") + (ex.checked === false ? " · Awaiting check" : "") }),
+      el("ol", { class: "ex-steps" }, ex.instructions.map((t) => el("li", { text: t }))),
+      ex.defaults && H.describe(ex.defaults) ? el("p", { class: "param-summary", text: "Starts at: " + H.describe(ex.defaults) }) : null,
+      (ex.progressions || []).length ? el("div", { class: "preview-opts" }, el("b", { text: "Harder" }), el("ul", {}, ex.progressions.map((t) => el("li", { text: t })))) : null,
+      (ex.regressions || []).length ? el("div", { class: "preview-opts" }, el("b", { text: "Easier" }), el("ul", {}, ex.regressions.map((t) => el("li", { text: t })))) : null
+    );
+    $("#preview-add").onclick = () => { dlg.close(); addExercise(ex); };
+    dlg.showModal();
   }
 
   // ---------- Programme ----------
@@ -129,13 +220,16 @@
       prog: [],
       reg: [],
       progText: "",
-      regText: ""
+      regText: "",
+      side: "",
+      stage: stages.length ? (programme.length ? programme[programme.length - 1].stage || 1 : 1) : 0
     });
     enteringKey = uid;
     renderProgramme();
     enteringKey = null;
     renderLibrary();
     changed();
+    noteRecent(ex);
     toast(ex.name + " added");
   }
 
@@ -179,7 +273,7 @@
       programme.splice(i, 1);
       renderProgramme();
       glideFrom(before);
-      afterRemove(item);
+      afterRemove(item, i);
     };
     const item = programme[index];
     if (!item) return;
@@ -190,12 +284,34 @@
         { duration: 160, easing: "cubic-bezier(.4, 0, 1, 1)", fill: "forwards" }).finished.then(finish, finish);
     } else finish();
   }
-  function afterRemove(gone) {
+  function afterRemove(gone, at) {
     renderLibrary();
     changed();
     const ex = H.byId(gone.id);
-    toast((ex ? ex.name : "Exercise") + " removed");
+    undoToast((ex ? ex.name : "Exercise") + " removed", () => {
+      enteringKey = gone.key;
+      programme.splice(Math.min(at, programme.length), 0, gone);
+      renderProgramme();
+      enteringKey = null;
+      renderLibrary();
+      changed();
+    });
   }
+
+  // ---------- Undo ----------
+  // Removing an exercise or clearing the handout can be undone for 8 seconds (button, or Ctrl+Z).
+  let undoTimer, undoFn = null;
+  function undoToast(msg, fn) {
+    const bar = $("#undo-bar");
+    $("#undo-msg").textContent = msg;
+    undoFn = fn;
+    bar.hidden = false;
+    requestAnimationFrame(() => bar.classList.add("show"));
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(hideUndo, 8000);
+  }
+  function hideUndo() { const bar = $("#undo-bar"); bar.classList.remove("show"); undoFn = null; setTimeout(() => { if (!undoFn) bar.hidden = true; }, 250); }
+  function runUndo() { const fn = undoFn; hideUndo(); if (fn) { fn(); toast("Undone"); } }
 
   // The big-number dosage box on the printed handout: "10 times · 3 rounds · 5 seconds hold"
   function fillDose(box, item) {
@@ -210,10 +326,89 @@
     if (cells.length) box.append(row);
     const freq = String(item.frequency || "").trim();
     const load = String(item.load || "").trim();
+    const side = H.sideLabel(item);
+    if (side) box.prepend(el("p", { class: "dose-side", text: side }));
     if (load) box.append(el("p", { class: "dose-load", text: "Use: " + load }));
     if (freq) box.append(el("p", { class: "dose-freq", text: freq }));
-    box.hidden = !cells.length && !freq && !load;
+    box.hidden = !cells.length && !freq && !load && !side;
     return box;
+  }
+
+  // Left, right or both. Shown before the dose ("Left side · 10 times, 3 rounds") on the handout and patient page.
+  function sideField(item) {
+    const id = "side-" + item.key;
+    const sel = el("select", { id, onchange: (e) => {
+      item.side = e.target.value;
+      const card = e.target.closest(".ex-card");
+      if (card) { card.querySelector(".param-summary").textContent = H.describe(item); fillDose(card.querySelector(".dose-panel"), item); }
+      changed();
+    } }, el("option", { value: "", text: "Not set" }), Object.entries(H.SIDES).map(([v, t]) => el("option", { value: v, text: t })));
+    sel.value = item.side || "";
+    return el("div", { class: "field side" }, el("label", { for: id, text: "Side" }), sel);
+  }
+
+  // Which stage an exercise belongs to. Changing it keeps each stage's exercises together.
+  function stageField(item) {
+    const id = "stage-" + item.key;
+    const sel = el("select", { id, onchange: (e) => {
+      item.stage = Number(e.target.value) || 1;
+      sortByStage();
+      renderProgramme();
+      changed();
+      const card = $('#programme-list .ex-card[data-key="' + item.key + '"]');
+      if (card) { card.scrollIntoView({ block: "nearest" }); const f = card.querySelector("#" + id); if (f) f.focus(); }
+    } }, stages.map((s, n) => el("option", { value: String(n + 1), text: s.name })));
+    sel.value = String(item.stage || 1);
+    return el("div", { class: "field stage" }, el("label", { for: id, text: "Stage" }), sel);
+  }
+  function sortByStage() {
+    if (!stages.length) return;
+    programme = programme.map((it, i) => [it, i]).sort((a, b) => ((a[0].stage || 1) - (b[0].stage || 1)) || (a[1] - b[1])).map((x) => x[0]);
+  }
+  function renderStages() {
+    const box = $("#stage-editor");
+    $("#use-stages").checked = stages.length > 0;
+    box.hidden = !stages.length;
+    box.innerHTML = "";
+    stages.forEach((st, n) => {
+      const last = n === stages.length - 1;
+      const upd = (key) => (e) => { st[key] = e.target.value; changed(); };
+      box.append(el("fieldset", { class: "stage-row" },
+        el("legend", { text: "Stage " + (n + 1) }),
+        el("div", { class: "stage-grid" },
+          el("label", {}, "Name", el("input", { type: "text", maxlength: "40", value: st.name, oninput: upd("name"), onchange: () => renderProgramme() })),
+          el("label", {}, "When", el("input", { type: "text", maxlength: "60", value: st.when, placeholder: n === 0 ? "e.g. Weeks 0 to 2" : "e.g. Weeks 2 to 6", oninput: upd("when"), onchange: () => renderProgramme() }))
+        ),
+        last ? null : el("label", { class: "stage-move-field" }, "Move on when (optional)",
+          el("textarea", { rows: "2", maxlength: "240", placeholder: "e.g. You can stand up from a chair without using your hands", oninput: upd("move"), onchange: () => renderProgramme() }, st.move)),
+        stages.length > 2 ? el("button", { type: "button", class: "btn btn-ghost stage-remove", text: "Remove this stage", onclick: () => {
+          stages.splice(n, 1);
+          programme.forEach((it) => { if (it.stage > n + 1) it.stage--; else if (it.stage === n + 1) it.stage = Math.max(1, n); });
+          sortByStage(); renderStages(); renderProgramme(); changed();
+        } }) : null
+      ));
+    });
+    if (stages.length && stages.length < 6) box.append(el("button", { type: "button", class: "btn btn-secondary", text: "+ Add a stage", onclick: () => {
+      stages.push({ name: "Stage " + (stages.length + 1), when: "", move: "" }); renderStages(); renderProgramme(); changed();
+    } }));
+    if (stages.length) box.append(el("p", { class: "hint", text: "Pick each exercise's stage on its card. The patient sees one stage at a time and chooses when to move on. Names and “move on when” go in the link, so no patient details." }));
+  }
+
+  // A copy of the exercise straight after it, with the same settings (handy for left and right with different doses)
+  function duplicateAt(index) {
+    const src = programme[index];
+    if (!src) return;
+    const copy = JSON.parse(JSON.stringify(src));
+    copy.key = ++uid;
+    if (src.side === "l") copy.side = "r"; else if (src.side === "r") copy.side = "l";
+    programme.splice(index + 1, 0, copy);
+    enteringKey = copy.key;
+    renderProgramme();
+    enteringKey = null;
+    renderLibrary();
+    changed();
+    const ex = H.byId(src.id);
+    toast((ex ? ex.name : "Exercise") + " duplicated");
   }
 
   function paramField(item, key, label, type, cls, placeholder) {
@@ -299,7 +494,12 @@
         })
       );
 
-      list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : ""), "data-key": item.key },
+      const st = stages.length ? stages[(item.stage || 1) - 1] : null;
+      const firstOfStage = st && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1));
+      list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : "") + (firstOfStage ? " stage-first" : ""), "data-key": item.key },
+        firstOfStage ? el("div", { class: "stage-head" },
+          el("span", { class: "stage-name", text: st.name }), st.when ? el("span", { class: "stage-when", text: st.when }) : null,
+          st.move ? el("p", { class: "stage-move", text: "Move on to the next stage when: " + st.move }) : null) : null,
         el("div", { class: "ex-media no-print" }, H.mediaSwitch(ex, H.picture(ex, "anim", { offset: i * 0.4 }))),
         el("div", { class: "ex-body" },
           el("div", { class: "ex-top" },
@@ -307,6 +507,7 @@
             el("div", { class: "ex-tools no-print" },
               el("button", { type: "button", class: "icon-btn move-btn move-up", "aria-label": "Move " + ex.name + " up", title: "Move up", hidden: programme.length < 2, onclick: () => move(i, -1), disabled: i === 0 }, icon(ICONS.up)),
               el("button", { type: "button", class: "icon-btn move-btn move-down", "aria-label": "Move " + ex.name + " down", title: "Move down", hidden: programme.length < 2, onclick: () => move(i, 1), disabled: i === programme.length - 1 }, icon(ICONS.down)),
+              el("button", { type: "button", class: "icon-btn duplicate", "aria-label": "Duplicate " + ex.name, title: "Duplicate (for example to give left and right different doses)", onclick: () => duplicateAt(i) }, icon(ICONS.copy)),
               el("button", { type: "button", class: "icon-btn remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => removeAt(i) }, icon(ICONS.remove))
             )
           ),
@@ -321,10 +522,13 @@
             paramField(item, "reps", "Reps", "number"),
             paramField(item, "hold", "Hold (secs)", "number"),
             paramField(item, "frequency", "How often", "text", "freq"),
-            paramField(item, "load", "Weight or band", "text", "load", "e.g. 2 kg")
+            paramField(item, "load", "Weight or band", "text", "load", "e.g. 2 kg"),
+            sideField(item),
+            stages.length ? stageField(item) : null
           ),
           el("p", { class: "param-summary", text: H.describe(item) }),
           fillDose(el("div", { class: "print-only dose-panel" }), item),
+          H.equipment(ex).length ? el("p", { class: "print-only print-kit" }, el("strong", { text: "You'll need: " }), H.equipment(ex).join(", ")) : null,
           el("div", { class: "field ex-notes" },
             // Folded away until needed, to keep the card short (opens by itself when there is a note)
             el("details", { class: "note-toggle no-print", open: !!item.notes },
@@ -377,7 +581,10 @@
       ...($("#goal").value.trim() ? { go: $("#goal").value.trim() } : {}),
       ...($("#plan").value.trim() ? { pl: $("#plan").value.trim() } : {}),
       ...($("#large-print").checked ? { lp: 1 } : {}),
+      ...($("#easy-read").checked ? { er: 1 } : {}),
       ...($("#tick-chart").checked ? { tc: 1 } : {}),
+      ...($("#check-in").checked ? { ci: 1 } : {}),
+      ...(stages.length ? { st: H.packStages(stages) } : {}),
       ...($("#pain-guide").checked ? { pg: Number($("#pain-level").value) || 1 } : {}),
       ...($("#duration").value.trim() ? { du: $("#duration").value.trim() } : {})
     };
@@ -431,6 +638,9 @@
       x: programme.map(H.packItem),
       ...ownDefs(),
       ...($("#large-print").checked ? { lp: 1 } : {}),
+      ...($("#easy-read").checked ? { er: 1 } : {}),
+      ci: $("#check-in").checked ? 1 : 0,
+      ...(stages.length ? { st: H.packStages(stages) } : {}),
       ...($("#tick-chart").checked ? { tc: 1 } : {}),
       ...($("#pain-guide").checked ? {} : { npg: 1 }),
       ...($("#pain-level").value !== "1" ? { pgl: Number($("#pain-level").value) } : {}),
@@ -482,7 +692,11 @@
     $("#duration").value = data.du || "";
     const set = (id, on, cls) => { $(id).checked = !!on; if (cls) document.body.classList.toggle(cls, !!on); };
     set("#large-print", data.lp, "large-print");
+    set("#easy-read", data.er, "easy-read");
     set("#tick-chart", data.tc); $("#print-ticks").hidden = !data.tc;
+    set("#check-in", data.ci == null ? true : data.ci);
+    stages = H.unpackStages(data.st);
+    renderStages();
     set("#pain-guide", false); $("#print-pain").hidden = true; // pain guide removed (16 Nov 2026)
     $("#pain-level").value = String(data.pgl || 1); applyPainLevel();
     set("#bw-print", data.bw, "bw-print");
@@ -813,12 +1027,17 @@
     if (du) lines.push("Duration: " + du);
     programme.forEach((item, i) => {
       const ex = H.byId(item.id);
+      if (stages.length && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1))) {
+        const st = stages[(item.stage || 1) - 1];
+        lines.push(st.name + (st.when ? " (" + st.when + ")" : "") + ":");
+      }
       const dose = [];
       if (Number(item.sets) || Number(item.reps)) dose.push((Number(item.sets) || 1) + " x " + (Number(item.reps) || 1));
       if (Number(item.hold)) dose.push(item.hold + "s hold");
       if (String(item.load || "").trim()) dose.push(String(item.load).trim());
       if (String(item.frequency || "").trim()) dose.push(String(item.frequency).trim().toLowerCase());
-      let line = (i + 1) + ". " + ex.name + (dose.length ? ": " + dose.join(", ") : "");
+      const side = H.sideLabel(item);
+      let line = (i + 1) + ". " + ex.name + (side ? " (" + side.toLowerCase() + ")" : "") + (dose.length ? ": " + dose.join(", ") : "");
       const progs = [...item.prog.map((x) => ex.progressions[x]), String(item.progText || "").trim()].filter(Boolean);
       if (progs.length) line += ". Progressions given: " + progs.join("; ");
       const regs = [...item.reg.map((x) => ex.regressions[x]), String(item.regText || "").trim()].filter(Boolean);
@@ -832,7 +1051,7 @@
       const lvl = $("#pain-level").value;
       lines.push("Pain guide given: " + (lvl === "1" ? "mild ache only" : "up to " + lvl + "/10 during exercise, settling by next morning") + "; stop and contact if sharp or worsening pain.");
     }
-    const extras = [$("#tick-chart").checked && "tick chart", $("#large-print").checked && "large print"].filter(Boolean);
+    const extras = [$("#tick-chart").checked && "tick chart", $("#large-print").checked && "large print", $("#easy-read").checked && "easy read"].filter(Boolean);
     lines.push("Given as printed handout" + (currentLink ? " with patient link / QR code" : "") + (extras.length ? " (" + extras.join(", ") + ")" : "") + ".");
     return lines.join("\n");
   }
@@ -861,6 +1080,11 @@
     if (general) lines.push("", general);
     programme.forEach((item, i) => {
       const ex = H.byId(item.id);
+      if (stages.length && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1))) {
+        const st = stages[(item.stage || 1) - 1];
+        lines.push("", "== " + st.name.toUpperCase() + (st.when ? " (" + st.when + ")" : "") + " ==");
+        if (st.move) lines.push("Move on to the next stage when: " + st.move);
+      }
       lines.push("", (i + 1) + ". " + ex.name.toUpperCase());
       ex.instructions.forEach((s) => lines.push("- " + s));
       const d = H.describe(item);
@@ -898,10 +1122,16 @@
 
   function clearAll() {
     if (!programme.length && !$("#patient-name").value && !$("#general-notes").value) return;
+    const was = programme.slice(), wasNotes = $("#general-notes").value;
     programme = [];
     $("#patient-name").value = "";
     $("#large-print").checked = false;
     document.body.classList.remove("large-print");
+    $("#easy-read").checked = false;
+    document.body.classList.remove("easy-read");
+    const wasStages = stages;
+    stages = [];
+    renderStages();
     $("#tick-chart").checked = false;
     $("#print-ticks").hidden = true;
     $("#general-notes").value = "";
@@ -913,6 +1143,10 @@
     renderProgramme();
     renderLibrary();
     changed();
+    if (was.length || wasNotes) {
+      undoToast("Handout cleared", () => { programme = was; stages = wasStages; renderStages(); $("#general-notes").value = wasNotes; $("#general-notes").dispatchEvent(new Event("input", { bubbles: true })); renderProgramme(); renderLibrary(); changed(); });
+      return;
+    }
     toast("Handout cleared");
   }
 
@@ -937,6 +1171,41 @@
   // ---------- Start ----------
   $("#handout-date").value = new Date().toISOString().slice(0, 10);
   $("#search").addEventListener("input", renderLibrary);
+  // Enter in the search box adds the top result
+  $("#search").addEventListener("keydown", (e) => {
+    if (e.key !== "Enter") return;
+    e.preventDefault();
+    const top = libraryMatches().list[0];
+    if (top) addExercise(top);
+  });
+  // Keyboard: "/" jumps to search; Ctrl+Z undoes a removal while the Undo button shows
+  document.addEventListener("keydown", (e) => {
+    const typing = e.target.matches && e.target.matches("input, textarea, select, [contenteditable]");
+    if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !document.querySelector("dialog[open]")) { e.preventDefault(); $("#search").focus(); $("#search").select(); }
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === "z" && undoFn && !typing) { e.preventDefault(); runUndo(); }
+  });
+  $("#undo-btn").addEventListener("click", runUndo);
+  $("#preview-close").addEventListener("click", () => $("#preview-dialog").close());
+  $("#preview-dialog").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+
+  // Set "How often" for every exercise at once
+  $("#bulk-freq-apply").addEventListener("click", () => {
+    const v = $("#bulk-freq").value.trim();
+    if (!v || !programme.length) return;
+    programme.forEach((it) => { it.frequency = v; });
+    renderProgramme(); changed();
+    toast("How often set to “" + v + "” for all " + programme.length);
+  });
+
+  // "What's new" note, shown once per update (only the update name is remembered)
+  const NEWS = "2026-11-17-builder";
+  try {
+    if (localStorage.getItem("handout-builder:news-seen") !== NEWS) $("#whats-new").hidden = false;
+  } catch (e) { /* storage unavailable */ }
+  $("#whats-new-close").addEventListener("click", () => {
+    $("#whats-new").hidden = true;
+    try { localStorage.setItem("handout-builder:news-seen", NEWS); } catch (e) { /* storage unavailable */ }
+  });
   $("#btn-print").addEventListener("click", printHandout);
   // Soft shadow under the header only once the page has scrolled under it
   const onScroll = () => document.documentElement.classList.toggle("is-scrolled", window.scrollY > 4);
@@ -956,12 +1225,24 @@
   $("#template-name").addEventListener("input", updateTemplateLink);
   $("#bw-print").addEventListener("change", (e) => document.body.classList.toggle("bw-print", e.target.checked));
   $("#paper-saver").addEventListener("change", (e) => document.body.classList.toggle("paper-saver", e.target.checked));
+  $("#check-in").addEventListener("change", changed);
+  $("#use-stages").addEventListener("change", (e) => {
+    if (e.target.checked) {
+      stages = [{ name: "Stage 1", when: "", move: "" }, { name: "Stage 2", when: "", move: "" }];
+      programme.forEach((it) => { it.stage = 1; });
+    } else {
+      stages = [];
+      programme.forEach((it) => { it.stage = 0; });
+    }
+    renderStages(); renderProgramme(); changed();
+  });
   $("#tick-chart").addEventListener("change", (e) => {
     $("#print-ticks").hidden = !e.target.checked;
     changed();
   });
   $("#btn-motion").addEventListener("click", () => { animPaused = !animPaused; setAnimButton(); });
   $("#remember-me").addEventListener("change", saveClinician);
+  $("#easy-read").addEventListener("change", (e) => { document.body.classList.toggle("easy-read", e.target.checked); changed(); });
   $("#large-print").addEventListener("change", (e) => {
     document.body.classList.toggle("large-print", e.target.checked);
     changed();

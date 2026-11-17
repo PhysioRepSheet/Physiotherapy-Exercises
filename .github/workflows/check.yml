@@ -1,0 +1,23 @@
+# Runs the RepSheet smoke tests on every push and pull request.
+# It only reads the site files. It never deploys anything.
+name: Check the site
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright
+        run: |
+          npm install --no-save playwright@1.48.2
+          npx playwright install --with-deps chromium
+      - name: Run smoke tests
+        run: node tests/smoke.js

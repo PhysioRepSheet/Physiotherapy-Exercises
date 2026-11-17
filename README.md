@@ -34,6 +34,9 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - "Read aloud" on the patient page (uses the phone's own voice; nothing is recorded or sent).
 - Plain, easy-read wording: short sentences and everyday words. Keep to this style when adding exercises (see the note at the top of `exercises.js`).
 - A QR code and link that opens the patient's own programme page (`view.html`) with moving pictures and optional videos.
+- (17 Nov 2026 update) Builder: spelling-tolerant search and goal words ("stairs"), body map (bodymap.js), type filter (`type` in exercises.js), favourites and recent, preview before adding, left/right/both sides with one-click copy for the other side, undo (also Ctrl+Z), "/" to search and Enter to add, set "How often" for all, a privacy check that warns about patient details in notes (privacy-check.js, warns only), stages (e.g. Weeks 0 to 2), easy read handouts (one exercise per page), and a "You'll need" equipment line.
+- (17 Nov 2026 update) Patient page (patient-extras.js and view.js): larger text, easier reading and high contrast, saved on the phone; "How is it going?" check-in (too easy / about right / too hard, no pain score, physio switches it on); "Contact my physio" from the contact details typed; reminder days; days in a row; a note when a programme is 12 weeks old or more; one stage at a time.
+- Pages: for-nhs-teams.html (information governance summary), accessibility.html, changes.html (what's changed: add a line when you publish something new).
 
 ## Files you might edit
 - `exercises.js`: **the exercise library**: names, steps, default dosage, progressions, regressions, image and video.
@@ -47,6 +50,10 @@ Double-click `index.html`. It opens in your web browser and works without the in
 ## Files you shouldn't need to touch
 `app.js` (builder), `view.js` / `view.html` / `view.css` (patient page), `figures.js` (drawing engine),
 `common.js` (shared helpers), `feedback.js`, `vendor/qrcode.js` (QR code maker, MIT licence, Kazuhiko Arase).
+
+## Checks
+- `node tests/smoke.js` loads every page, opens old patient links (tests/old-links.json, made by earlier versions) and builds a handout. GitHub runs it on every push (.github/workflows/check.yml).
+- Each page has a Content-Security-Policy tag. **If you change an inline `<script>`, run `python3 tests/update-csp.py`**, or that script will be blocked.
 
 ## Logs
 - `FEEDBACK.md`: running log of feedback and what happened to it.
@@ -63,3 +70,9 @@ Double-click `index.html`. It opens in your web browser and works without the in
 ## Hosting
 It is a plain static website (no server or database), so it can be hosted anywhere by uploading this folder:
 GitHub Pages, Netlify, Cloudflare Pages, or an NHS trust web server.
+
+## Contact form (contact.html)
+Messages are sent through Web3Forms (free, 250 a month) and emailed to you. Your email address never appears in the site's code.
+1. Go to web3forms.com, type in the RepSheet email address and press "Create Access Key". The key arrives by email.
+2. Paste the key into `contactFormKey` in config.js. Until then the page says the form isn't switched on yet.
+3. In the Web3Forms dashboard, set how long submissions are kept to the shortest option (the privacy page says we do this).

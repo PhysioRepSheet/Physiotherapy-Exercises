@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accessibility · RepSheet</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#0e6b62">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="info-page">
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <a class="brand-link" href="index.html"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap privacy-main">
+    <h1>Accessibility</h1>
+    <p class="hint">Last updated: 17 November 2026</p>
+
+    <div class="summary">
+      <strong>In short</strong>
+      <ul>
+        <li>We want everyone to be able to use RepSheet, including patients with poor eyesight, low reading confidence or limited hand movement.</li>
+        <li>If something is hard to use, please tell us and we will try to fix it.</li>
+      </ul>
+    </div>
+
+    <h2>What you can do on the patient page</h2>
+    <ul>
+      <li>Make the text larger.</li>
+      <li>Switch to easier reading, with bigger pictures and fewer words.</li>
+      <li>Switch to high contrast colours.</li>
+      <li>Use big buttons that are easy to tap.</li>
+      <li>Follow your exercises one at a time, with a counter and timer.</li>
+    </ul>
+    <p>Your phone remembers these choices. You can also zoom in, or use your phone's screen reader.</p>
+
+    <h2>What physios can do</h2>
+    <ul>
+      <li>Print an easy read handout: one exercise per page, large pictures and short sentences.</li>
+      <li>Print in large print.</li>
+      <li>Use the builder with a keyboard. Press <kbd>/</kbd> to search, <kbd>Enter</kbd> to add the top result, and <kbd>Ctrl</kbd> + <kbd>Z</kbd> to undo.</li>
+    </ul>
+
+    <h2>How we write</h2>
+    <p>Patient instructions use short sentences and everyday words. We avoid medical terms where we can, and explain them where we can't.</p>
+
+    <h2>What we know is not perfect yet</h2>
+    <ul>
+      <li>The patient page is only in English for now.</li>
+      <li>Some exercise pictures are drawings that may be hard to see for people with very low vision. Each one comes with written steps.</li>
+      <li>Videos come from other services and may not have captions.</li>
+      <li>The body map in the builder is easier with a mouse. The same areas can be chosen from the list next to it.</li>
+    </ul>
+
+    <h2>How we test</h2>
+    <p>We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA. We test with keyboards, on small phone screens, with large text and with high contrast. RepSheet has not had a formal accessibility audit yet.</p>
+
+    <h2>Tell us about a problem</h2>
+    <p>If you find something hard to use, please email <span class="todo">[contact email coming soon]</span>. Say which page it was on and what you were trying to do.</p>
+
+    <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a> · <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a></p>
+  </main>
+  <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
+</body>
+</html>

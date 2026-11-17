@@ -10,8 +10,12 @@
 
   // ---------- "3 sets of 10 reps · hold for 5 seconds · twice a day" ----------
   function plural(n, word) { return n + " " + word + (Number(n) === 1 ? "" : "s"); }
+  // Which side to exercise. Stored in links as "l", "r" or "b".
+  const SIDES = { l: "Left side", r: "Right side", b: "Both sides" };
+  function sideLabel(p) { return SIDES[p && p.side] || ""; }
   function describe(p) {
     const parts = [];
+    if (SIDES[p.side]) parts.push(SIDES[p.side].toLowerCase());
     const sets = Number(p.sets), reps = Number(p.reps), hold = Number(p.hold);
     // Plain words for patients: "10 times, 3 rounds" rather than "3 sets of 10 reps"
     const times = (n) => (n === 1 ? "once" : n + " times");
@@ -24,6 +28,23 @@
     if (p.frequency && String(p.frequency).trim()) parts.push(String(p.frequency).trim());
     const text = parts.join(" · ");
     return text ? text.charAt(0).toUpperCase() + text.slice(1) : "";
+  }
+
+  // ---------- What you'll need ----------
+  // Worked out from the exercise's name and steps, so patients can get things ready first.
+  const KIT = [
+    [/\bchair\b/i, "a firm chair"], [/\bband\b/i, "an exercise band"], [/\b(stairs?|(?:on|onto|off|up|down from|edge of|bottom) (?:a|the|your|of a|of the) (?:step|stair))\b/i, "a step or stair"],
+    [/\bwall\b/i, "a wall"], [/\btowel\b/i, "a towel"], [/\b(weight|kilo|tin|hammer)\b/i, "a light weight (a tin will do)"],
+    [/\b(table|worktop|counter)\b/i, "a table or worktop"], [/\bbottle\b/i, "a bottle"], [/\b(lie|lying)\b/i, "somewhere to lie down"],
+    [/\bball\b/i, "a soft ball"], [/\b(rolled|rolled-up|a roll|the roll|towel roll)\b/i, "a rolled-up towel"]
+  ];
+  function equipment(ex) {
+    if (!ex || ex.custom) return [];
+    const text = ex.name + " " + (ex.instructions || []).join(" ");
+    const out = [];
+    KIT.forEach(([re, label]) => { if (re.test(text) && !out.includes(label)) out.push(label); });
+    if (out.includes("a rolled-up towel") && out.includes("a towel")) out.splice(out.indexOf("a towel"), 1);
+    return out;
   }
 
   // ---------- pictures ----------
@@ -183,14 +204,14 @@
     return JSON.parse(new TextDecoder().decode(raw));
   }
 
-  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions], load, own progression, own regression]
+  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions], load, own progression, own regression, side, stage]
   function packItem(it) {
-    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || "", String(it.progText || "").trim(), String(it.regText || "").trim()];
+    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || "", String(it.progText || "").trim(), String(it.regText || "").trim(), SIDES[it.side] ? it.side : "", Number(it.stage) > 0 ? Number(it.stage) : ""];
     while (arr.length > 5 && (arr[arr.length - 1] === "" || (Array.isArray(arr[arr.length - 1]) && !arr[arr.length - 1].length))) arr.pop();
     return arr;
   }
   function unpackItem(a) {
-    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "", progText: String(a[9] || "").slice(0, 300), regText: String(a[10] || "").slice(0, 300) };
+    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "", progText: String(a[9] || "").slice(0, 300), regText: String(a[10] || "").slice(0, 300), side: SIDES[a[11]] ? a[11] : "", stage: Math.max(0, Math.min(9, parseInt(a[12], 10) || 0)) };
   }
 
   // Rough time for one session: about 4 seconds a rep plus any hold, 30 seconds rest
@@ -217,11 +238,23 @@
     };
   }
 
+  const clip = (v, n) => String(v == null ? "" : v).slice(0, n);
+  // ---------- Stages ("Weeks 0 to 2", "Weeks 2 to 6"...) ----------
+  // In links as st: [[name, when, move on when], ...]. Up to 6 stages. Link contents come from outside, so trim everything.
+  function unpackStages(st) {
+    if (!Array.isArray(st) || st.length < 2) return [];
+    return st.slice(0, 6).map((a, i) => ({
+      name: clip(Array.isArray(a) ? a[0] : "", 40).trim() || "Stage " + (i + 1),
+      when: clip(Array.isArray(a) ? a[1] : "", 60).trim(),
+      move: clip(Array.isArray(a) ? a[2] : "", 240).trim()
+    }));
+  }
+  const packStages = (list) => list.map((s) => [s.name, s.when, s.move]);
+
   // ---------- A physio's own exercises ----------
   // Made in the builder and kept on that computer. When shared (patient link or template link) only the
   // words travel in the link: name, steps, and which stock drawing it looks like. A photo never goes in a link.
   const OWN_AREA = "My exercises";
-  const clip = (v, n) => String(v == null ? "" : v).slice(0, n);
   function packCustom(ex) {
     const a = [ex.id, ex.name, ex.instructions, ex.like || "", ex.bodyArea || ""];
     while (a.length > 3 && a[a.length - 1] === "") a.pop();
@@ -265,6 +298,6 @@
     return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  window.Handout = { LIBRARY, byId, describe, picture, videoInfo, mediaSwitch, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
+  window.Handout = { LIBRARY, byId, describe, sideLabel, SIDES, equipment, unpackStages, packStages, picture, videoInfo, mediaSwitch, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
     OWN_AREA, packCustom, unpackCustom, registerCustom, unregisterCustom, customDefs };
 })();

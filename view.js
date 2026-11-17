@@ -78,6 +78,7 @@
       ex.custom ? el("p", { class: "p-own-pic hint", text: ex.like ? "The picture shows a similar exercise. Follow your physio's steps below." : "Your physio will show you how to do this one." }) : null,
       el("div", { class: "p-steps-pics" }, H.picture(ex, "steps").el),
       dose ? el("p", { class: "p-dose", text: dose }) : null,
+      H.equipment(ex).length ? el("p", { class: "p-kit" }, el("strong", { text: "You'll need: " }), H.equipment(ex).join(", ")) : null,
       el("ol", { class: "p-steps" }, ex.instructions.map((s) => el("li", { text: s }))),
       item.notes ? el("p", { class: "p-notes", text: item.notes }) : null,
       harder.length || easier.length ? el("div", { class: "p-options" },
@@ -86,6 +87,7 @@
       ) : null
     );
     if (readBtn) readBtn.addEventListener("click", () => readCard(readBtn, li));
+    li.dataset.stage = String(item.stage || 1);
     return li;
   }
 
@@ -131,7 +133,13 @@
       const sameWeek = weekStart.getTime() === thisMonday.getTime();
       $("#week-label").textContent = sameWeek ? "This week" : "Week of " + weekStart.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
       $("#week-next").disabled = sameWeek;
-      $("#week-count").textContent = count ? count + " of 7 days done" + (count >= 5 ? ". Great work!" : "") : "No days ticked yet this week.";
+      // Days in a row, counting back from today (or from yesterday if today isn't ticked yet)
+      let run = 0;
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      if (!done.has(iso(d))) d.setDate(d.getDate() - 1);
+      while (done.has(iso(d)) && run < 400) { run++; d.setDate(d.getDate() - 1); }
+      const streak = run >= 2 ? " You've done them " + run + " days in a row. Keep it going!" : "";
+      $("#week-count").textContent = (count ? count + " of 7 days done" + (count >= 5 ? ". Great work!" : ".") : "No days ticked yet this week.") + (sameWeek ? streak : "");
     }
     $("#week-prev").addEventListener("click", () => { weekStart.setDate(weekStart.getDate() - 7); render(); });
     $("#week-next").addEventListener("click", () => { if (weekStart < thisMonday) { weekStart.setDate(weekStart.getDate() + 7); render(); } });
@@ -161,6 +169,12 @@
       ? d.getUTCFullYear() + p(d.getUTCMonth() + 1) + p(d.getUTCDate()) + "T" + p(d.getUTCHours()) + p(d.getUTCMinutes()) + p(d.getUTCSeconds()) + "Z"
       : d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "T" + p(d.getHours()) + p(d.getMinutes()) + "00";
   }
+  // Repeats for about 6 weeks
+  function ruleFor(days) {
+    if (days === "weekdays") return "RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR;COUNT=30";
+    if (days === "mwf") return "RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=18";
+    return "RRULE:FREQ=DAILY;COUNT=42";
+  }
   function addReminder() {
     const [h, m] = ($("#reminder-time").value || "09:00").split(":").map(Number);
     const first = new Date();
@@ -173,7 +187,7 @@
       "DTSTAMP:" + stamp(new Date(), true),
       "DTSTART:" + stamp(first, false),
       "DURATION:PT" + (minutes || 15) + "M",
-      "RRULE:FREQ=DAILY;COUNT=42",
+      ruleFor($("#reminder-days") ? $("#reminder-days").value : "daily"),
       "SUMMARY:" + icsText("Do my exercises"),
       "DESCRIPTION:" + icsText("Open your exercises: " + location.href),
       "URL:" + location.href,
@@ -474,6 +488,7 @@
         $(".pg-amber-text").textContent = g.amber;
       }
       if (data.lp) { document.body.classList.add("large-print"); syncLarge(); }
+      if (data.er) document.body.classList.add("easy-read");
       if (data.g) { $("#general").textContent = data.g; $("#general").hidden = false; }
       if (data.tc) ticks = setupTicks(code);
       const list = $("#list");
@@ -481,10 +496,53 @@
       if (!list.children.length) throw new Error("Empty programme");
       programme = items;
       $("#fa-start-wrap").hidden = false;
+      setupStages(H.unpackStages(data.st), items, code);
     } catch (e) {
       $("#intro").hidden = true;
+      $("#reminder").hidden = true; // no programme, so no daily reminder to offer
       $("#error").hidden = false;
     }
+  }
+
+  // ---------- Stages: one stage at a time, the patient moves on when ready ----------
+  // Which stage they're on is remembered on this phone only.
+  function setupStages(stages, items, code) {
+    if (!stages.length) return;
+    const key = "repsheet-stage:" + shortHash(code);
+    let cur = 1;
+    try { cur = Math.min(stages.length, Math.max(1, parseInt(localStorage.getItem(key), 10) || 1)); } catch (e) { /* storage unavailable */ }
+    const nav = el("nav", { class: "p-stages no-print", "aria-label": "Stages" });
+    const intro = el("p", { class: "p-stage-now" });
+    const next = el("div", { class: "p-stage-next no-print" });
+    const list = $("#list");
+    list.before(nav, intro);
+    list.after(next);
+    function show(n, focus) {
+      cur = n;
+      try { localStorage.setItem(key, String(n)); } catch (e) { /* storage unavailable */ }
+      nav.innerHTML = "";
+      stages.forEach((st, i) => nav.append(el("button", {
+        type: "button", class: "p-stage-tab" + (i + 1 < cur ? " done" : ""), "aria-current": i + 1 === cur ? "step" : null,
+        onclick: () => show(i + 1, true)
+      }, (i + 1 < cur ? "\u2713 " : "") + st.name, st.when ? el("small", { text: st.when }) : null)));
+      const st = stages[cur - 1];
+      intro.textContent = "You are on " + st.name + (st.when ? " (" + st.when + ")" : "") + ".";
+      [...list.children].forEach((li) => { li.hidden = li.dataset.stage !== String(cur); });
+      programme = items.filter((it) => (it.stage || 1) === cur);
+      minutes = programme.length ? H.estimateMinutes(programme) : minutes;
+      next.innerHTML = "";
+      if (cur < stages.length) {
+        const nx = stages[cur];
+        next.append(el("h2", { text: "Ready for " + nx.name + "?" }),
+          st.move ? el("p", {}, el("strong", { text: "Move on when: " }), st.move) : el("p", { text: "Move on when your physio says you're ready." }),
+          el("p", { class: "hint", text: "Not sure? Ask your physio first." }),
+          el("button", { type: "button", class: "btn btn-primary", onclick: () => { show(cur + 1, true); window.scrollTo({ top: 0, behavior: "smooth" }); } }, "Go to " + nx.name));
+      } else if (stages.length > 1) {
+        next.append(el("h2", { text: "This is the last stage" }), el("p", { text: "Keep going with these exercises until your physio tells you otherwise." }));
+      }
+      if (focus) { const t = nav.querySelector('[aria-current="step"]'); if (t) t.focus(); }
+    }
+    show(cur, false);
   }
 
   let paused = window.PhysioFigures && window.PhysioFigures.reduceMotion;
