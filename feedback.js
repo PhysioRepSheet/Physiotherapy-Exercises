@@ -35,6 +35,15 @@
     }
   };
 
+  // "Buy me a coffee" footer link: only shows once supportUrl is set in config.js
+  const supportUrl = /^https:\/\//.test(cfg.supportUrl || "") ? cfg.supportUrl : "";
+  document.querySelectorAll("[data-support]").forEach((a) => {
+    if (!supportUrl) return;
+    a.href = supportUrl;
+    const wrap = a.closest(".footer-support");
+    if (wrap) wrap.hidden = false;
+  });
+
   document.addEventListener("click", (e) => {
     const link = e.target.closest("[data-request]");
     if (!link) return;

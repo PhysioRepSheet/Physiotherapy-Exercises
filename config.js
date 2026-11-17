@@ -18,5 +18,6 @@ window.SITE_CONFIG = {
   feedbackFormUrl: "",          // e.g. "https://forms.gle/abc123"
   exerciseRequestFormUrl: "",   // e.g. "https://tally.so/r/xyz789"
   contactEmail: "",             // e.g. "physio.handouts@nhs.net"
-  goatcounterCode: "replab"     // GoatCounter site code ("" switches counting off)
+  goatcounterCode: "replab",     // GoatCounter site code ("" switches counting off)
+  supportUrl: "https://buymeacoffee.com/repsheet"   // Buy Me a Coffee page (footer of home page + builder only)
 };

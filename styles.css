@@ -299,6 +299,10 @@ textarea { resize: vertical; }
 .footer-about { max-width: 38ch; display: flex; flex-direction: column; gap: 6px; line-height: 1.5; }
 .footer-brand { font-weight: 700; font-size: 1rem; color: var(--ink); letter-spacing: -.01em; }
 .footer-brand span { color: var(--brand); }
+.footer-support { margin: 4px 0 0; font-size: .875rem; color: var(--ink-faint); }
+.footer-support[hidden] { display: none; }
+.footer-support a { color: var(--ink-soft); font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
+.footer-support a:hover, .footer-support a:focus-visible { color: var(--brand); }
 .footer-nav { display: grid; grid-template-columns: repeat(3, auto); gap: 20px 48px; }
 .footer-col h2 { margin: 0 0 8px; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
 .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
