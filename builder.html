@@ -51,11 +51,9 @@
       <label class="visually-hidden" for="search">Search exercises</label>
       <input id="search" type="search" placeholder="Search exercises…" title="Shortcut: press / to search, Enter to add the top result" autocomplete="off" aria-describedby="search-hint">
       <p id="search-hint" class="visually-hidden">Press Enter to add the top result.</p>
-      <div id="bodymap-slot"></div>
       <div class="lib-filters" role="group" aria-label="Filter exercises">
-        <label class="lib-filter lib-filter-area"><span>Body area</span><select id="area-filter"></select></label>
+        <label class="lib-filter"><span>Body area</span><select id="area-filter"></select></label>
         <label class="lib-filter"><span>Type</span><select id="type-filter"></select></label>
-        <label class="lib-filter"><span>Level</span><select id="level-filter"></select></label>
       </div>
       <ul id="library-list" class="library-list"></ul>
       <div class="library-foot">
@@ -539,7 +537,6 @@
   <script src="i18n-builder.js?v=20261117h"></script>
   <script src="pdf-maker.js?v=20261117h"></script>
   <script src="privacy-check.js?v=20261117h"></script>
-  <script src="bodymap.js?v=20261117h"></script>
   <script src="a11y-menu.js?v=20261117h"></script>
   <script src="options-fold.js?v=20261117h"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>

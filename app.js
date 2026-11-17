@@ -87,12 +87,10 @@
     };
     fill($("#area-filter"), areas, activeArea, (a) => (a === "Favourites" ? "★ Favourites" : a === "All" ? "All areas" : a));
     fill($("#type-filter"), ["Any type", ...TYPES], activeType, (t) => (t === "Any type" ? "All types" : t));
-    fill($("#level-filter"), ["Any level", ...LEVELS], activeLevel, (t) => (t === "Any level" ? "All levels" : t));
   }
   const filterChanged = (set) => (e) => { set(e.target.value); renderFilters(); renderLibrary(); };
   $("#area-filter").addEventListener("change", filterChanged((v) => { activeArea = v; if (window.RepSheetBodyMap) window.RepSheetBodyMap.refresh(); }));
   $("#type-filter").addEventListener("change", filterChanged((v) => { activeType = v; }));
-  $("#level-filter").addEventListener("change", filterChanged((v) => { activeLevel = v; }));
   // Called by the body map
   window.RepSheetSetArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
   window.RepSheetArea = () => activeArea;
@@ -158,7 +156,7 @@
         el("div", { class: "meta" },
           el("button", { type: "button", class: "name name-btn", text: ex.name, title: "Preview " + ex.name, onclick: () => openPreview(ex) }),
           ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
-          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.difficulty ? el("span", { class: "lvl-dot lvl-" + String(ex.difficulty).toLowerCase(), title: ex.difficulty, role: "img", "aria-label": ex.difficulty }) : null, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
+          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
           alsoCalled(ex)
         ),
         ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
@@ -184,7 +182,7 @@
     body.append(
       el("div", { class: "preview-pic" }, H.mediaSwitch(ex, pic)),
       el("h2", { id: "preview-title", text: ex.name }),
-      el("p", { class: "hint", text: [ex.area, ex.type, ex.difficulty].filter(Boolean).join(" · ") + (ex.checked === false ? " · Awaiting check" : "") }),
+      el("p", { class: "hint", text: [ex.area, ex.type].filter(Boolean).join(" · ") + (ex.checked === false ? " · Awaiting check" : "") }),
       el("ol", { class: "ex-steps" }, ex.instructions.map((t) => el("li", { text: t }))),
       ex.defaults && H.describe(ex.defaults) ? el("p", { class: "param-summary", text: "Starts at: " + H.describe(ex.defaults) }) : null,
       (ex.progressions || []).length ? el("div", { class: "preview-opts" }, el("b", { text: "Harder" }), el("ul", {}, ex.progressions.map((t) => el("li", { text: t })))) : null,

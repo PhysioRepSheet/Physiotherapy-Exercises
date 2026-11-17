@@ -141,8 +141,7 @@ textarea { resize: vertical; }
 .chip:hover { border-color: var(--ink-faint); color: var(--ink); }
 .chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
 /* Library filters as dropdowns (17 Nov 2026): one compact row instead of three rows of chips */
-.lib-filters { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 10px; }
-.lib-filter-area { grid-column: 1 / -1; }
+.lib-filters { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 10px; }
 .lib-filter { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .lib-filter > span { font-size: .6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
 .lib-filter select { width: 100%; min-height: 40px; padding: 6px 26px 6px 10px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: .8125rem; font-weight: 600; cursor: pointer;
