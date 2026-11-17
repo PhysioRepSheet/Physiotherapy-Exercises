@@ -957,7 +957,32 @@ body { font-optical-sizing: auto; }
 .exs-dose { grid-area: dose; font-size: .78rem; color: var(--ink-soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* Stays at the top of the handout while you scroll the cards, on tablets and computers only */
 @media (min-width: 700px) {
-  .ex-summary { position: sticky; top: 76px; z-index: 5; box-shadow: 0 -16px 0 4px var(--card), 0 6px 16px -10px rgba(23, 35, 43, .25); }
+  .ex-summary { position: sticky; top: calc(var(--header-h, 64px) + 2px); z-index: 5; box-shadow: 0 6px 16px -10px rgba(23, 35, 43, .25); }
 }
 @media (max-width: 699px) { .ex-summary { display: none; } }
 @media print { .ex-summary { display: none !important; } }
+
+/* ---------- Simple / Advanced view switch ---------- */
+.view-switch { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--brand-tint-2); border: 1px solid var(--line); }
+.view-btn { border: 0; background: none; font: inherit; font-size: .875rem; font-weight: 600; color: var(--ink-soft); padding: 6px 14px; border-radius: 999px; cursor: pointer; min-height: 34px; }
+.view-btn[aria-pressed="true"] { background: #fff; color: var(--brand-ink, var(--brand)); box-shadow: 0 1px 3px rgba(23, 35, 43, .15); }
+.view-btn:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; }
+.ex-extras { display: none; }
+@media screen {
+  .view-simple .ex-steps, .view-simple .field.load, .view-simple .field.side, .view-simple .field.stage,
+  .view-simple .ex-notes, .view-simple .progressions,
+  .view-simple .media-toggle { display: none !important; }
+  .view-simple .ex-card { grid-template-columns: 88px minmax(0, 1fr); gap: 10px 14px; padding: 12px 14px; }
+  .view-simple .ex-media .pic { width: 88px; max-width: 88px; }
+  .view-simple .ex-more .params { grid-template-columns: repeat(3, minmax(0, 84px)) minmax(0, 1fr); }
+  .view-simple .ex-more .params > .field { grid-column: auto; }
+  .view-simple .ex-extras { display: block; margin: 6px 0 0; font-size: .8125rem; color: var(--ink-soft); }
+  .view-simple .param-summary { margin-bottom: 0; }
+}
+@media screen and (max-width: 560px) {
+  .view-simple .ex-card { grid-template-columns: 64px minmax(0, 1fr); }
+  .view-simple .ex-media .pic { width: 64px; max-width: 64px; }
+  .view-simple .ex-more .params { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .view-simple .ex-more .params > .freq { grid-column: 1 / -1; }
+  .view-simple .ex-top { flex-wrap: wrap; row-gap: 6px; }
+}

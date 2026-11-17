@@ -556,6 +556,15 @@
           harder && harder[1], easier && easier[1]
         )
       ));
+      // Simple view: say what else is set on this exercise, so nothing is hidden by surprise
+      const extras = [];
+      if (item.side) extras.push(H.sideLabel(item).toLowerCase());
+      if (item.load) extras.push(item.load);
+      if (item.notes) extras.push("a note");
+      const pr = (item.prog || []).length + (item.reg || []).length + (item.progText ? 1 : 0) + (item.regText ? 1 : 0);
+      if (pr) extras.push(pr + (pr === 1 ? " progression or regression" : " progressions and regressions"));
+      if (st) extras.push(st.name);
+      if (extras.length) list.lastChild.querySelector(".ex-more").append(el("p", { class: "ex-extras no-print", text: "Also set: " + extras.join(", ") }));
       list.lastChild.querySelector("textarea").value = item.notes;
       list.lastChild.querySelectorAll(".own-prog-text").forEach((t) => { t.value = item[t.dataset.prop] || ""; });
     });
@@ -1227,6 +1236,19 @@
   $("#preview-close").addEventListener("click", () => $("#preview-dialog").close());
   $("#preview-dialog").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 
+  // ---------- Simple / Advanced view of the exercise cards (remembered on this device) ----------
+  const VIEW_KEY = "handout-builder:view";
+  function setView(v, save) {
+    const simple = v === "simple";
+    document.body.classList.toggle("view-simple", simple);
+    $("#view-simple").setAttribute("aria-pressed", String(simple));
+    $("#view-advanced").setAttribute("aria-pressed", String(!simple));
+    if (save) { try { localStorage.setItem(VIEW_KEY, v); } catch (e) { /* storage unavailable */ } }
+  }
+  $("#view-simple").addEventListener("click", () => { setView("simple", true); renderProgramme(); });
+  $("#view-advanced").addEventListener("click", () => { setView("advanced", true); renderProgramme(); });
+  try { setView(localStorage.getItem(VIEW_KEY) === "simple" ? "simple" : "advanced", false); } catch (e) { setView("advanced", false); }
+
   // ---------- "In this handout": a short summary that stays in view (tablets and computers) ----------
   // Tap an exercise to jump to its card.
   const EXS_KEY = "handout-builder:summary-hidden";
@@ -1270,7 +1292,7 @@
         if (!card) return;
         // Land the card just below the summary (which stays at the top of the screen)
         const nav = $("#ex-summary");
-        const stuck = getComputedStyle(nav).position === "sticky" ? nav.getBoundingClientRect().height + 76 : 80;
+        const stuck = getComputedStyle(nav).position === "sticky" ? (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 64) + 2 + nav.getBoundingClientRect().height : 80;
         window.scrollTo({ top: window.scrollY + card.getBoundingClientRect().top - stuck - 12, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
         card.classList.add("just-moved");
         setTimeout(() => card.classList.remove("just-moved"), 1200);
@@ -1285,6 +1307,9 @@
     try { localStorage.setItem(EXS_KEY, exsHidden ? "1" : "0"); } catch (e) { /* storage unavailable */ }
     renderExSummary();
   });
+  // Sit the summary just under the header, whatever height the header is
+  const setHeaderH = () => { const h = document.querySelector(".site-header"); if (h) document.documentElement.style.setProperty("--header-h", Math.round(h.getBoundingClientRect().height) + "px"); };
+  setHeaderH(); window.addEventListener("resize", setHeaderH);
   new MutationObserver(renderExSummary).observe($("#programme-list"), { childList: true });
   $("#programme-list").addEventListener("input", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });
   $("#programme-list").addEventListener("change", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });
