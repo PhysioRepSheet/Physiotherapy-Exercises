@@ -107,6 +107,15 @@
     else b.append(T("fa.next") + " " + (rtl ? "\u2190" : "\u2192"));
   }
 
+  // Steps the physio wrote themselves for this patient. They can't be translated, so in another
+  // language they show as typed (English), with a short line saying so.
+  function stepsList(item, ex) {
+    const ol = el("ol", { class: "p-steps p-steps-own" }, H.stepsOf(item, ex).map((s) => el("li", { text: s, dir: "auto" })));
+    if (I.lang === "en") return ol;
+    ol.lang = "en";
+    return [I.put(el("p", { class: "p-steps-note hint" }), "card.stepsEnglish", null, { noEnglish: true }), ol];
+  }
+
   function card(item, i) {
     const ex = H.byId(item.id);
     if (!ex) return null;
@@ -119,7 +128,8 @@
     // Each line as [shown, English]. The physio's own typed words have no English twin: they show as typed.
     const harder = [...(item.prog || []).filter((x) => (ex.progressions || [])[x]).map((x) => [I.exOption(ex, "progressions", x), ex.progressions[x]]), item.progText ? [item.progText] : null].filter(Boolean);
     const easier = [...(item.reg || []).filter((x) => (ex.regressions || [])[x]).map((x) => [I.exOption(ex, "regressions", x), ex.regressions[x]]), item.regText ? [item.regText] : null].filter(Boolean);
-    const steps = I.exSteps(ex);
+    const ownSteps = H.stepsEdited(item);
+    const steps = ownSteps ? H.stepsOf(item, ex) : I.exSteps(ex);
     const kit = H.equipment(ex);
 
     const readBtn = canSpeak ? el("button", { type: "button", class: "btn btn-secondary p-read no-print", "aria-pressed": "false" }, readLabel()) : null;
@@ -131,7 +141,7 @@
       el("div", { class: "p-steps-pics" }, H.picture(ex, "steps").el),
       dose ? I.putPair(el("p", { class: "p-dose" }), dose, H.describe(item)) : null,
       kit.length ? el("p", { class: "p-kit" }, el("strong", { text: T("card.need") + " " }), kit.map(I.kit).join(", ")) : null,
-      el("ol", { class: "p-steps" }, steps.map((s, n) => I.putPair(el("li"), s, ex.instructions[n]))),
+      ownSteps ? stepsList(item, ex) : el("ol", { class: "p-steps" }, steps.map((s, n) => I.putPair(el("li"), s, ex.instructions[n]))),
       item.notes ? el("p", { class: "p-notes", text: item.notes, dir: "auto" }) : null,
       harder.length || easier.length ? el("div", { class: "p-options" },
         harder.length ? [I.put(el("h3"), "card.harder"), el("ul", {}, harder.map((t) => I.putPair(el("li", { dir: t[1] ? null : "auto" }), t[0], t[1])))] : null,
@@ -426,7 +436,7 @@
       count,
       item.notes ? el("p", { class: "p-notes", text: item.notes, dir: "auto" }) : null,
       el("details", { class: "fa-how", open: "" }, el("summary", { text: T("fa.howTo") }),
-        el("ol", { class: "p-steps" }, I.exSteps(ex).map((t, k) => I.putPair(el("li"), t, ex.instructions[k]))))
+        H.stepsEdited(item) ? stepsList(item, ex) : el("ol", { class: "p-steps" }, I.exSteps(ex).map((t, k) => I.putPair(el("li"), t, ex.instructions[k]))))
     );
     if (readBtn) readBtn.addEventListener("click", () => readCard(readBtn, card));
     body.append(card);

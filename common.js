@@ -208,15 +208,31 @@
     return JSON.parse(new TextDecoder().decode(raw));
   }
 
-  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions], load, own progression, own regression, side, stage]
+  // Compact form of one programme item: [id, sets, reps, hold, frequency, notes, [progressions], [regressions], load, own progression, own regression, side, stage, own steps]
+  // Own steps: the physio's own wording of the steps for this handout, one step per line ("" = the library's steps).
   function packItem(it) {
-    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || "", String(it.progText || "").trim(), String(it.regText || "").trim(), SIDES[it.side] ? it.side : "", Number(it.stage) > 0 ? Number(it.stage) : ""];
+    const arr = [it.id, it.sets, it.reps, it.hold, it.frequency, it.notes || "", it.prog || [], it.reg || [], it.load || "", String(it.progText || "").trim(), String(it.regText || "").trim(), SIDES[it.side] ? it.side : "", Number(it.stage) > 0 ? Number(it.stage) : "", cleanSteps(it.stepsText, it.id)];
     while (arr.length > 5 && (arr[arr.length - 1] === "" || (Array.isArray(arr[arr.length - 1]) && !arr[arr.length - 1].length))) arr.pop();
     return arr;
   }
   function unpackItem(a) {
-    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "", progText: String(a[9] || "").slice(0, 300), regText: String(a[10] || "").slice(0, 300), side: SIDES[a[11]] ? a[11] : "", stage: Math.max(0, Math.min(9, parseInt(a[12], 10) || 0)) };
+    return { id: a[0], sets: a[1] ?? "", reps: a[2] ?? "", hold: a[3] ?? "", frequency: a[4] ?? "", notes: a[5] || "", prog: a[6] || [], reg: a[7] || [], load: a[8] || "", progText: String(a[9] || "").slice(0, 300), regText: String(a[10] || "").slice(0, 300), side: SIDES[a[11]] ? a[11] : "", stage: Math.max(0, Math.min(9, parseInt(a[12], 10) || 0)), stepsText: cleanSteps(String(a[13] || "").slice(0, 1500), a[0]) };
   }
+  // Tidy typed steps: one per line, no blank lines. Gives "" when they match the library's steps,
+  // so an unchanged box never counts as "edited".
+  function cleanSteps(text, id) {
+    const lines = String(text || "").split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
+    if (!lines.length) return "";
+    const ex = byId(id);
+    if (ex && lines.join("\n") === (ex.instructions || []).join("\n")) return "";
+    return lines.join("\n");
+  }
+  // The steps to show for one programme item: the physio's own wording if they changed it, else the library's.
+  function stepsOf(item, ex) {
+    const own = cleanSteps(item && item.stepsText, ex && ex.id);
+    return own ? own.split("\n") : ((ex && ex.instructions) || []);
+  }
+  const stepsEdited = (item) => !!cleanSteps(item && item.stepsText, item && item.id);
 
   // Rough time for one session: about 4 seconds a rep plus any hold, 30 seconds rest
   // between rounds and 30 seconds to get set up. Rounded up to the next 5 minutes.
@@ -302,6 +318,6 @@
     return isNaN(d) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   }
 
-  window.Handout = { LIBRARY, byId, describe, sideLabel, SIDES, equipment, unpackStages, packStages, picture, videoInfo, mediaSwitch, encode, decode, packItem, unpackItem, formatDate, estimateMinutes, painGuide, canCompress,
+  window.Handout = { LIBRARY, byId, describe, sideLabel, SIDES, equipment, unpackStages, packStages, picture, videoInfo, mediaSwitch, encode, decode, packItem, unpackItem, cleanSteps, stepsOf, stepsEdited, formatDate, estimateMinutes, painGuide, canCompress,
     OWN_AREA, packCustom, unpackCustom, registerCustom, unregisterCustom, customDefs };
 })();

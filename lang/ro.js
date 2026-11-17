@@ -38,6 +38,7 @@ RepSheetI18n.add("ro", {
     "card.pause": "Pauză",
     "card.play": "Pornește",
     "card.own": "Scris de kinetoterapeutul tău",
+    "card.stepsEnglish": "Kinetoterapeutul tău a scris acești pași în engleză.",
     "card.ownLike": "Imaginea arată un exercițiu asemănător. Urmează pașii kinetoterapeutului de mai jos.",
     "card.ownShow": "Kinetoterapeutul îți va arăta cum se face acest exercițiu.",
     "card.need": "Ai nevoie de:",

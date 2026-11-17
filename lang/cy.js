@@ -38,6 +38,7 @@ RepSheetI18n.add("cy", {
     "card.pause": "Oedi",
     "card.play": "Chwarae",
     "card.own": "Wedi'i ysgrifennu gan eich ffisiotherapydd",
+    "card.stepsEnglish": "Ysgrifennodd eich ffisiotherapydd y camau hyn yn Saesneg.",
     "card.ownLike": "Mae'r llun yn dangos ymarfer tebyg. Dilynwch gamau eich ffisiotherapydd isod.",
     "card.ownShow": "Bydd eich ffisiotherapydd yn dangos i chi sut i wneud hwn.",
     "card.need": "Bydd angen:",

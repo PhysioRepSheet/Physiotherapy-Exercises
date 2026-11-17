@@ -111,3 +111,7 @@ body:not(.tr-print) .tr-only { display: none !important; }
   .print-qr p.tr-ar, .print-qr p.tr-bn, .print-qr p.tr-pa { line-height: 1.6; }
   .print-qr p.tr-ur { line-height: 2.1; }
 }
+
+/* The physio's own steps on a translated print: shown as typed (English) */
+@media print { body.tr-print .steps-en-note { margin: 2mm 0 0; font-style: italic; font-size: 9pt; } }
+body:not(.tr-print) .steps-en-note { display: none !important; }

@@ -233,6 +233,7 @@
       reg: [],
       progText: "",
       regText: "",
+      stepsText: "",
       side: "",
       stage: stages.length ? (programme.length ? programme[programme.length - 1].stage || 1 : 1) : 0
     });
@@ -506,6 +507,44 @@
         })
       );
 
+      // Steps: the library's wording, or the physio's own for this handout (Advanced view, "Change the steps")
+      const stepsList = el("ol", { class: "ex-steps" });
+      const editedMark = el("span", { class: "steps-edited-mark no-print", title: "You changed the steps for this handout", hidden: !H.stepsEdited(item) }, "Edited");
+      const stepsId = "se-" + item.key;
+      const stepsBox = el("textarea", {
+        id: stepsId, class: "steps-text", rows: String(Math.min(8, Math.max(3, H.stepsOf(item, ex).length + 1))), maxlength: "1500",
+        "aria-describedby": "se-hint-" + item.key,
+        oninput: (e) => { item.stepsText = H.cleanSteps(e.target.value, item.id); refreshSteps(); changed(); }
+      });
+      const resetBtn = el("button", { type: "button", class: "btn btn-small btn-secondary steps-reset", onclick: () => {
+        item.stepsText = "";
+        stepsBox.value = ex.instructions.join("\n");
+        refreshSteps();
+        changed();
+        stepsBox.dispatchEvent(new Event("input", { bubbles: true })); // re-runs the privacy check
+        toast("Steps reset to the standard wording");
+      } }, "Reset to standard");
+      const refreshSteps = () => {
+        const edited = H.stepsEdited(item);
+        stepsList.innerHTML = "";
+        H.stepsOf(item, ex).forEach((s) => stepsList.append(el("li", { text: s })));
+        editedMark.hidden = !edited;
+        resetBtn.disabled = !edited;
+        stepsList.classList.toggle("edited", edited);
+      };
+      refreshSteps();
+      const stepsEditor = el("details", { class: "steps-edit no-print", open: H.stepsEdited(item) },
+        el("summary", {}, "Change the steps ", el("span", { class: "hint", text: "(for this handout only)" })),
+        el("div", { class: "steps-edit-body" },
+          el("label", { for: stepsId, text: "Steps, one per line" }),
+          stepsBox,
+          el("div", { class: "steps-edit-foot" },
+            el("p", { class: "hint", id: "se-hint-" + item.key, text: "Your wording replaces the standard steps on this handout and patient page. It isn\u2019t translated, so other languages show it in English. Please don\u2019t include any patient details." }),
+            resetBtn
+          )
+        )
+      );
+
       const st = stages.length ? stages[(item.stage || 1) - 1] : null;
       const firstOfStage = st && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1));
       list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : "") + (firstOfStage ? " stage-first" : ""), "data-key": item.key, "data-id": item.id },
@@ -515,7 +554,7 @@
         el("div", { class: "ex-media no-print" }, H.mediaSwitch(ex, H.picture(ex, "anim", { offset: i * 0.4 }))),
         el("div", { class: "ex-body" },
           el("div", { class: "ex-top" },
-            el("h3", { class: "ex-title", text: ex.name }),
+            el("h3", { class: "ex-title" }, el("span", { class: "ex-title-text", text: ex.name }), editedMark),
             el("div", { class: "ex-tools no-print" },
               el("button", { type: "button", class: "icon-btn move-btn move-up", "aria-label": "Move " + ex.name + " up", title: "Move up", hidden: programme.length < 2, onclick: () => move(i, -1), disabled: i === 0 }, icon(ICONS.up)),
               el("button", { type: "button", class: "icon-btn move-btn move-down", "aria-label": "Move " + ex.name + " down", title: "Move down", hidden: programme.length < 2, onclick: () => move(i, 1), disabled: i === programme.length - 1 }, icon(ICONS.down)),
@@ -525,7 +564,7 @@
           ),
           ex.custom ? el("p", { class: "own-label" }, el("span", { class: "no-print", text: "Your own exercise · not checked by RepSheet" }), el("span", { class: "print-only", text: "Written by your physio" })) : null,
           el("div", { class: "print-only ex-steps-pics" }, H.picture(ex, "steps").el),
-          el("ol", { class: "ex-steps" }, ex.instructions.map((s) => el("li", { text: s })))
+          stepsList
         ),
         // Dose, note and progressions run the full width of the card, so there's no gap under the picture
         el("div", { class: "ex-more" },
@@ -541,6 +580,7 @@
           el("p", { class: "param-summary", text: H.describe(item) }),
           fillDose(el("div", { class: "print-only dose-panel" }), item),
           H.equipment(ex).length ? el("p", { class: "print-only print-kit" }, el("strong", { text: "You'll need: " }), H.equipment(ex).join(", ")) : null,
+          stepsEditor,
           el("div", { class: "field ex-notes" },
             // Folded away until needed, to keep the card short (opens by itself when there is a note)
             el("details", { class: "note-toggle no-print", open: !!item.notes },
@@ -573,11 +613,13 @@
       if (item.side) extras.push(H.sideLabel(item).toLowerCase());
       if (item.load) extras.push(item.load);
       if (item.notes) extras.push("a note");
+      if (H.stepsEdited(item)) extras.push("edited steps");
       const pr = (item.prog || []).length + (item.reg || []).length + (item.progText ? 1 : 0) + (item.regText ? 1 : 0);
       if (pr) extras.push(pr + (pr === 1 ? " progression or regression" : " progressions and regressions"));
       if (st) extras.push(st.name);
       if (extras.length) list.lastChild.querySelector(".ex-more").append(el("p", { class: "ex-extras no-print", text: "Also set: " + extras.join(", ") }));
-      list.lastChild.querySelector("textarea").value = item.notes;
+      list.lastChild.querySelector(".ex-notes textarea").value = item.notes;
+      stepsBox.value = H.stepsOf(item, ex).join("\n");
       list.lastChild.querySelectorAll(".own-prog-text").forEach((t) => { t.value = item[t.dataset.prop] || ""; });
     });
   }
@@ -1132,6 +1174,7 @@
       if (progs.length) line += ". Progressions given: " + progs.join("; ");
       const regs = [...item.reg.map((x) => ex.regressions[x]), String(item.regText || "").trim()].filter(Boolean);
       if (regs.length) line += ". Regressions given: " + regs.join("; ");
+      if (H.stepsEdited(item)) line += ". Steps changed from standard: " + H.stepsOf(item, ex).join(" / ");
       if (item.notes.trim()) line += ". Notes: " + item.notes.trim();
       lines.push(line);
     });
@@ -1180,7 +1223,7 @@
         if (st.move) lines.push("Move on to the next stage when: " + st.move);
       }
       lines.push("", (i + 1) + ". " + ex.name.toUpperCase());
-      ex.instructions.forEach((s) => lines.push("- " + s));
+      H.stepsOf(item, ex).forEach((s) => lines.push("- " + s));
       const d = H.describe(item);
       if (d) lines.push(d);
       if (item.notes.trim()) lines.push("Note: " + item.notes.trim());

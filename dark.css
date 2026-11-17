@@ -43,7 +43,7 @@
   :root[data-theme="dark"] :is(.btn-secondary, .chip, .ex-card, .empty-steps li, .share-qr, .move-btn, .bulk-list, .ex-summary, .bm-side,
     .contact-form select, .params select, .pc-fix, .p-day, .fa-meter, .fa-rest, .p-reminder-row select, .ci-opts button, .p-stage-tab,
     .patient-message, #lang-pick, .lang-bar, .p-card) { background: var(--card); color: var(--ink); }
-  :root[data-theme="dark"] :is(input, textarea, select, .progressions, .note-toggle, .own-dialog select, .bulk-tools) { background-color: var(--field); color: var(--ink); border-color: var(--line-strong); }
+  :root[data-theme="dark"] :is(input, textarea, select, .progressions, .steps-edit, .note-toggle, .own-dialog select, .bulk-tools) { background-color: var(--field); color: var(--ink); border-color: var(--line-strong); }
   :root[data-theme="dark"] :is(input, textarea):focus { background-color: var(--field); box-shadow: 0 0 0 4px rgba(79, 193, 178, .22); }
   :root[data-theme="dark"] input::placeholder, :root[data-theme="dark"] textarea::placeholder { color: #7f8c88; }
   :root[data-theme="dark"] .btn-ghost:hover { background: var(--card); }

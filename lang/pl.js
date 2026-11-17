@@ -38,6 +38,7 @@ RepSheetI18n.add("pl", {
     "card.pause": "Pauza",
     "card.play": "Odtwórz",
     "card.own": "Napisane przez Twojego fizjoterapeutę",
+    "card.stepsEnglish": "Twój fizjoterapeuta napisał te kroki po angielsku.",
     "card.ownLike": "Obrazek pokazuje podobne ćwiczenie. Postępuj według kroków fizjoterapeuty poniżej.",
     "card.ownShow": "Fizjoterapeuta pokaże Ci, jak wykonać to ćwiczenie.",
     "card.need": "Potrzebujesz:",

@@ -1090,3 +1090,23 @@ body { font-optical-sizing: auto; }
 .settings .settings-actions #btn-print { grid-column: 1 / -1; order: 0; flex-basis: auto; }
 .settings .settings-actions .btn-secondary { padding: 6px 4px; font-size: .8125rem; min-height: 34px; min-width: 0; width: 100%; line-height: 1.15; white-space: normal; text-wrap: balance; justify-content: center; text-align: center; }
 @media (max-width: 330px) { .settings .settings-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* ---------- Change the steps (Advanced view) ---------- */
+.steps-edited-mark { display: inline-flex; align-items: center; flex: none; font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--accent, #c2410c); background: var(--accent-tint, #fff1e8); border: 1px solid currentColor; border-radius: 999px; padding: 1px 8px; line-height: 1.5; }
+.steps-edited-mark[hidden] { display: none; }
+.steps-edit { margin-top: 12px; border: 1px solid var(--line); border-radius: 12px; background: #fcfcfb; overflow: hidden; }
+.steps-edit summary { cursor: pointer; font-weight: 600; font-size: .875rem; padding: 10px 14px; list-style: none; display: flex; align-items: center; gap: 8px; }
+.steps-edit summary::-webkit-details-marker { display: none; }
+.steps-edit summary::before { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--ink-soft); border-bottom: 2px solid var(--ink-soft); transform: rotate(-45deg); transition: transform .2s var(--ease); margin-right: 2px; }
+.steps-edit[open] summary::before { transform: rotate(45deg); }
+.steps-edit summary:hover { background: var(--brand-tint-2); }
+.steps-edit-body { padding: 4px 14px 14px; }
+.steps-edit-body label { display: block; font-weight: 700; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin-bottom: 6px; }
+.steps-edit-body textarea { width: 100%; min-height: 72px; }
+.steps-edit-foot { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-top: 6px; }
+.steps-edit-foot .hint { margin: 0; font-size: .8125rem; }
+.steps-reset { flex: none; font-size: .8125rem; padding: 6px 12px; min-height: 34px; }
+.steps-reset:disabled { opacity: .5; cursor: default; }
+@media (max-width: 520px) { .steps-edit-foot { flex-direction: column; } }
+@media screen { .view-simple .steps-edit { display: none !important; } }
+@media print { .steps-edit, .steps-edited-mark { display: none !important; } }

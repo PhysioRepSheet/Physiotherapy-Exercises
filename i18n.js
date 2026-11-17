@@ -72,6 +72,7 @@
     "card.pause": "Pause",
     "card.play": "Play",
     "card.own": "Written by your physio",
+    "card.stepsEnglish": "Your physio wrote these steps in English.",
     "card.ownLike": "The picture shows a similar exercise. Follow your physio's steps below.",
     "card.ownShow": "Your physio will show you how to do this one.",
     "card.need": "You'll need:",

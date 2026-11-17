@@ -304,3 +304,6 @@ body.large-print .p-install-text { font-size: 1.1rem; }
 /* Leave room at the bottom so the card never hides the last part of the page */
 body.install-open main { padding-bottom: 170px; }
 @media print { .p-install { display: none !important; } }
+
+/* Steps the physio wrote themselves (shown as typed, in English, in other languages) */
+.p-steps-note { margin: 12px 0 -4px; font-size: .875rem; font-style: italic; }

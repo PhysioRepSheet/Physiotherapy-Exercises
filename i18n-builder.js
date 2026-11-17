@@ -200,8 +200,17 @@
     const steps = li.querySelector(".ex-steps:not(.tr-only)");
     if (steps) {
       const ol = trAttrs(make("ol", "ex-steps"));
-      I.exSteps(ex).forEach((s, n) => { const x = make("li"); I.putPair(x, s, ex.instructions[n]); ol.append(x); });
-      steps.after(ol);
+      if (H.stepsEdited(item)) {
+        // The physio's own wording can't be translated: show it as typed (English), and say so
+        const note = trAttrs(make("p", "steps-en-note"));
+        I.put(note, "card.stepsEnglish");
+        ol.lang = "en"; ol.dir = "ltr";
+        H.stepsOf(item, ex).forEach((s) => { const x = make("li"); x.textContent = s; ol.append(x); });
+        steps.after(note, ol);
+      } else {
+        I.exSteps(ex).forEach((s, n) => { const x = make("li"); I.putPair(x, s, ex.instructions[n]); ol.append(x); });
+        steps.after(ol);
+      }
     }
     // Dose
     const dose = li.querySelector(".dose-panel:not(.tr-only)");
