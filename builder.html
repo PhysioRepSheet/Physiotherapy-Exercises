@@ -86,13 +86,34 @@
           <button type="button" class="icon-btn" id="whats-new-close" aria-label="Close" title="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         </div>
         <p id="programme-summary" class="programme-summary no-print" hidden></p>
+        <nav id="ex-summary" class="ex-summary no-print" aria-labelledby="exs-title" hidden>
+          <div class="exs-head">
+            <h3 id="exs-title">In this handout</h3>
+            <button type="button" class="link-btn" id="exs-toggle" aria-expanded="true" aria-controls="exs-list">Hide</button>
+          </div>
+          <ol id="exs-list" class="exs-list"></ol>
+        </nav>
         <details id="bulk-tools" class="bulk-tools no-print">
-          <summary>Change all exercises</summary>
-          <div class="bulk-row">
-            <label for="bulk-freq">How often, for every exercise</label>
-            <input id="bulk-freq" type="text" placeholder="e.g. Twice a day" list="freq-options">
+          <summary>Change several exercises at once</summary>
+          <div class="bulk-body">
+            <p class="hint bulk-hint">Fill in only what you want to change. Empty boxes are left as they are.</p>
+            <div class="bulk-fields">
+              <div class="field"><label for="bulk-sets">Sets</label><input id="bulk-sets" type="number" min="0" inputmode="numeric"></div>
+              <div class="field"><label for="bulk-reps">Reps</label><input id="bulk-reps" type="number" min="0" inputmode="numeric"></div>
+              <div class="field"><label for="bulk-hold">Hold (secs)</label><input id="bulk-hold" type="number" min="0" inputmode="numeric" placeholder="0 = no hold"></div>
+              <div class="field bulk-wide"><label for="bulk-freq">How often</label><input id="bulk-freq" type="text" placeholder="e.g. Twice a day" list="freq-options"></div>
+              <div class="field bulk-wide"><label for="bulk-load">Weight or band</label><input id="bulk-load" type="text" placeholder="e.g. 2 kg"></div>
+            </div>
             <datalist id="freq-options"><option value="Once a day"><option value="Twice a day"><option value="3 times a day"><option value="Every other day"><option value="3 times a week"></datalist>
-            <button type="button" class="btn btn-secondary" id="bulk-freq-apply">Apply to all</button>
+            <fieldset class="bulk-pick">
+              <legend>Change these exercises</legend>
+              <div class="bulk-pick-tools"><button type="button" class="link-btn" id="bulk-all">Tick all</button><button type="button" class="link-btn" id="bulk-none">Untick all</button></div>
+              <div id="bulk-list" class="bulk-list"></div>
+            </fieldset>
+            <div class="bulk-actions">
+              <button type="button" class="btn btn-primary" id="bulk-apply">Apply</button>
+              <button type="button" class="btn btn-secondary" id="bulk-reset">Empty the boxes</button>
+            </div>
           </div>
         </details>
         <p id="too-many-tip" class="tip no-print" hidden><strong>Tip:</strong> people tend to do a few exercises well rather than lots of them badly. Research with older adults found 2 exercises were done better than 8. Aim for about 3 to 5 if you can.</p>

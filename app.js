@@ -1227,13 +1227,122 @@
   $("#preview-close").addEventListener("click", () => $("#preview-dialog").close());
   $("#preview-dialog").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 
-  // Set "How often" for every exercise at once
-  $("#bulk-freq-apply").addEventListener("click", () => {
-    const v = $("#bulk-freq").value.trim();
-    if (!v || !programme.length) return;
-    programme.forEach((it) => { it.frequency = v; });
-    renderProgramme(); changed();
-    toast("How often set to “" + v + "” for all " + programme.length);
+  // ---------- "In this handout": a short summary that stays in view (tablets and computers) ----------
+  // Tap an exercise to jump to its card.
+  const EXS_KEY = "handout-builder:summary-hidden";
+  let exsHidden = false;
+  try { exsHidden = localStorage.getItem(EXS_KEY) === "1"; } catch (e) { /* storage unavailable */ }
+  function shortDose(it) {
+    const bits = [];
+    if (it.sets && it.reps && Number(it.sets) > 1) bits.push(it.sets + " × " + it.reps);
+    else if (it.reps && Number(it.sets) === 1) bits.push(it.reps + " times");
+    else if (it.reps) bits.push(it.reps + " times");
+    else if (it.sets) bits.push(it.sets + " rounds");
+    if (it.hold) bits.push(it.hold + "s hold");
+    if (it.load) bits.push(it.load);
+    if (it.frequency) bits.push(it.frequency);
+    return bits.join(" · ");
+  }
+  function renderExSummary() {
+    const nav = $("#ex-summary"), list = $("#exs-list");
+    nav.hidden = programme.length < 1;
+    nav.classList.toggle("is-collapsed", exsHidden);
+    $("#exs-toggle").textContent = exsHidden ? "Show" : "Hide";
+    $("#exs-toggle").setAttribute("aria-expanded", String(!exsHidden));
+    list.hidden = exsHidden;
+    list.innerHTML = "";
+    let stage = -1;
+    programme.forEach((it, i) => {
+      const ex = H.byId(it.id);
+      if (!ex) return;
+      if (stages.length && it.stage !== stage) {
+        stage = it.stage;
+        const st = stages[(it.stage || 1) - 1];
+        if (st) list.append(el("li", { class: "exs-stage", text: st.name || ("Stage " + it.stage) }));
+      }
+      const side = H.sideLabel(it);
+      const b = el("button", { type: "button", class: "exs-item" },
+        el("span", { class: "exs-num", text: String(i + 1) }),
+        el("span", { class: "exs-name", text: ex.name + (side ? " (" + side.toLowerCase().replace(" side", "") + ")" : "") }),
+        el("span", { class: "exs-dose", text: shortDose(it) || "No dose set" }));
+      b.addEventListener("click", () => {
+        const card = $("#programme-list").children[i];
+        if (!card) return;
+        // Land the card just below the summary (which stays at the top of the screen)
+        const nav = $("#ex-summary");
+        const stuck = getComputedStyle(nav).position === "sticky" ? nav.getBoundingClientRect().height + 76 : 80;
+        window.scrollTo({ top: window.scrollY + card.getBoundingClientRect().top - stuck - 12, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+        card.classList.add("just-moved");
+        setTimeout(() => card.classList.remove("just-moved"), 1200);
+        const first = card.querySelector("input, select, textarea, button");
+        if (first) setTimeout(() => first.focus({ preventScroll: true }), 400);
+      });
+      list.append(el("li", {}, b));
+    });
+  }
+  $("#exs-toggle").addEventListener("click", () => {
+    exsHidden = !exsHidden;
+    try { localStorage.setItem(EXS_KEY, exsHidden ? "1" : "0"); } catch (e) { /* storage unavailable */ }
+    renderExSummary();
+  });
+  new MutationObserver(renderExSummary).observe($("#programme-list"), { childList: true });
+  $("#programme-list").addEventListener("input", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });
+  $("#programme-list").addEventListener("change", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });
+  renderExSummary();
+
+  // ---------- Change several exercises at once ----------
+  // Tick the exercises to change (all by default), fill in only the boxes to change, press Apply.
+  const BULK = [["sets", "#bulk-sets", "sets", true], ["reps", "#bulk-reps", "reps", true], ["hold", "#bulk-hold", "hold", true],
+    ["frequency", "#bulk-freq", "how often", false], ["load", "#bulk-load", "weight", false]];
+  const bulkOff = new Set(); // exercises unticked, by card key
+  function bulkPicked() { return programme.filter((it) => !bulkOff.has(it.key)); }
+  function bulkButton() {
+    const n = bulkPicked().length;
+    $("#bulk-apply").textContent = n === programme.length && n > 1 ? "Apply to all " + n + " exercises" : "Apply to " + n + " exercise" + (n === 1 ? "" : "s");
+    $("#bulk-apply").disabled = !n;
+  }
+  function renderBulkList() {
+    const box = $("#bulk-list");
+    const keys = new Set(programme.map((it) => it.key));
+    [...bulkOff].forEach((k) => { if (!keys.has(k)) bulkOff.delete(k); });
+    box.innerHTML = "";
+    programme.forEach((it, i) => {
+      const ex = H.byId(it.id);
+      if (!ex) return;
+      const side = H.sideLabel(it);
+      const cb = el("input", { type: "checkbox", id: "bulk-x-" + it.key });
+      cb.checked = !bulkOff.has(it.key);
+      cb.addEventListener("change", () => { if (cb.checked) bulkOff.delete(it.key); else bulkOff.add(it.key); bulkButton(); });
+      box.append(el("label", { class: "bulk-item", for: cb.id }, cb,
+        el("span", { class: "bulk-num", text: String(i + 1) }),
+        el("span", { class: "bulk-name", text: ex.name + (side ? " (" + side.toLowerCase() + ")" : "") }),
+        el("span", { class: "bulk-dose", text: H.describe(it) })));
+    });
+    bulkButton();
+  }
+  new MutationObserver(() => { if ($("#bulk-tools").open) renderBulkList(); }).observe($("#programme-list"), { childList: true });
+  $("#bulk-tools").addEventListener("toggle", () => { if ($("#bulk-tools").open) renderBulkList(); });
+  $("#bulk-all").addEventListener("click", () => { bulkOff.clear(); renderBulkList(); });
+  $("#bulk-none").addEventListener("click", () => { programme.forEach((it) => bulkOff.add(it.key)); renderBulkList(); });
+  $("#bulk-reset").addEventListener("click", () => { BULK.forEach(([, sel]) => { $(sel).value = ""; }); $("#bulk-sets").focus(); });
+  $("#bulk-apply").addEventListener("click", () => {
+    const picked = bulkPicked();
+    if (!picked.length) { toast("Tick at least one exercise"); return; }
+    const changes = BULK.map(([key, sel, word, num]) => {
+      let v = $(sel).value.trim();
+      if (v === "") return null;
+      if (num) { const n = Math.round(Number(v)); if (isNaN(n) || n < 0) return null; v = n === 0 ? "" : String(n); }
+      return { key, v, word };
+    }).filter(Boolean);
+    if (!changes.length) { toast("Fill in at least one box, such as Sets or How often"); $("#bulk-sets").focus(); return; }
+    const before = programme.map((it) => ({ key: it.key, ...Object.fromEntries(BULK.map(([k]) => [k, it[k]])) }));
+    picked.forEach((it) => changes.forEach((c) => { it[c.key] = c.v; }));
+    renderProgramme(); renderBulkList(); changed();
+    const what = changes.map((c) => c.word).join(", ");
+    undoToast("Changed " + what + " for " + picked.length + " exercise" + (picked.length === 1 ? "" : "s"), () => {
+      before.forEach((b) => { const it = programme.find((x) => x.key === b.key); if (it) BULK.forEach(([k]) => { it[k] = b[k]; }); });
+      renderProgramme(); renderBulkList(); changed();
+    });
   });
 
   // "What's new" note, shown once per update (only the update name is remembered)

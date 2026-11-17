@@ -6,7 +6,7 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17-phone-pdf-autosave";
+const VERSION = "repsheet-2026-11-17-summary-bulk";
 const FILES = [
   "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html",
   "styles.css", "view.css", "landing.css",
