@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.goatcounter.com; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>What's changed · RepSheet</title>
   <link rel="manifest" href="manifest.webmanifest">
@@ -95,6 +95,8 @@
 
     <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a> · <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a></p>
   </main>
+  <script src="config.js"></script>
+  <script src="counter.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

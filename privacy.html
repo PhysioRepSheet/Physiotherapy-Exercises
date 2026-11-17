@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-eYi8SkCLmY4SPr9ZOWpmahlEodS8l1H5XFD8Ove30NA='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.goatcounter.com; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Privacy · RepSheet</title>
   <!-- Replace every [PLACEHOLDER] in yellow before the site goes live. -->
@@ -30,7 +30,7 @@
       <ul>
         <li>We don't collect, store or see any patient information.</li>
         <li>Everything you type stays in your own web browser.</li>
-        <li>There are no accounts, cookies, analytics, tracking or adverts.</li>
+        <li>There are no accounts, cookies or adverts. We count visits with a simple, cookie-free counter that never sees what's in a handout.</li>
       </ul>
     </div>
 
@@ -72,17 +72,28 @@
     <h2>Website hosting</h2>
     <p>The site is hosted by GitHub Pages (run by GitHub, Inc.). Like any website, the host may keep basic technical logs, such as your device's IP address and which page was requested, to keep the service running and secure. These logs never include the programme in a patient link (see above), and we don't use them to identify anyone.</p>
 
+    <h2>Visitor numbers</h2>
+    <p>To know roughly how many people use RepSheet, we count page visits with <a href="https://www.goatcounter.com/" rel="noopener">GoatCounter</a>, a small, privacy-friendly counter. It uses no cookies and stores nothing on your device. For each visit it gets only:</p>
+    <ul>
+      <li>which page it was, by name only (for example "Patient handout"). The part of a patient link that holds the exercises, notes or diary is never sent.</li>
+      <li>the screen size, to tell phones, tablets and computers apart</li>
+      <li>the website you came from, by name only (for example "google.com"). This is never sent from patient pages.</li>
+    </ul>
+    <p>Like any website, GoatCounter also sees your IP address and browser type when the count arrives. It uses them to work out the country, browser and type of device, and to avoid counting the same visit twice. It doesn't store your IP address. We only ever see totals, such as visits per day. We can't see who anyone is.</p>
+
     <h2>Feedback and exercise requests</h2>
     <p>The "Send feedback" and "Request an exercise" links open a Google Form. What you type there is stored by Google and only used to improve this tool. Google's privacy policy applies to the form. <strong>Never include patient details in feedback or requests.</strong></p>
 
     <h2>Cookies</h2>
-    <p>This site doesn't use cookies, analytics or adverts. The only things it can store on a device are the physiotherapist's own name and contact details, saved templates, their own exercises, favourite and recent exercises (only if they choose to) and, on a patient's phone, the days they have ticked, which stage they are on and their display choices. To remove them, untick "Remember my name and contact details", delete templates in "My templates", or clear your browser's site data.</p>
+    <p>This site doesn't use cookies or adverts, and the visitor counter stores nothing on your device. The only things it can store on a device are the physiotherapist's own name and contact details, saved templates, their own exercises, favourite and recent exercises (only if they choose to) and, on a patient's phone, the days they have ticked, which stage they are on and their display choices. To remove them, untick "Remember my name and contact details", delete templates in "My templates", or clear your browser's site data.</p>
 
     <h2>Changes</h2>
     <p>If anything here changes, we'll update this page and the date at the top.</p>
 
     <p style="margin-top:32px"><a href="builder.html">Back to the handout builder</a> · <a href="disclaimer.html">Disclaimer</a></p>
   </main>
+  <script src="config.js"></script>
+  <script src="counter.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

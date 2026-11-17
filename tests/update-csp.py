@@ -11,6 +11,8 @@ for f in sorted(glob.glob("*.html")):
         "style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; " \
         "connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; " \
         "object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'"
+    if f != "media.html":  # visitor counter (counter.js) sends a tiny image request to GoatCounter
+        csp = csp.replace("img-src 'self' data: blob:", "img-src 'self' data: blob: https://*.goatcounter.com")
     if f == "media.html":  # the photo and video page saves files to GitHub
         csp = csp.replace("connect-src 'self' https://api.web3forms.com", "connect-src 'self' https://api.github.com")
     tag = '  <meta http-equiv="Content-Security-Policy" content="' + csp + '">\n'

@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-SiN8i3V6tJ8FgBy2q4prbwRWIYwG5ZkShJEiEr2tMJ4=' 'sha256-UHuOAGpspO4ABZHHlRgPEqP+Atix76or+4FL+r27jOc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-SiN8i3V6tJ8FgBy2q4prbwRWIYwG5ZkShJEiEr2tMJ4=' 'sha256-UHuOAGpspO4ABZHHlRgPEqP+Atix76or+4FL+r27jOc='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.goatcounter.com; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RepSheet: free home exercise handouts for physiotherapists</title>
   <meta name="description" content="Make clear home exercise handouts in minutes. Free and independent. Print them, or give patients a QR code to moving pictures on their phone. Nothing about your patient is stored.">
@@ -154,7 +154,7 @@
       <ul class="privacy-points">
         <li>The handout is made in your browser. Nothing you type is sent to us or saved on a server.</li>
         <li>The patient's name is never put in the link or the QR code.</li>
-        <li>No accounts, cookies, analytics or adverts.</li>
+        <li>No accounts, cookies or adverts.</li>
         <li>Your own name, templates and exercises are kept on your computer only if you choose.</li>
       </ul>
       <p><a href="privacy.html">Read the privacy notice</a></p>
@@ -215,6 +215,7 @@
 
   <script src="config.js"></script>
   <script src="feedback.js"></script>
+  <script src="counter.js"></script>
   <script>
     // Soft shadow under the header once the page scrolls under it
     (function () {

@@ -2,7 +2,7 @@
 <html lang="en-GB">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.goatcounter.com; media-src 'self' blob: https:; font-src 'self' data:; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; manifest-src 'self'; worker-src 'self'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My pacing diary · RepSheet</title>
   <meta name="description" content="A free activity pacing diary. Write down what you do and how you feel, set limits with your physio, and see your week. Saved only on your own phone.">
@@ -228,6 +228,8 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="config.js"></script>
+  <script src="counter.js"></script>
   <script src="vendor/qrcode.js"></script>
   <script src="pacing.js"></script>
 </body>
