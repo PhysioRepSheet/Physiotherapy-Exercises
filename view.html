@@ -13,60 +13,68 @@
   <meta name="apple-mobile-web-app-title" content="My exercises">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="view.css">
+  <link rel="stylesheet" href="i18n.css">
 </head>
 <body class="patient">
   <header class="site-header no-print">
     <div class="wrap header-inner">
       <div class="brand">
-        <svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Your exercises</span>
+        <svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark" data-i18n="page.title" data-i18n-plain>Your exercises</span>
       </div>
       <div class="header-right">
         <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause pictures</button>
         <button type="button" class="btn-ghost" id="btn-large" aria-pressed="false">Larger text</button>
-        <button type="button" class="btn-ghost" id="btn-print">Print</button>
+        <button type="button" class="btn-ghost" id="btn-print" data-i18n="hdr.print" data-i18n-plain>Print</button>
       </div>
     </div>
   </header>
 
   <main class="wrap patient-main">
+    <!-- Language: the physio's choice comes in the link; the patient can change it here (remembered on this phone) -->
+    <section id="lang-bar" class="lang-bar no-print" hidden>
+      <label for="lang-pick" class="lang-pick-label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z"/></svg><span data-i18n="lang.label" data-i18n-plain>Language</span><span class="lang-en-word" lang="en"> / Language</span></label>
+      <select id="lang-pick"></select>
+      <label class="lang-en-toggle" id="lang-en-wrap" hidden><input type="checkbox" id="lang-en"> <span data-i18n="lang.showEnglish" data-i18n-plain>Show English too</span></label>
+    </section>
+    <div id="lang-draft" class="lang-draft" hidden></div>
     <section id="intro" class="patient-intro">
-      <h1>Your home exercise programme</h1>
+      <h1 data-i18n="intro.title">Your home exercise programme</h1>
       <p id="meta" class="patient-meta"></p>
       <p id="general" class="patient-general" hidden></p>
       <div id="fa-start-wrap" class="fa-start-wrap no-print" hidden>
-        <button type="button" class="btn fa-start" id="btn-follow"><span aria-hidden="true">&#9654;</span> Start my exercises</button>
-        <p class="fa-start-hint">Go through them one at a time, with a counter and a timer.</p>
+        <button type="button" class="btn fa-start" id="btn-follow"><span aria-hidden="true">&#9654;</span> <span data-i18n="fa.start" data-i18n-plain>Start my exercises</span></button>
+        <p class="fa-start-hint" data-i18n="fa.startHint">Go through them one at a time, with a counter and a timer.</p>
       </div>
     </section>
 
     <section id="goal-plan" class="p-goal panel" hidden>
-      <div id="goal-box" hidden><h2>My goal</h2><p id="goal-text"></p></div>
-      <div id="plan-box" hidden><h2>My plan: when I'll do them</h2><p id="plan-text"></p></div>
-      <div id="du-box" hidden><h2>How long to keep going</h2><p id="du-text"></p></div>
+      <div id="goal-box" hidden><h2 data-i18n="goal.title">My goal</h2><p id="goal-text"></p></div>
+      <div id="plan-box" hidden><h2 data-i18n="plan.title">My plan: when I'll do them</h2><p id="plan-text"></p></div>
+      <div id="du-box" hidden><h2 data-i18n="du.title">How long to keep going</h2><p id="du-text"></p></div>
     </section>
 
     <section id="ticks" class="p-ticks" hidden aria-labelledby="ticks-title">
       <div class="p-ticks-head">
-        <h2 id="ticks-title">Your week</h2>
+        <h2 id="ticks-title" data-i18n="ticks.title">Your week</h2>
         <div class="p-ticks-nav no-print">
-          <button type="button" class="btn-ghost" id="week-prev" aria-label="Previous week">&larr;</button>
+          <button type="button" class="btn-ghost" id="week-prev" aria-label="Previous week" data-i18n-aria="ticks.prev">&larr;</button>
           <span id="week-label" aria-live="polite"></span>
-          <button type="button" class="btn-ghost" id="week-next" aria-label="Next week">&rarr;</button>
+          <button type="button" class="btn-ghost" id="week-next" aria-label="Next week" data-i18n-aria="ticks.next">&rarr;</button>
         </div>
       </div>
-      <p class="p-ticks-help no-print">Tap a day when you've done your exercises.</p>
-      <div id="week-days" class="p-days no-print" role="group" aria-label="Days of the week"></div>
+      <p class="p-ticks-help no-print" data-i18n="ticks.help">Tap a day when you've done your exercises.</p>
+      <div id="week-days" class="p-days no-print" role="group" aria-label="Days of the week" data-i18n-aria="ticks.days"></div>
       <p id="week-count" class="p-ticks-count no-print"></p>
-      <p class="hint no-print">Your ticks are saved on this phone only. Nothing is sent anywhere.</p>
-      <table class="p-ticks-print print-only"><thead><tr><th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
+      <p class="hint no-print" data-i18n="ticks.saved">Your ticks are saved on this phone only. Nothing is sent anywhere.</p>
+      <table class="p-ticks-print print-only" id="ticks-print-table"><thead><tr><th></th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th></tr></thead>
         <tbody><tr><th>Week 1</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 2</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 3</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><th>Week 4</th><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody></table>
     </section>
 
     <ol id="list" class="patient-list"></ol>
 
     <div id="error" class="panel patient-error" hidden>
-      <h2>We couldn't open this programme</h2>
-      <p>The link may be incomplete. Try scanning the QR code again, or ask your physiotherapist to send you the link again.</p>
+      <h2 data-i18n="error.title">We couldn't open this programme</h2>
+      <p data-i18n="error.text">The link may be incomplete. Try scanning the QR code again, or ask your physiotherapist to send you the link again.</p>
     </div>
 
     <div id="pain-wrap" class="panel" hidden>
@@ -81,42 +89,42 @@
     </div>
 
     <section id="reminder" class="panel p-reminder no-print" aria-labelledby="reminder-title">
-      <h2 id="reminder-title">Remind me</h2>
-      <p>Doing your exercises at the same time each day makes them easier to remember.</p>
+      <h2 id="reminder-title" data-i18n="rem.title">Remind me</h2>
+      <p data-i18n="rem.text">Doing your exercises at the same time each day makes them easier to remember.</p>
       <div class="p-reminder-row">
-        <label for="reminder-days">Days</label>
+        <label for="reminder-days" data-i18n="rem.days" data-i18n-plain>Days</label>
         <select id="reminder-days">
-          <option value="daily">Every day</option>
-          <option value="weekdays">Monday to Friday</option>
-          <option value="mwf">Monday, Wednesday and Friday</option>
+          <option value="daily" data-i18n="rem.daily" data-i18n-plain>Every day</option>
+          <option value="weekdays" data-i18n="rem.weekdays" data-i18n-plain>Monday to Friday</option>
+          <option value="mwf" data-i18n="rem.mwf" data-i18n-plain>Monday, Wednesday and Friday</option>
         </select>
-        <label for="reminder-time">Time</label>
+        <label for="reminder-time" data-i18n="rem.time" data-i18n-plain>Time</label>
         <input id="reminder-time" type="time" value="09:00">
-        <button type="button" class="btn btn-primary" id="btn-reminder">Add a reminder to my calendar</button>
+        <button type="button" class="btn btn-primary" id="btn-reminder" data-i18n="rem.button">Add a reminder to my calendar</button>
       </div>
-      <p class="hint">This adds a reminder to your phone's calendar for the next 6 weeks. Nothing is sent to us.</p>
+      <p class="hint" data-i18n="rem.hint">This adds a reminder to your phone's calendar for the next 6 weeks. Nothing is sent to us.</p>
     </section>
 
     <section id="display" class="panel p-display no-print" aria-labelledby="display-title">
-      <h2 id="display-title">Make this page easier to read</h2>
+      <h2 id="display-title" data-i18n="disp.title">Make this page easier to read</h2>
       <div class="p-display-row">
-        <button type="button" class="btn btn-secondary" id="btn-large-2" aria-pressed="false">Larger text</button>
-        <button type="button" class="btn btn-secondary" id="btn-easy" aria-pressed="false">Easier reading</button>
-        <button type="button" class="btn btn-secondary" id="btn-contrast" aria-pressed="false">High contrast</button>
+        <button type="button" class="btn btn-secondary" id="btn-large-2" aria-pressed="false" data-i18n="disp.large">Larger text</button>
+        <button type="button" class="btn btn-secondary" id="btn-easy" aria-pressed="false" data-i18n="disp.easy">Easier reading</button>
+        <button type="button" class="btn btn-secondary" id="btn-contrast" aria-pressed="false" data-i18n="disp.contrast">High contrast</button>
       </div>
-      <p class="hint">Easier reading uses a cream background and more space between lines. These choices are saved on this phone only.</p>
+      <p class="hint" data-i18n="disp.hint">Easier reading uses a cream background and more space between lines. These choices are saved on this phone only.</p>
     </section>
 
     <aside class="panel patient-safety">
-      <strong>Stay safe:</strong> Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.
+      <strong data-i18n="safe.title" data-i18n-plain>Stay safe:</strong> <span data-i18n="safe.text">Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.</span>
     </aside>
-    <p class="patient-privacy hint">This page is built from your link. Your programme is not stored anywhere. <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a> · Made with RepSheet</p>
+    <p class="patient-privacy hint"><span data-i18n="foot.privacy" data-i18n-plain>This page is built from your link. Your programme is not stored anywhere.</span> <a href="privacy.html" data-i18n="foot.privacyLink" data-i18n-plain>Privacy</a> · <a href="disclaimer.html" data-i18n="foot.disclaimer" data-i18n-plain>Disclaimer</a> · Made with RepSheet</p>
   </main>
 
   <!-- Follow-along: one exercise at a time. Built by view.js. Nothing here is saved or sent anywhere. -->
   <section id="follow" class="fa no-print" hidden aria-labelledby="fa-title">
     <div class="fa-top">
-      <button type="button" class="btn-ghost fa-close" id="fa-close">&#10005; Close</button>
+      <button type="button" class="btn-ghost fa-close" id="fa-close">&#10005; <span data-i18n="fa.close" data-i18n-plain>Close</span></button>
       <p class="fa-pos" id="fa-pos"></p>
       <div class="fa-top-right">
         <button type="button" class="btn-ghost" id="fa-sound" aria-pressed="true">Sound on</button>
@@ -126,8 +134,8 @@
     <div class="fa-bar" aria-hidden="true"><span id="fa-bar-fill"></span></div>
     <div class="fa-body" id="fa-body"></div>
     <p class="visually-hidden" id="fa-live" aria-live="polite"></p>
-    <nav class="fa-nav" aria-label="Move between exercises">
-      <button type="button" class="btn btn-secondary" id="fa-back">&larr; Back</button>
+    <nav class="fa-nav" aria-label="Move between exercises" data-i18n-aria="fa.nav">
+      <button type="button" class="btn btn-secondary" id="fa-back"><span class="dir-arrow" aria-hidden="true">&larr;</span> <span data-i18n="fa.back" data-i18n-plain>Back</span></button>
       <button type="button" class="btn btn-primary" id="fa-next">Next &rarr;</button>
     </nav>
   </section>
@@ -136,7 +144,9 @@
   <script src="illustrations.js"></script>
   <script src="figures.js"></script>
   <script src="vendor/tiny-inflate.js"></script>
+  <script src="i18n.js"></script>
   <script src="common.js"></script>
+  <script src="voice.js"></script>
   <script src="view.js"></script>
   <script src="patient-extras.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>

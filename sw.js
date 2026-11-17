@@ -6,11 +6,14 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-17-pacing-diary";
+const VERSION = "repsheet-2026-11-17-translations-beta";
+// Natural-voice recordings (audio/...) are kept in their own store. Each file's name comes from its words,
+// so a file never changes: they are saved the first time they play and are not re-downloaded on updates.
+const AUDIO = "repsheet-audio-1";
 const FILES = [
   "./", "index.html", "builder.html", "view.html", "privacy.html", "disclaimer.html", "for-nhs-teams.html", "accessibility.html", "changes.html", "404.html", "pacing.html",
-  "styles.css", "view.css", "landing.css", "pacing.css",
-  "config.js", "exercises.js", "illustrations.js", "figures.js", "starters.js", "common.js", "feedback.js", "app.js", "view.js", "privacy-check.js", "bodymap.js", "patient-extras.js", "pdf-maker.js", "pacing.js", "vendor/jspdf.umd.min.js", "vendor/html2canvas.min.js",
+  "styles.css", "view.css", "landing.css", "pacing.css", "i18n.css",
+  "config.js", "i18n.js", "i18n-builder.js", "exercises.js", "illustrations.js", "figures.js", "starters.js", "common.js", "voice.js", "feedback.js", "app.js", "view.js", "privacy-check.js", "bodymap.js", "patient-extras.js", "pdf-maker.js", "pacing.js", "vendor/jspdf.umd.min.js", "vendor/html2canvas.min.js",
   "vendor/qrcode.js", "vendor/tiny-inflate.js",
   "manifest.webmanifest", "icons/icon.svg", "icons/icon-192.png", "icons/icon-512.png", "icons/apple-touch-icon.png",
   "images/landing/builder.jpg", "images/landing/phone.jpg", "images/landing/handout.jpg"
@@ -23,7 +26,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== AUDIO).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
@@ -33,6 +36,16 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+  if (/\/audio\/[^/]+\/[^/]+\.mp3$/.test(new URL(req.url).pathname)) {
+    event.respondWith(caches.open(AUDIO).then(async (cache) => {
+      const hit = await cache.match(req);
+      if (hit) return hit;
+      const res = await fetch(req);
+      if (res && res.ok && res.status === 200) cache.put(req, res.clone());
+      return res;
+    }));
+    return;
+  }
   event.respondWith(
     caches.open(VERSION).then(async (cache) => {
       const network = fetch(req, { cache: "no-cache" }).then((res) => {

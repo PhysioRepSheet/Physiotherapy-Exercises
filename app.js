@@ -496,7 +496,7 @@
 
       const st = stages.length ? stages[(item.stage || 1) - 1] : null;
       const firstOfStage = st && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1));
-      list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : "") + (firstOfStage ? " stage-first" : ""), "data-key": item.key },
+      list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : "") + (firstOfStage ? " stage-first" : ""), "data-key": item.key, "data-id": item.id },
         firstOfStage ? el("div", { class: "stage-head" },
           el("span", { class: "stage-name", text: st.name }), st.when ? el("span", { class: "stage-when", text: st.when }) : null,
           st.move ? el("p", { class: "stage-move", text: "Move on to the next stage when: " + st.move }) : null) : null,
@@ -632,14 +632,18 @@
       ...($("#check-in").checked ? { ci: 1 } : {}),
       ...(stages.length ? { st: H.packStages(stages) } : {}),
       ...($("#pain-guide").checked ? { pg: Number($("#pain-level").value) || 1 } : {}),
-      ...($("#duration").value.trim() ? { du: $("#duration").value.trim() } : {})
+      ...($("#duration").value.trim() ? { du: $("#duration").value.trim() } : {}),
+      // Patient's language (i18n-builder.js): just a code like "pl", and whether to show English too
+      ...(window.RepSheetI18nBuilder ? window.RepSheetI18nBuilder.linkData() : {})
     };
   }
 
   async function updateLink() {
     const box = $("#share");
     if (!programme.length) { currentLink = ""; box.hidden = true; $("#print-qr").hidden = true; return; }
-    const code = await H.encode(programmeData());
+    const data = programmeData();
+    const code = await H.encode(data);
+    if (window.RepSheetI18nBuilder) window.RepSheetI18nBuilder.update(data);
     const url = new URL("view.html", location.href);
     url.hash = code;
     currentLink = url.href;
@@ -1050,6 +1054,7 @@
     clearTimeout(linkTimer);
     await updateLink();
     fillPrintMeta();
+    if (window.RepSheetI18nBuilder) await window.RepSheetI18nBuilder.prepare(programmeData());
     if (window.RepSheetPdf && window.RepSheetPdf.wanted()) { window.RepSheetPdf.make(); return; }
     window.print();
   }

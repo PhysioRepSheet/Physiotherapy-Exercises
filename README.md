@@ -47,6 +47,14 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - `videos/`: your own video files. Or use a YouTube/Vimeo link in the `video` field.
   Adding a video to an exercise makes a little "Picture | Video" switch appear under its moving picture, in the builder and on the patient page. Exercises with no video show no switch.
 
+## Translations (patient page and printed handout)
+- The clinician picks the patient's language under "Print and patient page options". The patient link carries only a language code (`lg`) and a "show English too" flag (`le`). Nothing else changes.
+- `i18n.js` holds the English master wording and the list of languages. Each language is one file in `lang/` (for example `lang/pl.js`), loaded only when needed.
+- Every language file starts as `status: "draft"`, which shows a "Draft translation" notice to patients. When a native-speaking clinician has checked every line, change it to `status: "checked"`.
+- Clinicians' own typed notes, goals and own exercises always stay exactly as typed.
+- After changing English wording or adding an exercise, run `node tools/check-translations.js` to list what each language is missing.
+- To add a language: add it to `LANGS` in `i18n.js`, copy a file in `lang/`, translate it, and run the check.
+
 ## Files you shouldn't need to touch
 `app.js` (builder), `view.js` / `view.html` / `view.css` (patient page), `figures.js` (drawing engine),
 `common.js` (shared helpers), `feedback.js`, `vendor/qrcode.js` (QR code maker, MIT licence, Kazuhiko Arase).

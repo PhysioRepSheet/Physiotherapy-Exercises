@@ -1,0 +1,113 @@
+/*
+  RepSheet: languages. The language picker, the "Draft translation" notice, the small English lines
+  ("Show English too"), fonts for each script, and right-to-left layout for Arabic and Urdu.
+  Fonts are the ones already on phones and computers, so nothing extra downloads.
+*/
+
+/* ---------- Language picker (patient page) ---------- */
+.lang-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin: 0 0 14px; padding: 10px 14px; background: var(--surface, #fff); border: 1px solid var(--line, #dfe5e2); border-radius: 14px; }
+.lang-pick-label { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; }
+.lang-pick-label svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; flex: none; }
+.lang-en-word { font-weight: 500; color: var(--ink-soft, #4a5a55); }
+body.lang-en .lang-en-word { display: none; }
+#lang-pick { min-height: 44px; padding: 6px 10px; font: inherit; border: 1px solid var(--line-strong, #b9c4bf); border-radius: 10px; background: #fff; max-width: 100%; }
+.lang-en-toggle { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.lang-en-toggle input { width: 20px; height: 20px; }
+
+/* ---------- Draft notice ---------- */
+.lang-draft { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: #fff7ed; border: 1px solid #fdba74; color: #7c2d12; font-size: .95rem; }
+.lang-draft p { margin: 0; }
+.lang-draft .lang-draft-en { margin-top: 4px; font-size: .85em; opacity: .85; }
+.lang-draft::before { content: "\26A0\FE0F"; float: inline-start; margin-inline-end: 8px; }
+
+/* ---------- "Show English too": a small grey English line under the translation ---------- */
+.en-also { display: block; margin-top: 2px; font-size: .82em; font-weight: 400; line-height: 1.35; color: var(--ink-soft, #5b6b66); font-family: var(--font, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif); text-align: start; letter-spacing: 0; text-transform: none; }
+h1 .en-also, h2 .en-also, h3 .en-also { font-size: .6em; margin-top: 4px; }
+.p-dose .en-also { font-weight: 400; }
+.fa-start .en-also, button .en-also { display: none; }
+@media print { .en-also { color: #555; font-size: 8.5pt; } h1 .en-also, h2 .en-also, h3 .en-also { font-size: 9pt; } }
+
+/* ---------- Fonts for each script ---------- */
+.lang-ar, .tr-ar { --tr-font: "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", Tahoma, "Arial", sans-serif; }
+.lang-ur, .tr-ur { --tr-font: "Noto Nastaliq Urdu", "Jameel Noori Nastaleeq", "Urdu Typesetting", "Noto Naskh Arabic", "Geeza Pro", "Segoe UI", Tahoma, sans-serif; }
+.lang-bn, .tr-bn { --tr-font: "Noto Sans Bengali", "Kohinoor Bangla", "Bangla Sangam MN", "Nirmala UI", Vrinda, sans-serif; }
+.lang-pa, .tr-pa { --tr-font: "Noto Sans Gurmukhi", "Gurmukhi MN", "Gurmukhi Sangam MN", "Mukta Mahee", "Nirmala UI", Raavi, sans-serif; }
+body.lang-ar, body.lang-ur, body.lang-bn, body.lang-pa,
+.tr-ar, .tr-ur, .tr-bn, .tr-pa { font-family: var(--tr-font); }
+body.lang-ar h1, body.lang-ar h2, body.lang-ar h3, body.lang-ur h1, body.lang-ur h2, body.lang-ur h3,
+body.lang-bn h1, body.lang-bn h2, body.lang-bn h3, body.lang-pa h1, body.lang-pa h2, body.lang-pa h3,
+body.lang-ar button, body.lang-ur button, body.lang-bn button, body.lang-pa button,
+body.lang-ar select, body.lang-ur select, body.lang-bn select, body.lang-pa select { font-family: var(--tr-font); }
+/* These scripts need taller lines to stay readable */
+body.lang-ar, .tr-ar { line-height: 1.8; }
+body.lang-ur, .tr-ur { line-height: 2.15; }
+body.lang-bn, body.lang-pa, .tr-bn, .tr-pa { line-height: 1.75; }
+body.lang-ur h1, body.lang-ur h2, body.lang-ur h3, .tr-ur h3 { line-height: 1.9; }
+/* Nastaliq letters sit high and low: give buttons a little more room */
+body.lang-ur .btn, body.lang-ur button { padding-top: .45em; padding-bottom: .55em; }
+/* The site's small capitals style doesn't suit these scripts */
+body.lang-ar .print-kicker, body.lang-ur .print-kicker, body.lang-bn .print-kicker, body.lang-pa .print-kicker { text-transform: none; letter-spacing: 0; }
+
+/* ---------- Right to left (Arabic, Urdu) ---------- */
+[dir="rtl"] .p-steps, [dir="rtl"] .p-options ul { padding-left: 0; padding-right: 22px; }
+[dir="rtl"] .p-notes { border-left: 0; border-right: 4px solid var(--accent); border-radius: 12px 0 0 12px; }
+[dir="rtl"] .patient-safety { border-left: 0; border-right: 4px solid var(--accent); }
+[dir="rtl"] .p-pause { right: auto; left: 10px; }
+[dir="rtl"] .patient-intro::after { right: auto; left: -60px; }
+[dir="rtl"] .ci-big b { margin-right: 0; margin-left: 4px; }
+[dir="rtl"] .p-ticks-print tbody th { text-align: right; padding-left: 0; padding-right: 6px; }
+[dir="rtl"] .p-ticks-nav { flex-direction: row-reverse; }
+[dir="rtl"] .fa-close, [dir="rtl"] .dir-arrow { display: inline-block; }
+[dir="rtl"] .dir-arrow { transform: scaleX(-1); }
+/* Pictures, the moving figures and the picture/video switch keep their normal direction */
+[dir="rtl"] .pic, [dir="rtl"] .media-switch-wrap svg, [dir="rtl"] .p-steps-pics, [dir="rtl"] .fa-meter { direction: ltr; }
+[dir="rtl"] .en-also { direction: ltr; text-align: right; }
+/* Numbers, phone numbers and dates stay readable inside right-to-left text */
+[dir="rtl"] .patient-meta, [dir="rtl"] .fa-num { unicode-bidi: plaintext; }
+@media print {
+  [dir="rtl"] .p-steps, [dir="rtl"] .p-options ul { padding-right: 6mm; padding-left: 0; }
+}
+
+/* ---------- Printed handout made in the builder (builder.html) ---------- */
+/* The translated parts are printed instead of the English ones. On screen the builder stays in English. */
+@media screen { .tr-only { display: none !important; } }
+body:not(.tr-print) .tr-only { display: none !important; }
+@media print {
+  body.tr-print .ex-card.tr-done .ex-title:not(.tr-only),
+  body.tr-print .ex-card.tr-done .ex-steps-pics:not(.tr-only),
+  body.tr-print .ex-card.tr-done .ex-steps:not(.tr-only),
+  body.tr-print .ex-card.tr-done .dose-panel:not(.tr-only),
+  body.tr-print .ex-card.tr-done .print-kit:not(.tr-only),
+  body.tr-print .ex-card.tr-done .options-print:not(.tr-only),
+  body.tr-print .ex-card.tr-done .own-label .print-only:not(.tr-only),
+  body.tr-print .ex-card.tr-done .stage-move:not(.tr-only) { display: none !important; }
+  body.tr-print .own-label .tr-only { display: inline; }
+  body.tr-print .ex-title.tr-only > span { display: block; }
+  /* Right to left: numbered steps and lists start on the right */
+  body.tr-print [dir="rtl"].ex-steps li { padding-left: 0; padding-right: 7mm; }
+  body.tr-print [dir="rtl"].ex-steps li::before { left: auto; right: 0; }
+  body.tr-print.large-print [dir="rtl"].ex-steps li { padding-right: 9mm; }
+  body.tr-print.paper-saver [dir="rtl"].ex-steps li { padding-right: 5.5mm; }
+  body.tr-print .easy-read [dir="rtl"].ex-steps li, body.tr-print.easy-read [dir="rtl"].ex-steps li { padding: 3mm 11mm 3mm 0; }
+  body.tr-print [dir="rtl"].options-print ul { padding-left: 0; padding-right: 5mm; }
+  body.tr-print [dir="rtl"].print-kit, body.tr-print [dir="rtl"].ex-title, body.tr-print [dir="rtl"].stage-move { text-align: right; }
+  body.tr-print [dir="rtl"].ex-steps-pics, body.tr-print .ex-steps-pics.tr-only { direction: ltr; }
+  .print-lang-draft { margin: 0 0 3mm; padding: 2mm 3mm; border: .3mm solid #f59e0b; border-radius: 2mm; font-size: 9pt; }
+  .print-lang-draft p { margin: 0; }
+  .print-lang-draft .lang-draft-en { font-size: 8pt; color: #555; margin-top: 1mm; }
+}
+
+/* ---------- Small fixes for translated pages ---------- */
+/* English lines inside the green intro box need to be light */
+.patient-intro .en-also { color: rgba(255, 255, 255, .78); }
+/* The "today" marker under a day uses the translated word (set by view.js as data-today) */
+.p-day.today::after { content: attr(data-today); }
+
+/* Printed header: the English title sets tight line spacing, which clips tall scripts */
+@media print {
+  .print-head h1.tr-ar, .print-head h1.tr-bn, .print-head h1.tr-pa { line-height: 1.5; letter-spacing: 0; }
+  .print-head h1.tr-ur { line-height: 2; letter-spacing: 0; }
+  .print-kicker.tr-ar, .print-kicker.tr-ur, .print-kicker.tr-bn, .print-kicker.tr-pa { line-height: 2; letter-spacing: 0; }
+  .print-qr p.tr-ar, .print-qr p.tr-bn, .print-qr p.tr-pa { line-height: 1.6; }
+  .print-qr p.tr-ur { line-height: 2.1; }
+}

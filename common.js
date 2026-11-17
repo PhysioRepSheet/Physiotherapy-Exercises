@@ -52,13 +52,17 @@
     '<svg viewBox="0 0 48 48" class="placeholder" aria-hidden="true"><circle cx="24" cy="9" r="5"/><path d="M24 15v15M24 20l-10 6M24 20l10 6M24 30l-7 13M24 30l7 13"/></svg>';
 
   // mode: "thumb" (small still), "anim" (moving, like a GIF), "steps" (numbered pictures for printing)
+  // Words from the translations (i18n.js) when the page has them; English otherwise
+  const tr = (key, en, vars) => (window.RepSheetI18n ? window.RepSheetI18n.t(key, vars) : en);
+  const nameOf = (ex) => (window.RepSheetI18n ? window.RepSheetI18n.exName(ex) : ex.name);
+
   function picture(ex, mode, opts = {}) {
     const box = document.createElement("div");
     box.className = "pic pic-" + mode;
     if (ex.image) {
       const img = document.createElement("img");
       img.src = ex.image;
-      img.alt = (ex.custom ? "Picture of " : "Illustration of ") + ex.name;
+      img.alt = ex.custom ? "Picture of " + ex.name : tr("pic.still", "Illustration of " + ex.name, { name: nameOf(ex) });
       img.loading = "lazy";
       box.append(img);
       return { el: box };
@@ -67,14 +71,14 @@
     const ill = ILLUSTRATIONS[ex.id] || (ex.like && ILLUSTRATIONS[ex.like]);
     if (!ill || !window.PhysioFigures) { box.innerHTML = PLACEHOLDER; return { el: box }; }
     if (mode === "thumb") {
-      box.innerHTML = window.PhysioFigures.frameSVG(ill, ill.frames.length - 1, { arrows: false, alt: ex.name });
+      box.innerHTML = window.PhysioFigures.frameSVG(ill, ill.frames.length - 1, { arrows: false, alt: nameOf(ex) });
       return { el: box };
     }
     if (mode === "steps") {
-      box.innerHTML = window.PhysioFigures.stripSVG(ill, "Step by step pictures of " + ex.name);
+      box.innerHTML = window.PhysioFigures.stripSVG(ill, tr("pic.steps", "Step by step pictures of " + ex.name, { name: nameOf(ex) }));
       return { el: box };
     }
-    const controls = window.PhysioFigures.animate(box, ill, { alt: "Moving illustration of " + ex.name, offset: opts.offset });
+    const controls = window.PhysioFigures.animate(box, ill, { alt: tr("pic.moving", "Moving illustration of " + ex.name, { name: nameOf(ex) }), offset: opts.offset });
     return { el: box, controls };
   }
 
@@ -123,10 +127,10 @@
     const input = document.createElement("input");
     input.type = "checkbox";
     input.setAttribute("role", "switch");
-    input.setAttribute("aria-label", "Show video of " + ex.name);
-    const left = document.createElement("span"); left.className = "mt-word mt-pic"; left.textContent = "Picture";
+    input.setAttribute("aria-label", tr("media.show", "Show video of " + ex.name, { name: nameOf(ex) }));
+    const left = document.createElement("span"); left.className = "mt-word mt-pic"; left.textContent = tr("media.picture", "Picture");
     const track = document.createElement("span"); track.className = "mt-track"; track.setAttribute("aria-hidden", "true");
-    const right = document.createElement("span"); right.className = "mt-word mt-vid"; right.textContent = "Video";
+    const right = document.createElement("span"); right.className = "mt-word mt-vid"; right.textContent = tr("media.video", "Video");
     label.append(left, input, track, right);
     wrap.append(label);
 

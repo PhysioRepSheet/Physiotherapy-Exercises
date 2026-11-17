@@ -11,6 +11,7 @@
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="i18n.css">
 </head>
 <body>
   <a class="skip-link" href="#programme">Skip to handout</a>
@@ -234,6 +235,15 @@
             </label>
           </div>
           <h3 class="settings-group">Print and patient page options</h3>
+          <!-- Patient's language: the handout and patient page are translated; your own typed words stay as typed -->
+          <div class="field lang-field">
+            <label for="handout-lang">Patient's language</label>
+            <select id="handout-lang"><option value="en">English</option></select>
+            <label class="large-toggle lang-en-row" id="handout-lang-en-row" hidden>
+              <input type="checkbox" id="handout-lang-en" checked> <span><strong>Show English too</strong> <span class="hint">(a small English line under each step, so you and family can follow it)</span></span>
+            </label>
+            <p class="hint" id="handout-lang-note" hidden>Beta translation, still being tested and not yet checked by a native speaker. The handout and patient page say so. Your notes, goal and own exercises stay in English as you typed them.</p>
+          </div>
           <div class="tick-row">
             <label class="large-toggle">
               <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
@@ -470,9 +480,11 @@
   <script src="vendor/qrcode.js"></script>
   <script src="starters.js"></script>
   <script src="vendor/tiny-inflate.js"></script>
+  <script src="i18n.js"></script>
   <script src="common.js"></script>
   <script src="feedback.js"></script>
   <script src="app.js"></script>
+  <script src="i18n-builder.js"></script>
   <script src="pdf-maker.js"></script>
   <script src="privacy-check.js"></script>
   <script src="bodymap.js"></script>

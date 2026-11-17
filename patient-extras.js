@@ -9,6 +9,9 @@
 (function () {
   "use strict";
   const H = window.Handout, $ = (s) => document.querySelector(s);
+  const I = window.RepSheetI18n, T = (k, v) => I.t(k, v);
+  // Wait for the patient page to pick its language (view.js does that), so these parts match it
+  const langReady = () => new Promise((res) => { let n = 0; (function wait() { if (document.body.classList.contains("lang-" + I.lang) || n++ > 50) res(); else setTimeout(wait, 60); })(); });
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const iso = (d) => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
   function shortHash(str) { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) >>> 0; return h.toString(36); }
@@ -46,6 +49,7 @@
     try { data = await H.decode(code); } catch (e) { const d = $("#display"); if (d) d.hidden = true; return; }
     const items = (data.x || []).map(H.unpackItem).filter((it) => H.byId(it.id));
     if (!items.length) return;
+    await langReady();
 
     // ---------- Older programme note ----------
     if (data.d) {
@@ -54,7 +58,7 @@
       if (!isNaN(weeks) && weeks >= 12) {
         const p = document.createElement("p");
         p.className = "p-old-note";
-        p.textContent = "Your physio gave you this programme " + weeks + " weeks ago. If you're not sure it's still right for you, check with them.";
+        I.put(p, "old.note", { n: weeks });
         const meta = $("#meta"); if (meta) meta.after(p);
       }
     }
@@ -67,15 +71,16 @@
       const sec = document.createElement("section");
       sec.className = "panel p-contact no-print";
       sec.setAttribute("aria-labelledby", "contact-title");
-      const subject = encodeURIComponent("Question about my exercises");
+      const subject = encodeURIComponent("Question about my exercises"); // the physio reads this, so it stays in English
       const tel = phone ? phone.replace(/[^\d+]/g, "") : "";
-      sec.innerHTML = '<h2 id="contact-title">Questions about your exercises?</h2>' +
-        '<p>Contact your physio. This opens your own ' + (email && phone ? "email or phone" : email ? "email" : "phone") + ' app. Nothing goes through RepSheet.</p>' +
+      sec.innerHTML = '<h2 id="contact-title"></h2><p class="contact-text"></p>' +
         '<div class="p-contact-row">' +
-        (email ? '<a class="btn btn-secondary" href="mailto:' + esc(email) + '?subject=' + subject + '">Email my physio</a>' : "") +
-        (phone ? '<a class="btn btn-secondary" href="tel:' + esc(tel) + '">Call ' + esc(phone) + '</a>' : "") +
-        (phone && /^(?:\+447|07)/.test(tel) ? '<a class="btn btn-secondary" href="sms:' + esc(tel) + '">Text my physio</a>' : "") +
+        (email ? '<a class="btn btn-secondary" href="mailto:' + esc(email) + '?subject=' + subject + '">' + esc(T("contact.email")) + '</a>' : "") +
+        (phone ? '<a class="btn btn-secondary" href="tel:' + esc(tel) + '"><bdi>' + esc(T("contact.call", { x: "\u2068" + phone + "\u2069" })) + '</bdi></a>' : "") +
+        (phone && /^(?:\+447|07)/.test(tel) ? '<a class="btn btn-secondary" href="sms:' + esc(tel) + '">' + esc(T("contact.text")) + '</a>' : "") +
         '</div>';
+      I.put(sec.querySelector("h2"), "contact.title");
+      I.put(sec.querySelector(".contact-text"), email && phone ? "contact.textEmailPhone" : email ? "contact.textEmail" : "contact.textPhone");
       const anchor = $("#reminder"); if (anchor) anchor.before(sec);
     }
 
@@ -95,13 +100,17 @@
       for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(d.getDate() - i); if (set.has(iso(d))) n++; }
       return n;
     }
-    const LABEL = { easy: "Too easy", right: "About right", hard: "Too hard" };
+    const LABEL = { easy: T("ci.easy"), right: T("ci.right"), hard: T("ci.hard") };
+    const LABEL_EN = { easy: I.en("ci.easy"), right: I.en("ci.right"), hard: I.en("ci.hard") }; // for the copy the physio reads
+    const both = (v) => (I.lang === "en" ? LABEL[v] : LABEL[v] + " (" + LABEL_EN[v] + ")");
     const sec = document.createElement("section");
     sec.className = "panel ci no-print";
     sec.setAttribute("aria-labelledby", "ci-title");
-    sec.innerHTML = '<h2 id="ci-title">How is it going?</h2>' +
-      '<p class="hint ci-intro">After a week or so, tell us how each exercise feels. Show your answers to your physio at your next appointment.</p>' +
+    sec.innerHTML = '<h2 id="ci-title"></h2>' +
+      '<p class="hint ci-intro"></p>' +
       '<div class="ci-list"></div><div class="ci-sum" aria-live="polite"></div>';
+    I.put(sec.querySelector("h2"), "ci.title");
+    I.put(sec.querySelector(".ci-intro"), "ci.intro");
     const list = sec.querySelector(".ci-list");
     items.forEach((it, idx) => {
       const ex = H.byId(it.id);
@@ -111,7 +120,8 @@
       row.className = "ci-row";
       row.append(H.picture(ex, "thumb").el);
       const r = document.createElement("div");
-      r.innerHTML = "<b>" + esc(ex.name) + (side ? " <span class=\"hint\">(" + esc(side.toLowerCase()) + ")</span>" : "") + '</b><div class="ci-opts" role="group" aria-label="How does ' + esc(ex.name) + ' feel?"></div>';
+      const sideT = it.side ? T("side." + it.side) : "";
+      r.innerHTML = "<b>" + esc(I.exName(ex)) + (side ? " <span class=\"hint\">(" + esc(sideT.toLocaleLowerCase()) + ")</span>" : "") + '</b><div class="ci-opts" role="group" aria-label="' + esc(T("ci.feel", { name: I.exName(ex) })) + '"></div>';
       Object.entries(LABEL).forEach(([v, l]) => {
         const b = document.createElement("button");
         b.type = "button"; b.textContent = l;
@@ -131,7 +141,7 @@
       const d = daysDone();
       return ["My exercises: how it's going (" + new Date().toLocaleDateString("en-GB") + ")",
         d != null ? "Days done in the last week: " + d + " of 7" : null,
-        ...items.map((it, idx) => H.byId(it.id).name + (H.sideLabel(it) ? " (" + H.sideLabel(it).toLowerCase() + ")" : "") + ": " + (LABEL[st.feel[it.id + ":" + idx]] || "not answered"))
+        ...items.map((it, idx) => H.byId(it.id).name + (H.sideLabel(it) ? " (" + H.sideLabel(it).toLowerCase() + ")" : "") + ": " + (LABEL_EN[st.feel[it.id + ":" + idx]] || "not answered"))
       ].filter(Boolean).join("\n");
     }
     function summary() {
@@ -139,13 +149,13 @@
       const answered = items.filter((it, idx) => st.feel[it.id + ":" + idx]).length;
       if (!answered) { box.innerHTML = ""; return; }
       const d = daysDone();
-      box.innerHTML = '<div class="ci-card"><h3>Show this to your physio</h3>' +
-        (d != null ? '<p class="ci-big"><b>' + d + ' of 7</b> days in the last week</p>' : "") +
-        "<dl>" + items.map((it, idx) => "<dt>" + esc(H.byId(it.id).name) + (H.sideLabel(it) ? " (" + esc(H.sideLabel(it).toLowerCase()) + ")" : "") + "</dt><dd>" + (LABEL[st.feel[it.id + ":" + idx]] || "Not answered") + "</dd>").join("") + "</dl>" +
-        '<div class="ci-actions"><button type="button" class="btn btn-primary ci-copy">Copy to send to my physio</button><button type="button" class="btn btn-secondary ci-clear">Clear my answers</button></div>' +
-        '<p class="hint">Saved on this phone only. Nothing is sent to RepSheet. If you send it, it goes in your own message.</p></div>';
+      box.innerHTML = '<div class="ci-card"><h3>' + esc(T("ci.show")) + '</h3>' +
+        (d != null ? '<p class="ci-big"><b>' + esc(T("ci.days", { n: d })) + '</b> ' + esc(T("ci.daysText")) + '</p>' : "") +
+        "<dl>" + items.map((it, idx) => "<dt>" + esc(I.exName(H.byId(it.id))) + (it.side ? " (" + esc(T("side." + it.side).toLocaleLowerCase()) + ")" : "") + "</dt><dd>" + esc(st.feel[it.id + ":" + idx] ? both(st.feel[it.id + ":" + idx]) : T("ci.notAnswered")) + "</dd>").join("") + "</dl>" +
+        '<div class="ci-actions"><button type="button" class="btn btn-primary ci-copy">' + esc(T("ci.copy")) + '</button><button type="button" class="btn btn-secondary ci-clear">' + esc(T("ci.clear")) + '</button></div>' +
+        '<p class="hint">' + esc(T("ci.saved")) + '</p></div>';
       box.querySelector(".ci-copy").addEventListener("click", async (e) => {
-        try { await navigator.clipboard.writeText(text()); e.target.textContent = "Copied"; } catch (x) { e.target.textContent = "Couldn't copy on this phone"; }
+        try { await navigator.clipboard.writeText(text()); e.target.textContent = T("ci.copied"); } catch (x) { e.target.textContent = T("ci.noCopy"); }
       });
       box.querySelector(".ci-clear").addEventListener("click", () => {
         st = { feel: {} }; store.del(key);

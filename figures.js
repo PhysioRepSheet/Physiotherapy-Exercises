@@ -416,13 +416,23 @@
       const extra = (fr.text || []).map((t) => propSVG(Object.assign({ type: "text" }, t))).join("");
       body += `<svg x="${n(x)}" y="0" width="${n(pw)}" height="${H}" viewBox="${c.join(" ")}">${drawPanel(ill, resolveFrame(ill, fr), fr.arrows, id)}${extra}</svg>` +
         `<g transform="translate(${n(x)} 0)"><circle cx="15" cy="${H + 20}" r="13" fill="${COLOURS.line}"/><text x="15" y="${H + 26}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" font-family="system-ui, sans-serif">${i + 1}</text>` +
-        `<text x="35" y="${H + 26}" font-size="17" font-weight="600" fill="${COLOURS.text}" font-family="system-ui, sans-serif">${escapeXML(fr.label)}</text></g>`;
+        labelSVG(fr.label, pw) + `</g>`;
       if (i < count - 1) {
         const cx = x + pw + gap / 2;
         body += `<path d="M${n(cx - 4)} ${H / 2 - 8}l8 8-8 8" fill="none" stroke="${COLOURS.chevron}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
       }
     });
     return `<svg viewBox="0 0 ${n(w)} ${h}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeXML(alt || "Exercise steps")}">${defs(id)}${body}</svg>`;
+  }
+
+  // The words under each step picture. Translated when the page is in another language (i18n.js).
+  // Longer words are squeezed to fit their picture rather than running into the next one.
+  function labelSVG(text, pw) {
+    const I = window.RepSheetI18n;
+    const words = I ? I.label(text) : text;
+    const room = Math.max(40, pw - 38), guess = String(words).length * 9.2;
+    const fit = guess > room ? ` textLength="${n(room)}" lengthAdjust="spacingAndGlyphs"` : "";
+    return `<text x="35" y="${170 + 26}" font-size="17" font-weight="600" fill="${COLOURS.text}" font-family="system-ui, sans-serif"${fit}>${escapeXML(words)}</text>`;
   }
 
   function escapeXML(s) {
