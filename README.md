@@ -27,7 +27,7 @@ Double-click `index.html`. It opens in your web browser and works without the in
 - Time estimate ("about N minutes each time") and a tip when a programme has more than 5 exercises.
 - "Add a daily reminder to my calendar" on the patient page: makes a calendar file on the phone, nothing is sent.
 - Black and white printing (for mono printers, saves ink) and a paper saver (two columns, fits on fewer pages).
-- Drag exercises into order with the grip handle (or use the arrow buttons or the arrow keys).
+- Put exercises in order with the up and down arrow buttons on each exercise.
 - "Share as template": a link that opens the builder pre-filled with the same exercises, settings and notes, for colleagues or reuse. It leaves out the patient's name, the date and contact details.
 - "Read aloud" on the patient page (uses the phone's own voice; nothing is recorded or sent).
 - Plain, easy-read wording: short sentences and everyday words. Keep to this style when adding exercises (see the note at the top of `exercises.js`).

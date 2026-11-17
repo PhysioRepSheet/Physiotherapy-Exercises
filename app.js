@@ -108,11 +108,12 @@
     toast(ex.name + " added");
   }
 
+  // Up and down arrows (dragging was removed at Alex's request, 17 Nov 2026: it wasn't smooth)
   function move(index, delta) {
-    moveTo(index, index + delta);
+    moveTo(index, index + delta, delta < 0 ? ".move-up" : ".move-down");
   }
 
-  // Move one exercise to a new position (used by the arrow buttons, keyboard and dragging)
+  // Move one exercise to a new position (used by the up and down buttons)
   function moveTo(from, to, focusSelector) {
     if (to < 0 || to >= programme.length || to === from) return;
     const [item] = programme.splice(from, 1);
@@ -120,69 +121,21 @@
     renderProgramme();
     changed();
     const card = $("#programme-list").children[to];
-    if (card && focusSelector) { const f = card.querySelector(focusSelector); if (f) f.focus(); }
+    if (card) {
+      card.style.animation = "none"; card.classList.add("just-moved");
+      setTimeout(() => card.classList.remove("just-moved"), 900);
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      card.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
+      if (focusSelector) {
+        let f = card.querySelector(focusSelector);
+        if (f && f.disabled) f = card.querySelector(focusSelector === ".move-up" ? ".move-down" : ".move-up");
+        if (f && !f.disabled) f.focus({ preventScroll: true });
+      }
+    }
     const ex = H.byId(item.id);
     toast((ex ? ex.name : "Exercise") + " moved to position " + (to + 1));
   }
 
-  // ---------- Drag to reorder ----------
-  // Works with a mouse, a finger or a pen: press the grip handle and drag the card up or down.
-  // Keyboard users can focus the handle and press the up and down arrow keys.
-  function startDrag(e, index) {
-    if (e.button != null && e.button !== 0) return;
-    const list = $("#programme-list");
-    const cards = [...list.children];
-    const card = cards[index];
-    if (!card || cards.length < 2) return;
-    e.preventDefault();
-    const handle = e.currentTarget;
-    try { handle.setPointerCapture(e.pointerId); } catch (err) { /* older browsers */ }
-    const startY = e.clientY;
-    let target = index;
-    card.classList.add("dragging");
-    list.classList.add("is-sorting");
-
-    const mark = () => {
-      cards.forEach((c, i) => {
-        c.classList.toggle("drop-before", i === target && target < index);
-        c.classList.toggle("drop-after", i === target && target > index);
-      });
-    };
-    const onMove = (ev) => {
-      card.style.transform = "translateY(" + (ev.clientY - startY) + "px)";
-      // Which position is the pointer over?
-      target = index;
-      cards.forEach((c, i) => {
-        if (i === index) return;
-        const r = c.getBoundingClientRect(), mid = r.top + r.height / 2;
-        if (i < index && ev.clientY < mid) target = Math.min(target, i);
-        if (i > index && ev.clientY > mid) target = Math.max(target, i);
-      });
-      mark();
-      // Scroll the page when dragging near the top or bottom of the window
-      const edge = 70;
-      if (ev.clientY < edge) window.scrollBy(0, -12);
-      else if (ev.clientY > window.innerHeight - edge) window.scrollBy(0, 12);
-    };
-    const finish = (ev) => {
-      handle.removeEventListener("pointermove", onMove);
-      handle.removeEventListener("pointerup", finish);
-      handle.removeEventListener("pointercancel", finish);
-      card.style.transform = "";
-      card.classList.remove("dragging");
-      list.classList.remove("is-sorting");
-      cards.forEach((c) => c.classList.remove("drop-before", "drop-after"));
-      if (ev.type === "pointerup" && target !== index) moveTo(index, target, ".drag-handle");
-    };
-    handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", finish);
-    handle.addEventListener("pointercancel", finish);
-  }
-
-  function handleKeys(e, index) {
-    if (e.key === "ArrowUp") { e.preventDefault(); moveTo(index, index - 1, ".drag-handle"); }
-    else if (e.key === "ArrowDown") { e.preventDefault(); moveTo(index, index + 1, ".drag-handle"); }
-  }
 
   function removeAt(index) {
     const [gone] = programme.splice(index, 1);
@@ -289,15 +242,8 @@
           el("div", { class: "ex-top" },
             el("h3", { class: "ex-title", text: ex.name }),
             el("div", { class: "ex-tools no-print" },
-              programme.length > 1 ? el("button", {
-                type: "button", class: "icon-btn drag-handle",
-                "aria-label": "Reorder " + ex.name + ": drag, or use the up and down arrow keys",
-                title: "Drag to reorder",
-                onpointerdown: (e) => startDrag(e, i),
-                onkeydown: (e) => handleKeys(e, i)
-              }, icon(ICONS.grip)) : null,
-              el("button", { type: "button", class: "icon-btn", "aria-label": "Move " + ex.name + " up", title: "Move up", onclick: () => move(i, -1), disabled: i === 0 }, icon(ICONS.up)),
-              el("button", { type: "button", class: "icon-btn", "aria-label": "Move " + ex.name + " down", title: "Move down", onclick: () => move(i, 1), disabled: i === programme.length - 1 }, icon(ICONS.down)),
+              el("button", { type: "button", class: "icon-btn move-btn move-up", "aria-label": "Move " + ex.name + " up", title: "Move up", hidden: programme.length < 2, onclick: () => move(i, -1), disabled: i === 0 }, icon(ICONS.up)),
+              el("button", { type: "button", class: "icon-btn move-btn move-down", "aria-label": "Move " + ex.name + " down", title: "Move down", hidden: programme.length < 2, onclick: () => move(i, 1), disabled: i === programme.length - 1 }, icon(ICONS.down)),
               el("button", { type: "button", class: "icon-btn remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => removeAt(i) }, icon(ICONS.remove))
             )
           ),
