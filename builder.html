@@ -253,7 +253,9 @@
               <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
             </label>
           </div>
-          <h3 class="settings-group">Print and patient page options</h3>
+          <!-- Folds away (options-fold.js); open or closed is remembered on this device only -->
+          <details class="options-fold" id="options-fold">
+          <summary><h3 class="settings-group">Handout and patient page options</h3><span class="options-fold-sum" id="options-fold-sum"></span><svg class="options-fold-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
           <!-- Patient's language: the handout and patient page are translated; your own typed words stay as typed -->
           <div class="field lang-field">
             <label for="handout-lang">Patient's language</label>
@@ -295,6 +297,7 @@
               <input type="checkbox" id="paper-saver"> <span><strong>Paper saver</strong> <span class="hint">(two columns, smaller pictures and margins, so it fits on fewer pages)</span></span>
             </label>
           </div>
+          </details>
 
           <h3 class="settings-group">Advice and goals</h3>
           <div class="field message-field">
@@ -532,6 +535,7 @@
   <script src="privacy-check.js"></script>
   <script src="bodymap.js"></script>
   <script src="a11y-menu.js"></script>
+  <script src="options-fold.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>
