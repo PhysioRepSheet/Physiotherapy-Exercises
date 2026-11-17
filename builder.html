@@ -187,7 +187,7 @@
           <h3 class="settings-group">Patient and physio</h3>
           <div class="field-grid">
             <div class="field">
-              <label for="patient-name">Patient name <span class="hint">(optional, not saved or shared)</span></label>
+              <label for="patient-name">Patient name <span class="hint">(optional, never shared, forgotten when you close the tab)</span></label>
               <input id="patient-name" type="text" autocomplete="off">
             </div>
             <div class="field">
@@ -447,6 +447,7 @@
   <script src="common.js"></script>
   <script src="feedback.js"></script>
   <script src="app.js"></script>
+  <script src="pdf-maker.js"></script>
   <script src="privacy-check.js"></script>
   <script src="bodymap.js"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>

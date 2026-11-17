@@ -902,3 +902,19 @@ body { font-optical-sizing: auto; }
   .info-table td:first-child { font-weight: 650; }
 }
 .privacy-main kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font: inherit; font-size: .9em; background: var(--card); }
+
+/* ---------- Phones and tablets: "Your handout is ready" (pdf-maker.js) ---------- */
+.pdf-dialog { max-width: 440px; }
+.pdf-bar { height: 8px; border-radius: 99px; background: var(--brand-tint-2, #e6f2ef); overflow: hidden; }
+.pdf-bar span { display: block; height: 100%; width: 4%; background: var(--brand); border-radius: inherit; transition: width .3s ease; }
+.pdf-ready, .pdf-making, .pdf-error { display: flex; flex-direction: column; gap: 14px; }
+.pdf-ready[hidden], .pdf-making[hidden], .pdf-error[hidden] { display: none; }
+.pdf-ready-head { display: flex; gap: 14px; align-items: center; }
+.pdf-file-icon { width: 40px; height: 48px; flex: none; color: var(--ink-soft); }
+.pdf-ready-title { outline: none; }
+.pdf-file-name { font-size: .9rem; overflow-wrap: anywhere; }
+.pdf-buttons { display: flex; flex-direction: column; gap: 10px; }
+.pdf-buttons .btn { min-height: 52px; justify-content: center; font-size: 1.05rem; text-align: center; }
+.pdf-buttons [hidden] { display: none; }
+.pdf-foot { justify-content: space-between; }
+@media print { .pdf-dialog { display: none !important; } }

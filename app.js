@@ -567,6 +567,43 @@
   function changed() {
     clearTimeout(linkTimer);
     linkTimer = setTimeout(updateLink, 250);
+    saveDraftSoon();
+  }
+
+  // ---------- Keep the handout if the page is refreshed ----------
+  // Saved in this browser tab only (sessionStorage). It survives a refresh, and is wiped
+  // when the tab or browser is closed, so nothing about a patient stays on the computer.
+  const DRAFT_KEY = "repsheet:draft";
+  let draftTimer = null, draftReady = false;
+  function saveDraftSoon() { clearTimeout(draftTimer); draftTimer = setTimeout(saveDraft, 300); }
+  function saveDraft() {
+    if (!draftReady) return;
+    try {
+      const empty = !programme.length && !$("#patient-name").value.trim() && !$("#general-notes").value.trim();
+      if (empty) { sessionStorage.removeItem(DRAFT_KEY); return; }
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+        v: 1, t: templateData(),
+        name: $("#patient-name").value, date: $("#handout-date").value,
+        c: $("#clinician").value, ct: $("#contact").value,
+        goal: $("#goal").value, plan: $("#plan").value
+      }));
+    } catch (e) { /* storage unavailable or full: carry on without it */ }
+  }
+  function restoreDraft() {
+    let d = null;
+    try { d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null"); } catch (e) { d = null; }
+    if (!d || !d.t || !Array.isArray(d.t.x) || !d.t.x.length) return false;
+    try { applyTemplate(d.t, true); } catch (e) { return false; }
+    $("#patient-name").value = d.name || "";
+    if (d.date) $("#handout-date").value = d.date;
+    if (d.c) $("#clinician").value = d.c;
+    if (d.ct) $("#contact").value = d.ct;
+    $("#goal").value = d.goal || "";
+    $("#plan").value = d.plan || "";
+    ["#patient-name", "#goal", "#plan", "#clinician", "#contact"].forEach((sel) => $(sel).dispatchEvent(new Event("input", { bubbles: true })));
+    changed();
+    toast("Your handout is back as you left it. Press Clear to start a new one.", 5000);
+    return true;
   }
 
   function programmeData() {
@@ -678,7 +715,7 @@
   // Fill the builder from template data (from a link or from My templates).
   // Every option is set, so nothing is left over from the previous handout.
   // The patient's name, goal and plan are cleared: they belong to the last patient.
-  function applyTemplate(data) {
+  function applyTemplate(data, quiet) {
     // Own exercises in a template from another computer are added for now (not saved) so they can be used
     H.registerCustom((data.cx || []).map(H.unpackCustom).filter(Boolean));
     renderFilters();
@@ -705,6 +742,7 @@
     renderProgramme();
     renderLibrary();
     changed();
+    if (quiet) return;
     toast("Template loaded" + (data.n ? ": " + data.n : "") + " (" + items.length + " exercise" + (items.length === 1 ? "" : "s") + ")", 4000);
   }
 
@@ -1003,6 +1041,7 @@
     clearTimeout(linkTimer);
     await updateLink();
     fillPrintMeta();
+    if (window.RepSheetPdf && window.RepSheetPdf.wanted()) { window.RepSheetPdf.make(); return; }
     window.print();
   }
 
@@ -1288,5 +1327,12 @@
     if (v === "") { toast("Choose a condition first"); $("#starter-select").focus(); return; }
     useStarter(Number(v));
   });
+  // A template link wins over the kept handout; otherwise bring back the handout from before a refresh
+  if (!location.hash.startsWith("#t=")) restoreDraft();
+  draftReady = true;
   loadTemplateFromLink();
+  // Save on any typing or option change, and just before the page goes away
+  document.addEventListener("input", saveDraftSoon, true);
+  document.addEventListener("change", saveDraftSoon, true);
+  window.addEventListener("pagehide", saveDraft);
 })();

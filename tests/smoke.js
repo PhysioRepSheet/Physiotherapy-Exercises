@@ -74,6 +74,29 @@ const server = http.createServer((req, res) => {
     await page.close(); await p2.close();
   }
 
+  console.log("Refresh keeps the handout in the tab");
+  {
+    const page = await browser.newPage({ viewport: { width: 1300, height: 900 } }); const errs = []; watch(page, errs);
+    await page.goto(BASE + "builder.html"); await page.waitForTimeout(500);
+    await page.fill("#search", "bridge"); await page.press("#search", "Enter"); await page.waitForTimeout(700);
+    await page.reload(); await page.waitForTimeout(800);
+    const kept = await page.$$eval("#programme-list > li", (n) => n.length);
+    ok(kept === 1 && errs.length === 0, "exercise still there after refresh (" + kept + ")" + (errs.length ? " -> " + errs.join(" | ") : ""));
+    await page.close();
+  }
+
+  console.log("Phone handout PDF");
+  {
+    const page = await phone.newPage(); const errs = []; watch(page, errs);
+    await page.goto(BASE + "builder.html"); await page.waitForTimeout(500);
+    await page.fill("#search", "sit to stand"); await page.press("#search", "Enter"); await page.waitForTimeout(400);
+    await page.click("#btn-print");
+    await page.waitForSelector(".pdf-ready:not([hidden]), .pdf-error:not([hidden])", { timeout: 60000 });
+    const size = await page.evaluate(() => (window.RepSheetPdf.lastFile() || { size: 0 }).size);
+    ok(size > 20000 && errs.length === 0, "PDF made on the phone (" + Math.round(size / 1024) + " KB)" + (errs.length ? " -> " + errs.join(" | ") : ""));
+    await page.close();
+  }
+
   console.log("Service worker file list");
   {
     const sw = fs.readFileSync(path.join(ROOT, "sw.js"), "utf8");

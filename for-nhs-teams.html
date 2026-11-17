@@ -42,7 +42,8 @@
 
     <h2>What happens to patient information</h2>
     <ul>
-      <li><strong>Nothing about a patient is stored or sent to RepSheet.</strong> What the physio types stays in their own browser tab.</li>
+      <li><strong>Nothing about a patient is stored or sent to RepSheet.</strong> What the physio types stays in their own browser tab. It is kept through an accidental refresh, and wiped when the tab is closed.</li>
+      <li>On phones and tablets the handout PDF is made on the device itself.</li>
       <li>The patient's name and the date are never put into the patient link or QR code. They only appear on the printed handout.</li>
       <li>The patient link holds the exercise programme itself, after the <code>#</code> in the address. Browsers never send the part after <code>#</code> to the web server.</li>
       <li>The builder warns the physio if a note looks like it has a name, NHS number, date of birth, phone number or address in it. It never blocks them, and the check happens on their own computer.</li>
