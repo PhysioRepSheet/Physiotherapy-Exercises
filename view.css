@@ -247,7 +247,7 @@ body.easy-read-screen * { font-style: normal !important; text-align: left; }
 /* High contrast: black text, strong borders */
 body.high-contrast { --ink: #000; --ink-soft: #1a1a1a; --ink-faint: #1a1a1a; --line: #000; --line-strong: #000; background: #fff; color: #000; }
 body.high-contrast .panel, body.high-contrast .p-card, body.high-contrast .ci-opts button, body.high-contrast .btn { border: 2px solid #000 !important; background: #fff; color: #000; }
-body.high-contrast .btn-primary, body.high-contrast .ci-opts button[aria-pressed=true], body.high-contrast .p-display-row .btn[aria-pressed="true"] { background: #000 !important; color: #fff !important; }
+body.high-contrast .btn-primary, body.high-contrast .ci-opts button[aria-pressed=true], body.high-contrast .p-display-row .btn[aria-pressed="true"], body.high-contrast .a11y-row .btn-ghost[aria-pressed="true"] { background: #000 !important; color: #fff !important; }
 body.high-contrast .patient-intro { background: #000 !important; color: #fff; }
 body.high-contrast a { color: #000; text-decoration-thickness: 2px; }
 @media print { .p-display, .p-contact, .ci { display: none !important; } }

@@ -15,6 +15,7 @@ RepSheetI18n.add("cy", {
     "hdr.large": "Testun mwy",
     "hdr.normal": "Testun arferol",
     "hdr.print": "Argraffu",
+    "a11y.button": "Hygyrchedd",
     "hdr.dark": "Sgrin dywyll",
     "hdr.light": "Sgrin olau",
     "intro.title": "Eich rhaglen ymarfer gartref",

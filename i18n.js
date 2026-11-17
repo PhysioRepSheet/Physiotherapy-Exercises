@@ -47,6 +47,7 @@
     "hdr.large": "Larger text",
     "hdr.normal": "Normal text",
     "hdr.print": "Print",
+    "a11y.button": "Accessibility",
     "hdr.dark": "Dark screen",
     "hdr.light": "Light screen",
     "intro.title": "Your home exercise programme",

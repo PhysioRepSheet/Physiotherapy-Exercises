@@ -16,6 +16,7 @@ RepSheetI18n.add("bn", {
     "hdr.large": "বড় লেখা",
     "hdr.normal": "সাধারণ লেখা",
     "hdr.print": "প্রিন্ট করুন",
+    "a11y.button": "অভিগম্যতা",
     "hdr.dark": "গাঢ় স্ক্রিন",
     "hdr.light": "হালকা স্ক্রিন",
     "intro.title": "বাড়িতে আপনার ব্যায়ামের প্রোগ্রাম",

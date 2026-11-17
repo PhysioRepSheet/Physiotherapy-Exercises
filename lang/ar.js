@@ -17,6 +17,7 @@ RepSheetI18n.add("ar", {
     "hdr.large": "نص أكبر",
     "hdr.normal": "نص عادي",
     "hdr.print": "اطبع",
+    "a11y.button": "إمكانية الوصول",
     "hdr.dark": "شاشة داكنة",
     "hdr.light": "شاشة فاتحة",
     "intro.title": "برنامج تمارينك في المنزل",

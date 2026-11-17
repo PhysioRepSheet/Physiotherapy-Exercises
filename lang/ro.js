@@ -15,6 +15,7 @@ RepSheetI18n.add("ro", {
     "hdr.large": "Text mai mare",
     "hdr.normal": "Text normal",
     "hdr.print": "Tipărește",
+    "a11y.button": "Accesibilitate",
     "hdr.dark": "Ecran întunecat",
     "hdr.light": "Ecran luminos",
     "intro.title": "Programul tău de exerciții acasă",

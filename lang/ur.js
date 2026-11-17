@@ -17,6 +17,7 @@ RepSheetI18n.add("ur", {
     "hdr.large": "بڑا متن",
     "hdr.normal": "عام متن",
     "hdr.print": "پرنٹ کریں",
+    "a11y.button": "رسائی",
     "hdr.dark": "گہری اسکرین",
     "hdr.light": "ہلکی اسکرین",
     "intro.title": "گھر پر آپ کی ورزشوں کا پروگرام",

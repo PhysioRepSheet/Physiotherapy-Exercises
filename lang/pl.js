@@ -15,6 +15,7 @@ RepSheetI18n.add("pl", {
     "hdr.large": "Większy tekst",
     "hdr.normal": "Zwykły tekst",
     "hdr.print": "Drukuj",
+    "a11y.button": "Dostępność",
     "hdr.dark": "Ciemny ekran",
     "hdr.light": "Jasny ekran",
     "intro.title": "Twój program ćwiczeń w domu",

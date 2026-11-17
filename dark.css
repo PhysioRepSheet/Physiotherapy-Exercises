@@ -58,7 +58,7 @@
   :root[data-theme="dark"] .p-day.today.done::after { color: var(--on-brand); }
   :root[data-theme="dark"] .ex-title::before { color: var(--on-brand); }
   /* Pressed toggles used --ink as a fill: keep them readable */
-  :root[data-theme="dark"] :is(.btn-ghost[aria-pressed="true"], .chip[aria-pressed="true"], .bm-side button[aria-pressed=true], .p-read[aria-pressed="true"], .p-display-row .btn[aria-pressed="true"]) { background: var(--ink); color: #0f1719; border-color: var(--ink); }
+  :root[data-theme="dark"] :is(.btn-ghost[aria-pressed="true"], .chip[aria-pressed="true"], .bm-side button[aria-pressed=true], .p-read[aria-pressed="true"], .p-display-row .btn[aria-pressed="true"], .a11y-row .btn-ghost[aria-pressed="true"]) { background: var(--ink); color: #0f1719; border-color: var(--ink); }
   :root[data-theme="dark"] #btn-theme[aria-pressed="true"] { background: transparent; color: var(--ink); border-color: var(--line-strong); }
   :root[data-theme="dark"] .view-btn[aria-pressed="true"] { background: var(--line-strong); color: var(--ink); }
   :root[data-theme="dark"] :is(.toast, .undo-bar, .skip-link) { background: #e7ecea; color: #0f1719; }
