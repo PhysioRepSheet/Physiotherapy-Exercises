@@ -32,6 +32,10 @@
       <h1>Your home exercise programme</h1>
       <p id="meta" class="patient-meta"></p>
       <p id="general" class="patient-general" hidden></p>
+      <div id="fa-start-wrap" class="fa-start-wrap no-print" hidden>
+        <button type="button" class="btn fa-start" id="btn-follow"><span aria-hidden="true">&#9654;</span> Start my exercises</button>
+        <p class="fa-start-hint">Go through them one at a time, with a counter and a timer.</p>
+      </div>
     </section>
 
     <section id="goal-plan" class="p-goal panel" hidden>
@@ -91,6 +95,25 @@
     </aside>
     <p class="patient-privacy hint">This page is built from your link. Your programme is not stored anywhere. <a href="privacy.html">Privacy</a> · <a href="disclaimer.html">Disclaimer</a> · Made with RepSheet</p>
   </main>
+
+  <!-- Follow-along: one exercise at a time. Built by view.js. Nothing here is saved or sent anywhere. -->
+  <section id="follow" class="fa no-print" hidden aria-labelledby="fa-title">
+    <div class="fa-top">
+      <button type="button" class="btn-ghost fa-close" id="fa-close">&#10005; Close</button>
+      <p class="fa-pos" id="fa-pos"></p>
+      <div class="fa-top-right">
+        <button type="button" class="btn-ghost" id="fa-sound" aria-pressed="true">Sound on</button>
+        <button type="button" class="btn-ghost" id="fa-large" aria-pressed="false">Larger text</button>
+      </div>
+    </div>
+    <div class="fa-bar" aria-hidden="true"><span id="fa-bar-fill"></span></div>
+    <div class="fa-body" id="fa-body"></div>
+    <p class="visually-hidden" id="fa-live" aria-live="polite"></p>
+    <nav class="fa-nav" aria-label="Move between exercises">
+      <button type="button" class="btn btn-secondary" id="fa-back">&larr; Back</button>
+      <button type="button" class="btn btn-primary" id="fa-next">Next &rarr;</button>
+    </nav>
+  </section>
 
   <script src="exercises.js"></script>
   <script src="illustrations.js"></script>
