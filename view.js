@@ -571,6 +571,7 @@
     await I.use(want, english);
     I.setPage();
     I.apply();
+    if (window.RepTheme) window.RepTheme.label();
     document.title = T("page.title") + " \u00B7 RepSheet";
     // Days in the printed tick chart
     const head = document.querySelectorAll("#ticks-print-table thead th");

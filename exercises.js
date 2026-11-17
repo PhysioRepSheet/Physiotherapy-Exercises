@@ -8,6 +8,8 @@
     id            A short unique name with no spaces (e.g. "knee-straight-leg-raise").
     name          The title patients will see.
     type          Optional. Strength, Stretch, Movement, Balance or Breathing. Used by the type filter.
+    difficulty    Optional. Easy, Medium or Harder. Used by the difficulty filter in the builder.
+                  (Levels were drafted on 17 Nov 2026 and still need a clinical check.)
     area          Body area. Used for the filter buttons. Use one of the existing areas
                   or type a new one and a new filter button will appear automatically.
     aliases       Optional. Other names physios search for, separated by commas
@@ -37,6 +39,7 @@ window.EXERCISES = [
     name: "Static quads",
     area: "Knee",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "static quadriceps, quads isometric, quad sets, VMO, knee extension, static quad, quad clench, knee press, push knee down, tighten thigh, isometric quads",
     image: "",
     instructions: [
@@ -55,6 +58,7 @@ window.EXERCISES = [
     name: "Straight leg raise",
     area: "Knee",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "SLR, quadriceps, quads, hip flexion, straight leg lift, leg raise, lying leg raise, quad lift",
     image: "",
     instructions: [
@@ -73,6 +77,7 @@ window.EXERCISES = [
     name: "Sit to stand",
     area: "Knee",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "STS, squat, chair stand, functional, quadriceps, glutes, getting up from a chair, standing up, toilet, car, sit to stands, chair squat, box squat, chair rise, stand up from chair, sit stand",
     image: "",
     instructions: [
@@ -91,6 +96,7 @@ window.EXERCISES = [
     name: "Heel slides",
     area: "Knee",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "knee flexion, range of movement, ROM, TKR, knee replacement, heel slide, knee bend in lying, lying knee bend, bend knee in bed",
     image: "",
     instructions: [
@@ -109,6 +115,7 @@ window.EXERCISES = [
     name: "Sitting knee straightening",
     area: "Knee",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "seated knee extension, long arc quads, LAQ, quadriceps, quads, OKC, knee extension in sitting, seated leg raise, kick out, leg straightening, sitting leg kick",
     image: "",
     instructions: [
@@ -126,6 +133,7 @@ window.EXERCISES = [
     name: "Mini squat",
     area: "Knee",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "partial squat, quarter squat, quadriceps, glutes, CKC, closed chain, getting up from a chair, gardening, half squat, small squat, mini squats, squat",
     image: "",
     instructions: [
@@ -144,6 +152,7 @@ window.EXERCISES = [
     name: "Wall squat",
     area: "Knee",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "wall sit, wall slide squat, isometric squat, quadriceps, patellofemoral, PFP, wall slide, wall sits, back against wall squat, wall squats",
     image: "",
     instructions: [
@@ -162,6 +171,7 @@ window.EXERCISES = [
     name: "Step ups",
     area: "Knee",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "step up, stair, functional, quadriceps, glutes, CKC, stairs, steps, climbing, kerb, step-up, box step up, step ups forward, stair climb",
     image: "",
     instructions: [
@@ -180,6 +190,7 @@ window.EXERCISES = [
     name: "Standing knee bends",
     area: "Knee",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "hamstring curl, standing knee flexion, hamstrings, knee flexion, standing hamstring curl, knee curl, heel to bottom, hamstring curls, leg curl",
     image: "",
     instructions: [
@@ -198,6 +209,7 @@ window.EXERCISES = [
     name: "Lunge",
     area: "Knee",
     type: "Strength",
+    difficulty: "Harder",
     aliases: "split squat, forward lunge, quadriceps, glutes, functional strength, knee rehab, getting up from the floor, kneeling, lunges, split squats, static lunge",
     image: "",
     instructions: [
@@ -217,6 +229,7 @@ window.EXERCISES = [
     name: "Hip hinge",
     area: "Knee",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "hip hinge, Romanian deadlift, RDL, deadlift, hamstrings, glutes, posterior chain, lifting, bending, picking things up, good morning, bend from the hips, hinge, hip hinges",
     image: "",
     instructions: [
@@ -236,6 +249,7 @@ window.EXERCISES = [
     name: "Single leg mini squat",
     area: "Knee",
     type: "Strength",
+    difficulty: "Harder",
     aliases: "single leg squat, SLS, quadriceps, knee control, late stage rehab, ACL, one leg squat, single leg squats, pistol squat",
     image: "",
     instructions: [
@@ -256,6 +270,7 @@ window.EXERCISES = [
     name: "Bridge",
     area: "Hip",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "glute bridge, gluteus maximus, hip extension, core, lumbar, getting in and out of bed, rolling in bed, shoulder bridge, hip bridge, bridging, bridges, bottom lift, bum lift, hip lift, pelvic lift, hip raise",
     image: "",
     instructions: [
@@ -274,6 +289,7 @@ window.EXERCISES = [
     name: "Clam",
     area: "Hip",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "clamshell, gluteus medius, glute med, hip abduction, external rotation, clams, clamshells, clam shell, side lying clam, knee opening",
     image: "",
     instructions: [
@@ -292,6 +308,7 @@ window.EXERCISES = [
     name: "Standing hip abduction",
     area: "Hip",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "gluteus medius, glute med, side leg raise, hip abductors, leg out to the side, standing leg raise sideways, hip abduction standing, side kick",
     image: "",
     instructions: [
@@ -310,6 +327,7 @@ window.EXERCISES = [
     name: "Side lying leg lift",
     area: "Hip",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "side lying hip abduction, SLHA, gluteus medius, glute med, abductors, side leg lift, side lying leg raise, leg lift on side, side lying abduction",
     image: "",
     instructions: [
@@ -328,6 +346,7 @@ window.EXERCISES = [
     name: "Standing leg back",
     area: "Hip",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "standing hip extension, gluteus maximus, glutes, hip extensors, leg back, standing leg back kick, back kick, hip extension standing",
     image: "",
     instructions: [
@@ -346,6 +365,7 @@ window.EXERCISES = [
     name: "Standing knee lift",
     area: "Hip",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "standing hip flexion, hip flexors, iliopsoas, marching, knee lift, knee up, standing march, hip flexion standing",
     image: "",
     instructions: [
@@ -364,6 +384,7 @@ window.EXERCISES = [
     name: "Front of hip stretch",
     area: "Hip",
     type: "Stretch",
+    difficulty: "Medium",
     aliases: "hip flexor stretch, half kneeling stretch, iliopsoas, rectus femoris, hip flexor, kneeling hip stretch, lunge stretch, front of hip stretch, psoas stretch",
     image: "",
     instructions: [
@@ -382,6 +403,7 @@ window.EXERCISES = [
     name: "Lying leg slide out",
     area: "Hip",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "supine hip abduction, hip abduction in lying, THR, hip replacement, hip fracture, post-op, glute med, leg slide out, lying hip abduction, leg slides, abduction slides",
     image: "",
     instructions: [
@@ -401,6 +423,7 @@ window.EXERCISES = [
     name: "Leg back with a band",
     area: "Hip",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "resisted hip extension, glute max, theraband, THR, hip replacement rehab, band kick back, banded hip extension, leg back with band, resistance band kick back",
     image: "",
     instructions: [
@@ -421,6 +444,7 @@ window.EXERCISES = [
     name: "Calf raises",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "heel raise, calf, gastrocnemius, soleus, plantarflexion, Achilles, walking, stairs, push off, heel raises, heel lift, up on toes, tip toes, calf rise, calf raise",
     image: "",
     instructions: [
@@ -438,6 +462,7 @@ window.EXERCISES = [
     name: "Ankle alphabet",
     area: "Ankle",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "ankle range of movement, ROM, ankle sprain, mobility, write the alphabet with your foot, ankle circles, foot alphabet, ankle writing",
     image: "",
     instructions: [
@@ -456,6 +481,7 @@ window.EXERCISES = [
     name: "Single leg balance",
     area: "Ankle",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "SLS, single leg stance, proprioception, balance, falls, ankle sprain, unsteady, stand on one leg, one leg stand, one leg balance, single leg stand, stork stand",
     image: "",
     instructions: [
@@ -474,6 +500,7 @@ window.EXERCISES = [
     name: "Calf stretch",
     area: "Ankle",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "gastrocnemius stretch, calf, Achilles, wall stretch, dorsiflexion, wall calf stretch, straight knee calf stretch, gastroc stretch, runner's stretch",
     image: "",
     instructions: [
@@ -492,6 +519,7 @@ window.EXERCISES = [
     name: "Toe raises",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "toe lifts, dorsiflexion, tibialis anterior, heel stand, foot drop, toe raise, toes up, lift toes, front of shin",
     image: "",
     instructions: [
@@ -510,6 +538,7 @@ window.EXERCISES = [
     name: "Sitting heel and toe rocks",
     area: "Ankle",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "seated heel raises, seated toe raises, ankle range of movement, ROM, circulation, heel toe rocks, sitting heel raises, sitting toe lifts, seated calf raise, rock heel toe",
     image: "",
     instructions: [
@@ -528,6 +557,7 @@ window.EXERCISES = [
     name: "Single leg calf raise",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Harder",
     aliases: "single leg heel raise, SLHR, calf strength, gastrocnemius, Achilles tendinopathy, plantar heel pain, one leg calf raise, single calf raise, one leg heel raise",
     image: "",
     instructions: [
@@ -547,6 +577,7 @@ window.EXERCISES = [
     name: "Bent knee calf raise",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "soleus raise, bent knee heel raise, soleus strengthening, Achilles tendinopathy, plantar fasciopathy, soleus raises, bent knee calf raises, seated soleus",
     image: "",
     instructions: [
@@ -566,6 +597,7 @@ window.EXERCISES = [
     name: "Bent knee calf stretch",
     area: "Ankle",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "soleus stretch, lower calf stretch, Achilles stretch, ankle dorsiflexion, soleus, bent knee stretch, lower calf",
     image: "",
     instructions: [
@@ -585,6 +617,7 @@ window.EXERCISES = [
     name: "Sole of foot stretch",
     area: "Ankle",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "plantar fascia stretch, plantar fasciitis, plantar fasciopathy, heel pain, towel stretch, foot stretch, arch stretch, towel foot stretch, toe stretch, plantar stretch",
     image: "",
     instructions: [
@@ -604,6 +637,7 @@ window.EXERCISES = [
     name: "Roll your foot over a bottle",
     area: "Ankle",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "plantar fascia massage, foot roll, frozen bottle, tennis ball, plantar heel pain, ball roll, bottle roll, foot massage, golf ball roll, rolling foot",
     image: "",
     instructions: [
@@ -623,6 +657,7 @@ window.EXERCISES = [
     name: "Towel scrunch with toes",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "toe curls, intrinsic foot strengthening, short foot, towel curls, foot strength, toe scrunches, towel grab, toe grip, marble pick up",
     image: "",
     instructions: [
@@ -642,6 +677,7 @@ window.EXERCISES = [
     name: "Ankle in and out with a band",
     area: "Ankle",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "inversion, eversion, resisted ankle, peroneals, tibialis posterior, ankle sprain rehab, theraband, ankle inversion, ankle eversion, band ankle, ankle in out, foot in and out",
     image: "",
     instructions: [
@@ -662,6 +698,7 @@ window.EXERCISES = [
     name: "Knee rolls",
     area: "Back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "lumbar rotation, trunk rotation, low back pain, LBP, mobility, stiff back in the morning, bed, knee roll, knee rocking, lumbar rotation in lying, knees side to side, windscreen wipers, knee drops",
     image: "",
     instructions: [
@@ -680,6 +717,7 @@ window.EXERCISES = [
     name: "Knee to chest stretch",
     area: "Back",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "lumbar flexion, single knee to chest, low back pain, LBP, stretch, knee hug, double knee to chest, knee hugs, knees to chest",
     image: "",
     instructions: [
@@ -698,6 +736,7 @@ window.EXERCISES = [
     name: "Cat and camel",
     area: "Back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "cat cow, spinal mobility, lumbar, thoracic, flexion extension, LBP, cat camel, cat stretch, cat and cow, round and arch back",
     image: "",
     instructions: [
@@ -716,6 +755,7 @@ window.EXERCISES = [
     name: "Pelvic tilt",
     area: "Back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "posterior pelvic tilt, lumbar flattening, core, transversus abdominis, TA, LBP, pelvic tilts, pelvic rock, back flattening, tilt",
     image: "",
     instructions: [
@@ -734,6 +774,7 @@ window.EXERCISES = [
     name: "Lying back bend",
     area: "Back",
     type: "Movement",
+    difficulty: "Medium",
     aliases: "prone press up, McKenzie, extension in lying, EIL, REIL, lumbar extension, LBP, press up on front, cobra, sphinx, back extension lying, McKenzie press up",
     image: "",
     instructions: [
@@ -752,6 +793,7 @@ window.EXERCISES = [
     name: "Arm and leg reach",
     area: "Back",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "bird dog, four point kneeling, quadruped, core stability, multifidus, LBP, bird dogs, birddog, superman, arm and leg raise, opposite arm and leg",
     image: "",
     instructions: [
@@ -770,6 +812,7 @@ window.EXERCISES = [
     name: "Back of thigh stretch",
     area: "Back",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "hamstring stretch, seated hamstring stretch, hamstrings, sciatic, posterior chain, back of leg stretch, sitting hamstring stretch, toe touch",
     image: "",
     instructions: [
@@ -788,6 +831,7 @@ window.EXERCISES = [
     name: "Standing back bend",
     area: "Back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "standing lumbar extension, McKenzie, extension in standing, EIS, LBP, standing back extension, lean back, back arch, standing extension",
     image: "",
     instructions: [
@@ -806,6 +850,7 @@ window.EXERCISES = [
     name: "All fours arm or leg reach",
     area: "Back",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "four point kneeling, quadruped, bird dog regression, core stability, lumbar stability, arm reach on all fours, leg reach on all fours, four point kneeling arm lift, half bird dog",
     image: "",
     instructions: [
@@ -825,6 +870,7 @@ window.EXERCISES = [
     name: "Plank",
     area: "Back",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "prone plank, front plank, core stability, trunk endurance, abdominals, plank hold, elbow plank, forearm plank, box plank",
     image: "",
     instructions: [
@@ -844,6 +890,7 @@ window.EXERCISES = [
     name: "Side plank",
     area: "Back",
     type: "Strength",
+    difficulty: "Harder",
     aliases: "side bridge, lateral plank, obliques, quadratus lumborum, core stability, glute med, side planks, side hold",
     image: "",
     instructions: [
@@ -863,6 +910,7 @@ window.EXERCISES = [
     name: "Lying leg lift on your front",
     area: "Back",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "prone hip extension, back extensors, glute max, lumbar extensors, leg lift on front, prone leg raise, reverse leg raise, lying leg back",
     image: "",
     instructions: [
@@ -883,6 +931,7 @@ window.EXERCISES = [
     name: "Pendulum",
     area: "Shoulder",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "Codman, frozen shoulder, adhesive capsulitis, post-op, passive, pendulums, pendular exercise, arm swing, Codman's, Codmans, dangling arm",
     image: "",
     instructions: [
@@ -901,6 +950,7 @@ window.EXERCISES = [
     name: "Wall slides",
     area: "Shoulder",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "wall walk, shoulder flexion, elevation, range of movement, ROM, reaching up, shelf, hair brushing, finger walk, spider walk, wall crawl, wall slide",
     image: "",
     instructions: [
@@ -919,6 +969,7 @@ window.EXERCISES = [
     name: "External rotation with band",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "ER, external rotation, rotator cuff, infraspinatus, theraband, resistance band, ER band, band ER, outward rotation, turn arm out",
     image: "",
     instructions: [
@@ -937,6 +988,7 @@ window.EXERCISES = [
     name: "Table slides",
     area: "Shoulder",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "table slide, shoulder flexion, assisted flexion, frozen shoulder, post-op, range of movement, ROM, table slides, towel slide, forward slide, table polish, wiping table",
     image: "",
     instructions: [
@@ -955,6 +1007,7 @@ window.EXERCISES = [
     name: "Shoulder blade squeeze",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "scapular retraction, scapular setting, posture, rhomboids, middle trapezius, shoulder squeeze, squeeze shoulder blades, scapular squeeze, retraction, posture squeeze",
     image: "",
     instructions: [
@@ -973,6 +1026,7 @@ window.EXERCISES = [
     name: "Rowing with a band",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "band row, seated row, scapular retraction, rhomboids, rotator cuff, theraband, resistance band, posture, carrying, pulling, rows, band rows, row, rowing, theraband row",
     image: "",
     instructions: [
@@ -991,6 +1045,7 @@ window.EXERCISES = [
     name: "Wall push ups",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "wall press up, push up, serratus anterior, pectorals, upper limb strength, wall press ups, wall push-ups, wall pushups, push ups against wall, standing push up",
     image: "",
     instructions: [
@@ -1009,6 +1064,7 @@ window.EXERCISES = [
     name: "Arm raise forward",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "shoulder flexion, active flexion, front raise, anterior deltoid, range of movement, reaching up, shelf, cupboard, arm lift, arm raises, forward arm raise, shoulder raise",
     image: "",
     instructions: [
@@ -1027,6 +1083,7 @@ window.EXERCISES = [
     name: "Shoulder push against a wall",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "isometric shoulder, isometrics, rotator cuff, flexion, extension, abduction, external rotation, internal rotation, pain relief, static shoulder, shoulder isometrics, push into wall, isometric holds",
     image: "",
     instructions: [
@@ -1046,6 +1103,7 @@ window.EXERCISES = [
     name: "Lying arm raise",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "supine flexion, anterior deltoid programme, rotator cuff tear, massive cuff tear, shoulder flexion, ROM, lying arm lift, arm raise in lying, supine arm raise, deltoid programme",
     image: "",
     instructions: [
@@ -1065,6 +1123,7 @@ window.EXERCISES = [
     name: "Turn arm in with a band",
     area: "Shoulder",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "internal rotation, IR, rotator cuff strengthening, subscapularis, theraband, resistance band, IR band, band IR, inward rotation, turn arm in",
     image: "",
     instructions: [
@@ -1084,6 +1143,7 @@ window.EXERCISES = [
     name: "Shoulder rolls",
     area: "Shoulder",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "shoulder circles, scapular mobility, posture, neck and shoulder tension, warm up, shoulder roll, shrugs, shoulder shrug",
     image: "",
     instructions: [
@@ -1103,6 +1163,7 @@ window.EXERCISES = [
     name: "Hand behind back stretch",
     area: "Shoulder",
     type: "Stretch",
+    difficulty: "Medium",
     aliases: "internal rotation stretch, HBB, frozen shoulder, adhesive capsulitis, towel stretch, functional reach, getting dressed, bra, tucking in shirt, back pocket, hand up back, behind back stretch, internal rotation behind back, HBB stretch",
     image: "",
     instructions: [
@@ -1123,6 +1184,7 @@ window.EXERCISES = [
     name: "Bend and straighten your elbow",
     area: "Elbow, wrist and hand",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "elbow flexion, elbow extension, elbow range of movement, ROM, elbow fracture, stiffness, elbow bend, elbow bending, elbow flexion extension, bend elbow",
     image: "",
     instructions: [
@@ -1142,6 +1204,7 @@ window.EXERCISES = [
     name: "Turn palm up and down",
     area: "Elbow, wrist and hand",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "pronation, supination, forearm rotation, wrist fracture, elbow range of movement, ROM, turning door handles, keys, taps, palm up palm down, turning forearm, pronation supination, supination pronation",
     image: "",
     instructions: [
@@ -1161,6 +1224,7 @@ window.EXERCISES = [
     name: "Wrist bend up and down",
     area: "Elbow, wrist and hand",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "wrist flexion, wrist extension, wrist range of movement, ROM, wrist fracture, Colles, wrist bends, wrist up and down, wrist flexion extension, wrist curls",
     image: "",
     instructions: [
@@ -1180,6 +1244,7 @@ window.EXERCISES = [
     name: "Grip squeeze",
     area: "Elbow, wrist and hand",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "grip strength, power grip, stress ball, putty, hand strengthening, hand osteoarthritis, OA, opening jars, carrying bags, hand squeeze, grip, ball squeeze, putty squeeze, fist squeeze, making a fist",
     image: "",
     instructions: [
@@ -1199,6 +1264,7 @@ window.EXERCISES = [
     name: "Finger tendon glides",
     area: "Elbow, wrist and hand",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "tendon gliding, finger range of movement, ROM, hand stiffness, hand osteoarthritis, hook fist, straight fist, tabletop, finger glides, finger exercises, fist positions",
     image: "",
     instructions: [
@@ -1219,6 +1285,7 @@ window.EXERCISES = [
     name: "Wrist lift with a weight",
     area: "Elbow, wrist and hand",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "wrist extensor strengthening, tennis elbow, lateral elbow tendinopathy, lateral epicondylalgia, eccentric, isotonic, wrist extension, reverse wrist curl, wrist lifts, tennis elbow exercise",
     image: "",
     instructions: [
@@ -1238,6 +1305,7 @@ window.EXERCISES = [
     name: "Thumb to fingertips",
     area: "Elbow, wrist and hand",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "thumb opposition, thumb range of movement, CMC joint, base of thumb osteoarthritis, OA, dexterity, thumb touches, thumb to finger, finger touching, opposition",
     image: "",
     instructions: [
@@ -1257,6 +1325,7 @@ window.EXERCISES = [
     name: "Finger spread with a band",
     area: "Elbow, wrist and hand",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "finger abduction, interossei, intrinsic strengthening, hand osteoarthritis, rubber band, finger spreads, spread fingers, finger abduction band, rubber band finger",
     image: "",
     instructions: [
@@ -1276,6 +1345,7 @@ window.EXERCISES = [
     name: "Forearm twist with a hammer",
     area: "Elbow, wrist and hand",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "pronation, supination, forearm rotation strengthening, tennis elbow, golfer's elbow, wrist rehab, hammer twist, hammer rotation, forearm rotation with hammer, hammer exercise",
     image: "",
     instructions: [
@@ -1296,6 +1366,7 @@ window.EXERCISES = [
     name: "Chin tucks",
     area: "Neck",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "cervical retraction, deep neck flexors, DNF, posture, neck pain, chin tuck, chin in, chin retraction, double chin, head back, neck retraction",
     image: "",
     instructions: [
@@ -1313,6 +1384,7 @@ window.EXERCISES = [
     name: "Neck rotation",
     area: "Neck",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "cervical rotation, neck range of movement, ROM, neck pain, stiffness, neck turns, head turns, look over shoulder, turn head, neck turn",
     image: "",
     instructions: [
@@ -1331,6 +1403,7 @@ window.EXERCISES = [
     name: "Neck side bend",
     area: "Neck",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "cervical lateral flexion, side flexion, upper trapezius stretch, neck stretch, neck side flexion, ear to shoulder, head tilt, side neck stretch, upper trap stretch",
     image: "",
     instructions: [
@@ -1349,6 +1422,7 @@ window.EXERCISES = [
     name: "Look down and up",
     area: "Neck",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "cervical flexion, cervical extension, neck range of movement, ROM, neck nods, head nod, chin to chest, neck flexion extension, look up and down",
     image: "",
     instructions: [
@@ -1368,6 +1442,7 @@ window.EXERCISES = [
     name: "Sitting upper back twist",
     area: "Upper back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "thoracic rotation, T-spine mobility, trunk rotation, upper back stiffness, posture, seated twist, trunk twist, upper back rotation, sitting twist, thoracic twist",
     image: "",
     instructions: [
@@ -1387,6 +1462,7 @@ window.EXERCISES = [
     name: "Chest opener over a towel",
     area: "Upper back",
     type: "Stretch",
+    difficulty: "Easy",
     aliases: "thoracic extension, T-spine extension, towel roll, posture, kyphosis, pec stretch, towel roll stretch, chest stretch lying, thoracic extension over towel, upper back stretch",
     image: "",
     instructions: [
@@ -1406,6 +1482,7 @@ window.EXERCISES = [
     name: "Sitting side bend",
     area: "Upper back",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "thoracic side flexion, lateral flexion, trunk mobility, upper back stiffness, side bend, seated side bend, side stretch, trunk side bend",
     image: "",
     instructions: [
@@ -1426,6 +1503,7 @@ window.EXERCISES = [
     name: "Heel to toe standing",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "tandem stance, semi-tandem, balance, falls prevention, Otago, proprioception, falls, unsteady, wobbly, heel toe stand, tandem stand, feet in line, one foot in front, heel to toe stance",
     image: "",
     instructions: [
@@ -1444,6 +1522,7 @@ window.EXERCISES = [
     name: "Marching on the spot",
     area: "Balance",
     type: "Balance",
+    difficulty: "Easy",
     aliases: "standing march, marching, balance, falls prevention, Otago, hip flexion, falls, walking, unsteady, march on the spot, marching in place, high knees, standing marching",
     image: "",
     instructions: [
@@ -1462,6 +1541,7 @@ window.EXERCISES = [
     name: "Sideways walking",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "side stepping, lateral walking, balance, falls prevention, Otago, hip abductors, side steps, crab walk, side walking, sidestep, walking sideways",
     image: "",
     instructions: [
@@ -1480,6 +1560,7 @@ window.EXERCISES = [
     name: "Heel to toe walking",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "tandem walk, tandem gait, balance, falls prevention, Otago, tightrope walk, heel to toe walk, line walking, tandem walking",
     image: "",
     instructions: [
@@ -1498,6 +1579,7 @@ window.EXERCISES = [
     name: "Walking backwards",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "backward walking, retro walking, balance, falls prevention, Otago, backward walk, reverse walking, walking backward",
     image: "",
     instructions: [
@@ -1517,6 +1599,7 @@ window.EXERCISES = [
     name: "Walk and turn round",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "walking and turning, figure of 8, balance, falls prevention, Otago, gait, falls, turning, unsteady, walk and turn, turn around, about turn",
     image: "",
     instructions: [
@@ -1536,6 +1619,7 @@ window.EXERCISES = [
     name: "Heel walking and toe walking",
     area: "Balance",
     type: "Balance",
+    difficulty: "Medium",
     aliases: "heel walk, toe walk, balance, falls prevention, Otago, ankle strength, heel walking, toe walking, walk on heels, walk on toes, tip toe walking",
     image: "",
     instructions: [
@@ -1556,6 +1640,7 @@ window.EXERCISES = [
     name: "Ankle pumps",
     area: "After surgery",
     type: "Movement",
+    difficulty: "Easy",
     aliases: "ankle pumps, foot pumps, circulation, DVT prevention, post-op, ankle range of movement, ankle pump, pumping feet, ankle circles in bed, circulation exercise",
     image: "",
     instructions: [
@@ -1574,6 +1659,7 @@ window.EXERCISES = [
     name: "Buttock squeezes",
     area: "After surgery",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "gluteal sets, glute squeezes, isometric gluteus maximus, post-op, THR, hip replacement, buttock clench, bottom squeeze, bum squeeze, glute sets, gluteal squeeze, buttock squeeze",
     image: "",
     instructions: [
@@ -1592,6 +1678,7 @@ window.EXERCISES = [
     name: "Knee straightening over a roll",
     area: "After surgery",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "short arc quads, SAQ, inner range quads, IRQ, quadriceps, TKR, knee replacement, post-op, short arc quad, inner range quad, knee over roll, towel under knee, quads over roll",
     image: "",
     instructions: [
@@ -1610,6 +1697,7 @@ window.EXERCISES = [
     name: "Deep breathing",
     area: "After surgery",
     type: "Breathing",
+    difficulty: "Easy",
     aliases: "deep breathing exercises, breathing exercises, thoracic expansion, chest clearance, post-op, respiratory, breathing, deep breaths, breathing exercise, chest expansion, ACBT, active cycle of breathing",
     image: "",
     instructions: [
@@ -1629,6 +1717,7 @@ window.EXERCISES = [
     name: "Pelvic floor long squeezes",
     area: "Pelvic floor",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "pelvic floor muscle training, PFMT, Kegels, slow contractions, stress incontinence, bladder leakage, antenatal, postnatal, prostatectomy, pelvic floor, Kegel, Kegel exercises, slow squeezes, long holds, pelvic floor exercises, PF exercises",
     image: "",
     instructions: [
@@ -1648,6 +1737,7 @@ window.EXERCISES = [
     name: "Pelvic floor quick squeezes",
     area: "Pelvic floor",
     type: "Strength",
+    difficulty: "Easy",
     aliases: "fast contractions, quick flicks, PFMT, Kegels, urgency, stress incontinence, pelvic floor, Kegel, fast squeezes, quick squeezes, quick contractions, pelvic floor exercises",
     image: "",
     instructions: [
@@ -1667,6 +1757,7 @@ window.EXERCISES = [
     name: "Squeeze before you cough",
     area: "Pelvic floor",
     type: "Strength",
+    difficulty: "Medium",
     aliases: "the Knack, pre-contraction, stress incontinence, cough, sneeze, lifting, bladder leakage, leaking when coughing, sneezing, knack, squeeze before cough, squeeze before sneeze, pelvic floor brace",
     image: "",
     instructions: [

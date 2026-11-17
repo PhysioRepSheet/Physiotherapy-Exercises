@@ -18,6 +18,8 @@ RepSheetI18n.add("pa", {
     "hdr.large": "ਵੱਡੇ ਅੱਖਰ",
     "hdr.normal": "ਆਮ ਅੱਖਰ",
     "hdr.print": "ਪ੍ਰਿੰਟ ਕਰੋ",
+    "hdr.dark": "ਗੂੜ੍ਹੀ ਸਕਰੀਨ",
+    "hdr.light": "ਹਲਕੀ ਸਕਰੀਨ",
     "intro.title": "ਘਰ ਵਿੱਚ ਕਰਨ ਲਈ ਤੁਹਾਡੀਆਂ ਕਸਰਤਾਂ",
     "intro.minutes": { one: "ਹਰ ਵਾਰ ਲਗਭਗ {n} ਮਿੰਟ", other: "ਹਰ ਵਾਰ ਲਗਭਗ {n} ਮਿੰਟ" },
     "fa.start": "ਮੇਰੀਆਂ ਕਸਰਤਾਂ ਸ਼ੁਰੂ ਕਰੋ",

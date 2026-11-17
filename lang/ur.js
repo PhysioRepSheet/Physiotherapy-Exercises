@@ -17,6 +17,8 @@ RepSheetI18n.add("ur", {
     "hdr.large": "بڑا متن",
     "hdr.normal": "عام متن",
     "hdr.print": "پرنٹ کریں",
+    "hdr.dark": "گہری اسکرین",
+    "hdr.light": "ہلکی اسکرین",
     "intro.title": "گھر پر آپ کی ورزشوں کا پروگرام",
     "intro.minutes": { one: "ہر بار تقریباً {n} منٹ", other: "ہر بار تقریباً {n} منٹ" },
     "fa.start": "میری ورزشیں شروع کریں",

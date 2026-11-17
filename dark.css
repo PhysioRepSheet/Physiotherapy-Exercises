@@ -1,0 +1,94 @@
+/* =========================================================
+   RepSheet: dark mode (builder and patient page)
+   Switched on by theme.js, which sets data-theme="dark" on <html>.
+   Screen only: printing always uses the normal light colours.
+   ========================================================= */
+.theme-ico { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; vertical-align: -3px; margin-right: 6px; }
+#btn-theme { display: inline-flex; align-items: center; }
+/* Paper is always white, even when the screen is dark */
+@media print { :root, :root[data-theme="dark"] { color-scheme: light !important; } }
+
+@media screen {
+  :root[data-theme="dark"] {
+    --brand: #4fc1b2;          /* lighter evergreen so it reads on dark */
+    --brand-dark: #7ad3c7;
+    --brand-ink: #a9e6dc;
+    --brand-tint: #17332f;
+    --brand-tint-2: #142624;
+    --accent: #f08a4b;
+    --accent-tint: #3a2417;
+    --ink: #e7ecea;
+    --ink-soft: #b3bfbb;
+    --ink-faint: #9eaba7;
+    --line: #2a3639;
+    --line-strong: #3d4b4e;
+    --bg: #0f1719;
+    --card: #172124;
+    --surface: #172124;
+    --field: #111b1d;
+    --on-brand: #06211d;       /* text on brand-coloured fills */
+    --focus: #7ad3c7;
+    --danger: #ff8a80;
+    --warn-bg: #3a2a12;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 6px 20px -8px rgba(0, 0, 0, .6);
+    --shadow-lg: 0 2px 4px rgba(0, 0, 0, .35), 0 18px 40px -16px rgba(0, 0, 0, .75);
+    color-scheme: dark;
+  }
+  :root[data-theme="dark"] body { background: var(--bg); color: var(--ink); }
+  :root[data-theme="dark"] .site-header { background: rgba(15, 23, 25, .86); border-bottom-color: rgba(255, 255, 255, .06); }
+  :root[data-theme="dark"] .panel { border-color: rgba(255, 255, 255, .05); }
+
+  /* Surfaces that were plain white */
+  :root[data-theme="dark"] :is(.btn-secondary, .chip, .ex-card, .empty-steps li, .share-qr, .move-btn, .bulk-list, .ex-summary, .bm-side,
+    .contact-form select, .params select, .pc-fix, .p-day, .fa-meter, .fa-rest, .p-reminder-row select, .ci-opts button, .p-stage-tab,
+    .patient-message, #lang-pick, .lang-bar, .p-card) { background: var(--card); color: var(--ink); }
+  :root[data-theme="dark"] :is(input, textarea, select, .progressions, .note-toggle, .own-dialog select, .bulk-tools) { background-color: var(--field); color: var(--ink); border-color: var(--line-strong); }
+  :root[data-theme="dark"] :is(input, textarea):focus { background-color: var(--field); box-shadow: 0 0 0 4px rgba(79, 193, 178, .22); }
+  :root[data-theme="dark"] input::placeholder, :root[data-theme="dark"] textarea::placeholder { color: #7f8c88; }
+  :root[data-theme="dark"] .btn-ghost:hover { background: var(--card); }
+  :root[data-theme="dark"] .share-qr { background: #fff; } /* QR codes need a white background to scan */
+  :root[data-theme="dark"] .empty-state { background: linear-gradient(180deg, var(--brand-tint-2), var(--card) 70%); }
+  :root[data-theme="dark"] .share { background: linear-gradient(135deg, var(--brand-tint-2), var(--card)); }
+  :root[data-theme="dark"] dialog { background: var(--card); color: var(--ink); }
+
+  /* Brand-coloured fills: dark text on the lighter green */
+  :root[data-theme="dark"] :is(.btn-primary, .btn-primary:hover, .step-num, .exs-num, .stage-head, .p-day.done, .ci-opts button[aria-pressed=true],
+    .p-stage-tab[aria-current="step"], .fa-finished-mark) { color: var(--on-brand); }
+  :root[data-theme="dark"] .p-day.today.done::after { color: var(--on-brand); }
+  :root[data-theme="dark"] .ex-title::before { color: var(--on-brand); }
+  /* Pressed toggles used --ink as a fill: keep them readable */
+  :root[data-theme="dark"] :is(.btn-ghost[aria-pressed="true"], .chip[aria-pressed="true"], .bm-side button[aria-pressed=true], .p-read[aria-pressed="true"], .p-display-row .btn[aria-pressed="true"]) { background: var(--ink); color: #0f1719; border-color: var(--ink); }
+  :root[data-theme="dark"] #btn-theme[aria-pressed="true"] { background: transparent; color: var(--ink); border-color: var(--line-strong); }
+  :root[data-theme="dark"] .view-btn[aria-pressed="true"] { background: var(--line-strong); color: var(--ink); }
+  :root[data-theme="dark"] :is(.toast, .undo-bar, .skip-link) { background: #e7ecea; color: #0f1719; }
+  :root[data-theme="dark"] .undo-bar button { background: #0f1719; color: #e7ecea; }
+
+  /* Pictures: keep the drawings on their own light tile so the figures stay clear */
+  :root[data-theme="dark"] .pic { background: #e9f1ee; }
+  :root[data-theme="dark"] .pic .placeholder { stroke: #0e6b62; }
+
+  /* Warm notes and warnings */
+  :root[data-theme="dark"] :is(.todo, .contact-warning, .contact-off) { background: #3a3212; color: #f6e7a8 !important; }
+  :root[data-theme="dark"] .no-patient { background: #2a1d14; border-color: #5a3a24; }
+  :root[data-theme="dark"] .whats-new { border-color: #5a3a24; }
+  :root[data-theme="dark"] .pc-warn { border-color: #6a4a26; }
+  :root[data-theme="dark"] .pc-warn mark { background: #6a3a1a; }
+  :root[data-theme="dark"] .pc-flag { box-shadow: 0 0 0 3px #5a2e14 !important; }
+  :root[data-theme="dark"] .chip-special[aria-pressed="false"] { border-color: #7a4a2a; color: #f5b183; }
+  :root[data-theme="dark"] .pc-fix { color: #f5b183; }
+  :root[data-theme="dark"] .icon-btn.remove:hover { background: #3a1c1a; }
+  :root[data-theme="dark"] .bm-body .bm-sk { fill: #26413c; stroke: #4c6863; }
+  :root[data-theme="dark"] .lang-draft { background: #3a2417; border-color: #8a4a1e; color: #fcd9bd; }
+  :root[data-theme="dark"] .p-own { color: #f5b183; }
+  :root[data-theme="dark"] .reading { background: #4a4012; box-shadow: 0 0 0 4px #4a4012; }
+  :root[data-theme="dark"] .large-print .p-steps, :root[data-theme="dark"] .large-print .p-notes { color: var(--ink); }
+
+  /* Patient page */
+  :root[data-theme="dark"] .patient-intro { background: linear-gradient(140deg, #0e5d55 0%, #0b4a44 100%); }
+  :root[data-theme="dark"] .patient-intro :is(.btn-primary, .fa-start) { color: #083b36; }
+  :root[data-theme="dark"] .fa-start { background: #f1f7f5; color: #083b36; }
+  :root[data-theme="dark"] .fa-nav .btn-primary:not(.fa-ready) { background: var(--card); color: var(--brand-ink); }
+  :root[data-theme="dark"] .p-install { background: #0b4a44; }
+  :root[data-theme="dark"] .p-install .btn-primary { background: #fff; color: #083b36; }
+}

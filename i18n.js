@@ -28,7 +28,8 @@
     { code: "pa", name: "Punjabi (Gurmukhi)", own: "ਪੰਜਾਬੀ", dir: "ltr", voice: "pa-IN" },
     { code: "ur", name: "Urdu", own: "اردو", dir: "rtl", voice: "ur-PK" },
     { code: "bn", name: "Bengali", own: "বাংলা", dir: "ltr", voice: "bn-BD" },
-    { code: "ar", name: "Arabic", own: "العربية", dir: "rtl", voice: "ar-SA" }
+    { code: "ar", name: "Arabic", own: "العربية", dir: "rtl", voice: "ar-SA" },
+    { code: "cy", name: "Welsh", own: "Cymraeg", dir: "ltr", voice: "cy-GB" }
   ];
 
   // Master English wording. {n}, {t}, {name} and so on are filled in by the page.
@@ -46,6 +47,8 @@
     "hdr.large": "Larger text",
     "hdr.normal": "Normal text",
     "hdr.print": "Print",
+    "hdr.dark": "Dark screen",
+    "hdr.light": "Light screen",
     "intro.title": "Your home exercise programme",
     "intro.minutes": { one: "About {n} minute each time", other: "About {n} minutes each time" },
     "fa.start": "Start my exercises",

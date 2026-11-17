@@ -15,6 +15,8 @@ RepSheetI18n.add("ro", {
     "hdr.large": "Text mai mare",
     "hdr.normal": "Text normal",
     "hdr.print": "Tipărește",
+    "hdr.dark": "Ecran întunecat",
+    "hdr.light": "Ecran luminos",
     "intro.title": "Programul tău de exerciții acasă",
     "intro.minutes": { one: "Cam {n} minut de fiecare dată", few: "Cam {n} minute de fiecare dată", other: "Cam {n} de minute de fiecare dată" },
     "fa.start": "Începe exercițiile",

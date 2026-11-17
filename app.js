@@ -69,6 +69,8 @@
 
   const TYPES = ["Strength", "Stretch", "Movement", "Balance", "Breathing"];
   let activeType = "Any type";
+  const LEVELS = ["Easy", "Medium", "Harder"];
+  let activeLevel = "Any level";
   function renderFilters() {
     const special = [];
     if (favourites.some((id) => H.byId(id))) special.push("Favourites");
@@ -92,6 +94,14 @@
         onclick: () => { activeType = t; renderFilters(); renderLibrary(); }
       })));
     }
+    const levels = $("#level-filters");
+    if (levels) {
+      levels.innerHTML = "";
+      ["Any level", ...LEVELS].forEach((t) => levels.append(el("button", {
+        type: "button", class: "chip chip-small" + (t !== "Any level" ? " chip-level chip-level-" + t.toLowerCase() : ""), "aria-pressed": String(t === activeLevel), text: t,
+        onclick: () => { activeLevel = t; renderFilters(); renderLibrary(); }
+      })));
+    }
   }
   // Called by the body map
   window.RepSheetSetArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
@@ -99,7 +109,7 @@
 
   // ---------- Search ----------
   // Exact words first. If nothing matches, allow small spelling slips ("hamstrng", "calve", "sholder").
-  const searchText = (e) => (e.name + " " + e.area + " " + (e.type || "") + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ") + (e.checked === false ? " awaiting check" : "")).toLowerCase();
+  const searchText = (e) => (e.name + " " + e.area + " " + (e.type || "") + " " + (e.difficulty || "") + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ") + (e.checked === false ? " awaiting check" : "")).toLowerCase();
   const stem = (w) => w.replace(/(ies)$/, "y").replace(/(es|s)$/, "");
   function near(a, b) {
     if (a === b) return true;
@@ -119,7 +129,7 @@
   function libraryMatches() {
     const q = $("#search").value.trim().toLowerCase();
     const recent = readIds(RECENT_KEY);
-    let pool = LIBRARY.filter((e) => activeType === "Any type" || e.type === activeType);
+    let pool = LIBRARY.filter((e) => (activeType === "Any type" || e.type === activeType) && (activeLevel === "Any level" || e.difficulty === activeLevel));
     if (activeArea === "Favourites") pool = favourites.map(H.byId).filter((e) => e && pool.includes(e));
     else if (activeArea === "Recent") pool = recent.map(H.byId).filter((e) => e && pool.includes(e));
     else if (activeArea !== "All") pool = pool.filter((e) => e.area === activeArea);
@@ -158,7 +168,7 @@
         el("div", { class: "meta" },
           el("button", { type: "button", class: "name name-btn", text: ex.name, title: "Preview " + ex.name, onclick: () => openPreview(ex) }),
           ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
-          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
+          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.difficulty ? el("span", { class: "lvl-dot lvl-" + String(ex.difficulty).toLowerCase(), title: ex.difficulty, role: "img", "aria-label": ex.difficulty }) : null, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
           alsoCalled(ex)
         ),
         ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
@@ -184,7 +194,7 @@
     body.append(
       el("div", { class: "preview-pic" }, H.mediaSwitch(ex, pic)),
       el("h2", { id: "preview-title", text: ex.name }),
-      el("p", { class: "hint", text: [ex.area, ex.type].filter(Boolean).join(" · ") + (ex.checked === false ? " · Awaiting check" : "") }),
+      el("p", { class: "hint", text: [ex.area, ex.type, ex.difficulty].filter(Boolean).join(" · ") + (ex.checked === false ? " · Awaiting check" : "") }),
       el("ol", { class: "ex-steps" }, ex.instructions.map((t) => el("li", { text: t }))),
       ex.defaults && H.describe(ex.defaults) ? el("p", { class: "param-summary", text: "Starts at: " + H.describe(ex.defaults) }) : null,
       (ex.progressions || []).length ? el("div", { class: "preview-opts" }, el("b", { text: "Harder" }), el("ul", {}, ex.progressions.map((t) => el("li", { text: t })))) : null,
