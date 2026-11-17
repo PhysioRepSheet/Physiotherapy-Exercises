@@ -94,3 +94,10 @@
 }
 /* Library filter dropdowns: a set filter stays highlighted in dark mode */
 :root[data-theme="dark"] .lib-filter.is-set select { background-color: rgba(94, 200, 185, .14); border-color: var(--brand); color: var(--ink); }
+/* Dropdown lists in dark mode (17 Nov 2026): some browsers (Chrome on Windows) draw the open list
+   with a pale background but keep the light text, so options vanished. Give every option solid colours. */
+@media screen {
+  :root[data-theme="dark"] select { color-scheme: dark; }
+  :root[data-theme="dark"] select option, :root[data-theme="dark"] select optgroup { background-color: #172124; color: #e7ecea; }
+  :root[data-theme="dark"] select option:checked { background-color: #17332f; color: #a9e6dc; }
+}
