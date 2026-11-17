@@ -6,7 +6,7 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-16e";
+const VERSION = "repsheet-2026-11-17a";
 const FILES = [
   "./", "index.html", "view.html", "privacy.html", "disclaimer.html",
   "styles.css", "view.css",
@@ -16,7 +16,8 @@ const FILES = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  // "reload" skips the browser's own short-term copy, so a new version never mixes old and new files
+  event.waitUntil(caches.open(VERSION).then((c) => c.addAll(FILES.map((f) => new Request(f, { cache: "reload" })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {
@@ -26,20 +27,24 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Serve from the device straight away, and refresh the copy in the background when online.
+// Online: always get the latest files (checking with the server, which is quick), and keep a copy.
+// Offline, or no answer within 4 seconds: use the copy saved on the device.
 self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
   event.respondWith(
     caches.open(VERSION).then(async (cache) => {
-      const cached = await cache.match(req, { ignoreSearch: true });
-      const network = fetch(req).then((res) => {
+      const network = fetch(req, { cache: "no-cache" }).then((res) => {
         if (res && res.ok && res.type === "basic") cache.put(req, res.clone());
         return res;
       }).catch(() => null);
+      const timeout = new Promise((r) => setTimeout(() => r(null), 4000));
+      const first = await Promise.race([network, timeout]);
+      if (first) return first;
+      const cached = await cache.match(req, { ignoreSearch: true });
       if (cached) { event.waitUntil(network); return cached; }
-      const res = await network;
-      return res || new Response("You're offline, and this page hasn't been saved on this device yet.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
+      const late = await network;
+      return late || new Response("You're offline, and this page hasn't been saved on this device yet.", { status: 503, headers: { "Content-Type": "text/plain; charset=utf-8" } });
     })
   );
 });
