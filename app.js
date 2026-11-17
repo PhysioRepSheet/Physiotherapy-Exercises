@@ -77,32 +77,22 @@
     if (readIds(RECENT_KEY).some((id) => H.byId(id))) special.push("Recent");
     if (!special.includes(activeArea) && (activeArea === "Favourites" || activeArea === "Recent")) activeArea = "All";
     const areas = ["All", ...special, ...new Set(LIBRARY.map((e) => e.area))];
-    const box = $("#area-filters");
-    box.innerHTML = "";
-    areas.forEach((a) =>
-      box.append(el("button", {
-        type: "button", class: "chip" + (a === "Favourites" || a === "Recent" ? " chip-special" : ""), "aria-pressed": String(a === activeArea),
-        text: a === "Favourites" ? "★ Favourites" : a,
-        onclick: () => { activeArea = a; renderFilters(); renderLibrary(); if (window.RepSheetBodyMap) window.RepSheetBodyMap.refresh(); }
-      }))
-    );
-    const types = $("#type-filters");
-    if (types) {
-      types.innerHTML = "";
-      ["Any type", ...TYPES].forEach((t) => types.append(el("button", {
-        type: "button", class: "chip chip-small", "aria-pressed": String(t === activeType), text: t,
-        onclick: () => { activeType = t; renderFilters(); renderLibrary(); }
-      })));
-    }
-    const levels = $("#level-filters");
-    if (levels) {
-      levels.innerHTML = "";
-      ["Any level", ...LEVELS].forEach((t) => levels.append(el("button", {
-        type: "button", class: "chip chip-small" + (t !== "Any level" ? " chip-level chip-level-" + t.toLowerCase() : ""), "aria-pressed": String(t === activeLevel), text: t,
-        onclick: () => { activeLevel = t; renderFilters(); renderLibrary(); }
-      })));
-    }
+    // Dropdowns (17 Nov 2026): take far less room than rows of chips. A changed filter is highlighted.
+    const fill = (sel, values, active, label) => {
+      if (!sel) return;
+      sel.innerHTML = "";
+      values.forEach((v) => sel.append(el("option", { value: v, text: label ? label(v) : v })));
+      sel.value = active;
+      sel.closest(".lib-filter").classList.toggle("is-set", sel.selectedIndex > 0);
+    };
+    fill($("#area-filter"), areas, activeArea, (a) => (a === "Favourites" ? "★ Favourites" : a === "All" ? "All areas" : a));
+    fill($("#type-filter"), ["Any type", ...TYPES], activeType, (t) => (t === "Any type" ? "All types" : t));
+    fill($("#level-filter"), ["Any level", ...LEVELS], activeLevel, (t) => (t === "Any level" ? "All levels" : t));
   }
+  const filterChanged = (set) => (e) => { set(e.target.value); renderFilters(); renderLibrary(); };
+  $("#area-filter").addEventListener("change", filterChanged((v) => { activeArea = v; if (window.RepSheetBodyMap) window.RepSheetBodyMap.refresh(); }));
+  $("#type-filter").addEventListener("change", filterChanged((v) => { activeType = v; }));
+  $("#level-filter").addEventListener("change", filterChanged((v) => { activeLevel = v; }));
   // Called by the body map
   window.RepSheetSetArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
   window.RepSheetArea = () => activeArea;

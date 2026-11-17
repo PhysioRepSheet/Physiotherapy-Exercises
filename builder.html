@@ -44,9 +44,11 @@
       <input id="search" type="search" placeholder="Search exercises…" title="Shortcut: press / to search, Enter to add the top result" autocomplete="off" aria-describedby="search-hint">
       <p id="search-hint" class="visually-hidden">Press Enter to add the top result.</p>
       <div id="bodymap-slot"></div>
-      <div id="area-filters" class="chips" role="group" aria-label="Filter by body area"></div>
-      <div id="type-filters" class="chips chips-type" role="group" aria-label="Filter by type of exercise"></div>
-      <div id="level-filters" class="chips chips-type chips-level" role="group" aria-label="Filter by difficulty"></div>
+      <div class="lib-filters" role="group" aria-label="Filter exercises">
+        <label class="lib-filter lib-filter-area"><span>Body area</span><select id="area-filter"></select></label>
+        <label class="lib-filter"><span>Type</span><select id="type-filter"></select></label>
+        <label class="lib-filter"><span>Level</span><select id="level-filter"></select></label>
+      </div>
       <ul id="library-list" class="library-list"></ul>
       <div class="library-foot">
         <button type="button" class="btn btn-secondary btn-own" id="btn-own-new">+ Make your own exercise</button>

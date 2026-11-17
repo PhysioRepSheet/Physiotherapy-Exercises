@@ -92,3 +92,5 @@
   :root[data-theme="dark"] .p-install { background: #0b4a44; }
   :root[data-theme="dark"] .p-install .btn-primary { background: #fff; color: #083b36; }
 }
+/* Library filter dropdowns: a set filter stays highlighted in dark mode */
+:root[data-theme="dark"] .lib-filter.is-set select { background-color: rgba(94, 200, 185, .14); border-color: var(--brand); color: var(--ink); }
