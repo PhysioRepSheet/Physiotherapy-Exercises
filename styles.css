@@ -1070,25 +1070,23 @@ body { font-optical-sizing: auto; }
 @media (prefers-reduced-motion: reduce) { .a11y-toggle .a11y-chev { transition: none; } }
 @media print { .a11y-panel { display: none !important; } }
 
-/* ---------- Handout and patient page options: fold away (options-fold.js) ---------- */
-.options-fold { margin: 14px 0 4px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--paper, transparent); }
-.options-fold > summary { border-top: 0; font-size: inherit; font-weight: inherit; list-style: none; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 10px; row-gap: 2px; padding: 10px 12px; cursor: pointer; border-radius: var(--radius-sm); }
+/* ---------- Handout options: fold away (options-fold.js) ---------- */
+.options-fold { margin: 14px 0 4px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.settings-details .options-fold > summary, .options-fold > summary { list-style: none; display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; padding: 10px 12px; margin: 0; border: 0; cursor: pointer; border-radius: var(--radius-sm); font-size: inherit; font-weight: inherit; }
+.settings-details .options-fold > summary::before, .options-fold > summary::before { content: none; display: none; }
 .options-fold > summary::-webkit-details-marker { display: none; }
-.options-fold > summary:hover { background: var(--brand-tint); }
+.options-fold > summary:hover { background: var(--brand-tint-2); }
 .options-fold > summary:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
-.options-fold .settings-group { margin: 0; grid-column: 1; grid-row: 1; }
-.options-fold > summary::before { content: none !important; display: none !important; }
-.options-fold-sum { grid-column: 1; grid-row: 2; font-size: .8125rem; color: var(--ink-soft); }
-.options-fold-chev { grid-column: 2; grid-row: 1 / span 2; }
-.options-fold[open] .options-fold-sum { display: none; }
-.options-fold-chev { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--ink-soft); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .2s var(--ease); }
+.options-fold > summary .settings-group { margin: 0; flex: none; white-space: nowrap; }
+.options-fold-sum { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .8125rem; color: var(--ink-soft); text-align: right; }
+.options-fold-chev { flex: none; width: 16px; height: 16px; color: var(--ink-soft); transition: transform .25s var(--ease); }
 .options-fold[open] .options-fold-chev { transform: rotate(180deg); }
-.options-fold > :not(summary) { padding-left: 12px; padding-right: 12px; }
-.options-fold > :last-child { padding-bottom: 10px; }
+.options-fold[open] .options-fold-sum { visibility: hidden; }
+.options-fold-body { padding: 0 12px 12px; overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .options-fold-chev { transition: none; } }
 
 /* ---------- Handout details buttons: compact grid (17 Nov 2026) ---------- */
-.settings .settings-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-.settings .settings-actions #btn-print { grid-column: 1 / -1; order: 0; }
-.settings .settings-actions .btn-secondary { padding: 8px 6px; font-size: .875rem; min-height: 40px; line-height: 1.15; white-space: normal; text-wrap: balance; justify-content: center; text-align: center; }
-@media (max-width: 340px) { .settings .settings-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.settings .settings-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.settings .settings-actions #btn-print { grid-column: 1 / -1; order: 0; flex-basis: auto; }
+.settings .settings-actions .btn-secondary { padding: 6px 4px; font-size: .8125rem; min-height: 34px; min-width: 0; width: 100%; line-height: 1.15; white-space: normal; text-wrap: balance; justify-content: center; text-align: center; }
+@media (max-width: 330px) { .settings .settings-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

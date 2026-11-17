@@ -85,7 +85,8 @@
     }
 
     // ---------- How is it going? (only when the physio switched it on) ----------
-    if (data.ci) checkIn(code, data, items);
+    // Removed at Alex's request (17 Nov 2026): old links that switched it on no longer show it.
+    if (false) checkIn(code, data, items);
   }
 
   function checkIn(code, data, items) {

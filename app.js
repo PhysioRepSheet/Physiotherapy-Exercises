@@ -778,7 +778,7 @@
     set("#large-print", data.lp, "large-print");
     set("#easy-read", data.er, "easy-read");
     set("#tick-chart", data.tc); $("#print-ticks").hidden = !data.tc;
-    set("#check-in", data.ci == null ? true : data.ci);
+    set("#check-in", false); // check-in removed (17 Nov 2026)
     stages = H.unpackStages(data.st);
     renderStages();
     set("#pain-guide", false); $("#print-pain").hidden = true; // pain guide removed (16 Nov 2026)
