@@ -1111,3 +1111,50 @@ body { font-optical-sizing: auto; }
 @media (max-width: 520px) { .steps-edit-foot { flex-direction: column; } }
 @media screen { .view-simple .steps-edit { display: none !important; } }
 @media print { .steps-edit, .steps-edited-mark { display: none !important; } }
+
+/* ---------- Dark mode on/off switch in the header (theme.js), always on show (17 Nov 2026) ---------- */
+.theme-switch { display: inline-flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--line-strong); color: var(--ink); border-radius: 999px; padding: 5px 6px 5px 12px; font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; min-height: 32px; transition: background .15s var(--ease), border-color .15s var(--ease); }
+.theme-switch[hidden] { display: none; }
+.theme-switch:hover { border-color: var(--ink-faint); }
+.theme-switch:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
+.theme-switch:disabled { opacity: .55; cursor: not-allowed; }
+.ts-track { position: relative; flex: none; width: 34px; height: 20px; border-radius: 999px; background: var(--line-strong); transition: background .2s var(--ease); }
+.ts-thumb { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0, 0, 0, .3); transition: transform .2s var(--ease); }
+.theme-switch[aria-checked="true"] .ts-track { background: var(--brand); }
+.theme-switch[aria-checked="true"] .ts-thumb { transform: translateX(14px); }
+@media (prefers-reduced-motion: reduce) { .ts-track, .ts-thumb { transition: none; } }
+@media (max-width: 380px) { .theme-switch { padding-left: 10px; gap: 6px; } }
+@media print { .theme-switch { display: none !important; } }
+
+/* ---------- Handout options under the action buttons; compact options (17 Nov 2026) ---------- */
+.settings > .options-fold { margin: 0; }
+.options-fold-body > :first-child { margin-top: 2px; }
+.lang-inline { display: flex; align-items: center; gap: 10px; margin: 0 0 10px; }
+.lang-inline label { margin: 0; font-size: .875rem; font-weight: 600; flex: none; }
+.lang-inline select { flex: 1 1 auto; min-width: 0; width: auto; }
+.opt-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px 10px; }
+.opt-toggle { display: flex; align-items: center; gap: 8px; font-size: .875rem; line-height: 1.25; padding: 6px 4px; border-radius: 8px; cursor: pointer; }
+.opt-toggle:hover { background: var(--brand-tint-2); }
+.opt-toggle input { flex: none; margin: 0; }
+.opt-toggle[hidden] { display: none; }
+.lang-en-row { margin: -4px 0 4px; }
+.opt-note { margin: 0 0 8px; font-size: .75rem; line-height: 1.35; }
+@media (max-width: 340px) { .opt-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Advice and goals: optional fold-away box (17 Nov 2026) ---------- */
+.advice-fold { margin: 14px 0 4px; }
+.advice-warn { margin: 2px 0 12px; font-size: .8125rem; }
+.advice-fold .field { margin-bottom: 0; }
+.advice-fold .field label { font-size: .875rem; }
+.advice-fold .general-notes-field { margin-top: 10px; }
+.advice-fold .message-field textarea, .advice-fold #general-notes { min-height: 3.2em; }
+.advice-fold .goal-plan { margin-top: 10px; gap: 10px 12px; }
+.advice-fold .goal-plan .hint { margin: 0; font-size: .75rem; }
+/* Small phones: the switch shows a moon instead of the words, so the header stays on fewer lines
+   (screen readers still hear "Dark mode") */
+.ts-moon { display: none; flex: none; width: 16px; height: 16px; }
+@media (max-width: 480px) {
+  .theme-switch { padding-left: 10px; gap: 6px; }
+  .theme-switch .ts-moon { display: block; }
+  .theme-switch .ts-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}

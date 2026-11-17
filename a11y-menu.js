@@ -1,7 +1,7 @@
 /*
   ACCESSIBILITY MENU
   One "Accessibility" button in the page header opens a small dropdown holding the display choices
-  (larger text, easier reading, high contrast, dark screen, pause pictures).
+  (larger text, easier reading, high contrast, pause pictures). Dark mode is its own switch beside it.
   It closes with the button, the Escape key, or a click anywhere else. Nothing is saved or sent anywhere.
 */
 (function () {

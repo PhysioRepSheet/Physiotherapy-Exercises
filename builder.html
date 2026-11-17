@@ -10,10 +10,10 @@
   <meta name="theme-color" content="#0e6b62">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=20261117h">
-  <link rel="stylesheet" href="i18n.css?v=20261117h">
-  <link rel="stylesheet" href="dark.css?v=20261117h">
-  <script src="theme.js?v=20261117h"></script>
+  <link rel="stylesheet" href="styles.css?v=20261117k">
+  <link rel="stylesheet" href="i18n.css?v=20261117k">
+  <link rel="stylesheet" href="dark.css?v=20261117k">
+  <script src="theme.js?v=20261117k"></script>
 </head>
 <body>
   <a class="skip-link" href="#programme">Skip to handout</a>
@@ -24,12 +24,13 @@
         <a class="brand-link" href="index.html" aria-label="Home"><svg class="brand-mark" viewBox="30 28 200 200" aria-hidden="true"><path class="bm-page" fill-rule="evenodd" d="M58 32 H120 L170 82 V208 A16 16 0 0 1 154 224 H58 A16 16 0 0 1 42 208 V48 A16 16 0 0 1 58 32 Z M87.9 126.1 L114 152.2 L170 96.2 L170 135.8 L114 191.8 L68.1 145.9 A14 14 0 0 1 87.9 126.1 Z"/><path class="bm-tick" d="M170 96.2 L192.1 74.1 A14 14 0 0 1 211.9 93.9 L170 135.8 Z"/></svg><span class="wordmark">Rep<span>Sheet</span></span></a>
       </div>
       <div class="header-right">
+        <!-- Dark mode on/off switch (theme.js): always on show, not inside the Accessibility menu -->
+        <button type="button" class="theme-switch" id="btn-theme" role="switch" aria-checked="false"><svg class="ts-moon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="ts-label">Dark mode</span><span class="ts-track" aria-hidden="true"><span class="ts-thumb"></span></span></button>
         <div class="a11y-menu">
           <button type="button" class="btn-ghost a11y-toggle" id="btn-a11y" aria-expanded="false" aria-controls="a11y-panel"><svg class="a11y-ico" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M4.5 8.5 12 10l7.5-1.5M12 10v4.5M12 14.5 8.5 21M12 14.5l3.5 6.5"/></svg><span>Accessibility</span><svg class="a11y-chev" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
           <!-- Accessibility menu (a11y-menu.js): a small dropdown; closes with Escape or a click elsewhere -->
           <div id="a11y-panel" class="a11y-panel" role="group" aria-labelledby="btn-a11y" hidden>
             <div class="a11y-row">
-              <button type="button" class="btn-ghost" id="btn-theme" aria-pressed="false">Dark screen</button>
               <button type="button" class="btn-ghost" id="btn-motion" aria-pressed="false">Pause animations</button>
             </div>
           </div>
@@ -227,8 +228,61 @@
           <button type="button" class="btn btn-secondary" id="btn-clear" title="Start a new handout">Clear</button>
         </div>
 
+      <!-- Handout options: folds away (options-fold.js); open or closed is remembered on this device only.
+           Short labels; the fuller explanation is in each option's tooltip and read out by screen readers. -->
+      <details class="options-fold" id="options-fold">
+      <summary><h3 class="settings-group">Handout options</h3><span class="options-fold-sum" id="options-fold-sum"></span><svg class="options-fold-chev" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+      <div class="options-fold-body">
+        <!-- Patient's language: the handout and patient page are translated; your own typed words stay as typed -->
+        <div class="lang-field lang-inline">
+          <label for="handout-lang">Language</label>
+          <select id="handout-lang"><option value="en">English</option></select>
+        </div>
+        <label class="opt-toggle lang-en-row" id="handout-lang-en-row" title="A small English line under each step, so you and family can follow it" hidden>
+          <input type="checkbox" id="handout-lang-en" checked> <span>Show English too</span>
+        </label>
+        <p class="hint opt-note" id="handout-lang-note" hidden>Beta translation, not yet checked by a native speaker. Your own typed words stay in English.</p>
+        <div class="opt-grid">
+        <label class="opt-toggle" title="Bigger text and pictures on the handout and patient page">
+          <input type="checkbox" id="large-print" aria-describedby="large-print-tip"> <span>Large print</span><span id="large-print-tip" class="visually-hidden">Bigger text and pictures on the handout and patient page</span>
+        </label>
+        <label class="opt-toggle" title="Very large text, big step pictures, one exercise per page. For learning disability, dementia or low literacy">
+          <input type="checkbox" id="easy-read" aria-describedby="easy-read-tip"> <span>Easy read</span><span id="easy-read-tip" class="visually-hidden">Very large text, big step pictures, one exercise per page. For learning disability, dementia or low literacy</span>
+        </label>
+        <label class="opt-toggle" title="Boxes to tick each day, on the handout and patient page">
+          <input type="checkbox" id="tick-chart" aria-describedby="tick-chart-tip"> <span>Tick chart</span><span id="tick-chart-tip" class="visually-hidden">Boxes to tick each day, on the handout and patient page</span>
+        </label>
+        <label class="opt-toggle" title="No colour fills, crisp black lines. Best for mono printers and saves ink">
+          <input type="checkbox" id="bw-print" aria-describedby="bw-print-tip"> <span>Black &amp; white</span><span id="bw-print-tip" class="visually-hidden">No colour fills, crisp black lines. Best for mono printers and saves ink</span>
+        </label>
+        <label class="opt-toggle" title="Two columns, smaller pictures and margins, so it prints on fewer pages">
+          <input type="checkbox" id="paper-saver" aria-describedby="paper-saver-tip"> <span>Paper saver</span><span id="paper-saver-tip" class="visually-hidden">Two columns, smaller pictures and margins, so it prints on fewer pages</span>
+        </label>
+        </div>
+        <div hidden>
+            <!-- "How is it going?" check-in removed at Alex's request, 17 Nov 2026. Kept hidden and off so old links still open. -->
+            <label class="large-toggle" hidden>
+              <input type="checkbox" id="check-in"> <span><strong>“How is it going?” check-in</strong> <span class="hint">(patient page only: they mark each exercise too easy, about right or too hard, to show you at review; saved on their phone)</span></span>
+            </label>
+            <!-- Pain guide (traffic light) removed at Alex's request, 16 Nov 2026. Kept hidden and off so old links still open. -->
+            <label class="large-toggle" hidden>
+              <input type="checkbox" id="pain-guide"> <span><strong>Pain guide</strong> <span class="hint">(green, amber, red: how much pain is OK, on the handout and patient page)</span></span>
+            </label>
+            <label class="pain-level-field" for="pain-level" hidden>
+              <span>Pain allowed while exercising</span>
+              <select id="pain-level">
+                <option value="1">Mild ache only</option>
+                <option value="3">Up to 3 out of 10</option>
+                <option value="5">Up to 5 out of 10</option>
+              </select>
+            </label>
+        </div>
+      </div>
+      </details>
+
+
       <details class="settings-details" id="settings-details" open>
-        <summary>Patient, physio and print options</summary>
+        <summary>Patient, physio, advice and stages</summary>
         <div class="settings-body">
           <h3 class="settings-group">Patient and physio</h3>
           <div class="field-grid">
@@ -254,91 +308,45 @@
               <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
             </label>
           </div>
-          <!-- Folds away (options-fold.js); open or closed is remembered on this device only -->
-          <details class="options-fold" id="options-fold">
-          <summary><h3 class="settings-group">Handout options</h3><span class="options-fold-sum" id="options-fold-sum"></span><svg class="options-fold-chev" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+
+          <!-- Advice and goals: optional, folds away (options-fold.js), closed to start with -->
+          <details class="options-fold advice-fold" id="advice-fold">
+          <summary><h3 class="settings-group">Advice and goals</h3><span class="options-fold-sum" id="advice-fold-sum"></span><svg class="options-fold-chev" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="options-fold-body">
-          <!-- Patient's language: the handout and patient page are translated; your own typed words stay as typed -->
-          <div class="field lang-field">
-            <label for="handout-lang">Patient's language</label>
-            <select id="handout-lang"><option value="en">English</option></select>
-            <label class="large-toggle lang-en-row" id="handout-lang-en-row" hidden>
-              <input type="checkbox" id="handout-lang-en" checked> <span><strong>Show English too</strong> <span class="hint">(a small English line under each step, so you and family can follow it)</span></span>
-            </label>
-            <p class="hint" id="handout-lang-note" hidden>Beta translation, still being tested and not yet checked by a native speaker. The handout and patient page say so. Your notes, goal and own exercises stay in English as you typed them.</p>
+          <p id="no-id-hint" class="hint advice-warn">All optional. This goes in the patient link, so no names or NHS numbers.</p>
+          <div class="field message-field">
+          <label for="patient-message">Message <span class="hint">(<span id="message-count">240</span> left)</span></label>
+          <textarea id="patient-message" rows="2" maxlength="240" aria-describedby="no-id-hint" placeholder="e.g. Great work today. See you in 2 weeks."></textarea>
           </div>
-          <div class="tick-row">
-            <label class="large-toggle">
-              <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="easy-read"> <span><strong>Easy read</strong> <span class="hint">(very large text, big step pictures, one exercise per page, no harder/easier lists; for learning disability, dementia or low literacy)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="tick-chart"> <span><strong>Weekly tick chart</strong> <span class="hint">(boxes to tick each day, on the handout and patient page)</span></span>
-            </label>
-            <!-- "How is it going?" check-in removed at Alex's request, 17 Nov 2026. Kept hidden and off so old links still open. -->
-            <label class="large-toggle" hidden>
-              <input type="checkbox" id="check-in"> <span><strong>“How is it going?” check-in</strong> <span class="hint">(patient page only: they mark each exercise too easy, about right or too hard, to show you at review; saved on their phone)</span></span>
-            </label>
-            <!-- Pain guide (traffic light) removed at Alex's request, 16 Nov 2026. Kept hidden and off so old links still open. -->
-            <label class="large-toggle" hidden>
-              <input type="checkbox" id="pain-guide"> <span><strong>Pain guide</strong> <span class="hint">(green, amber, red: how much pain is OK, on the handout and patient page)</span></span>
-            </label>
-            <label class="pain-level-field" for="pain-level" hidden>
-              <span>Pain allowed while exercising</span>
-              <select id="pain-level">
-                <option value="1">Mild ache only</option>
-                <option value="3">Up to 3 out of 10</option>
-                <option value="5">Up to 5 out of 10</option>
-              </select>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="bw-print"> <span><strong>Black and white printing</strong> <span class="hint">(no colour fills, crisp black lines: best for mono printers and saves ink)</span></span>
-            </label>
-            <label class="large-toggle">
-              <input type="checkbox" id="paper-saver"> <span><strong>Paper saver</strong> <span class="hint">(two columns, smaller pictures and margins, so it fits on fewer pages)</span></span>
-            </label>
+          <div class="field general-notes-field">
+          <label for="general-notes">General advice</label>
+          <textarea id="general-notes" rows="2" aria-describedby="no-id-hint" placeholder="e.g. Some aching is normal. Stop if pain is sharp."></textarea>
+          </div>
+          <div class="goal-plan">
+            <div class="field">
+              <label for="goal">Goal</label>
+              <input id="goal" type="text" maxlength="140" placeholder="e.g. Walk to the shop" aria-describedby="goal-hint">
+            </div>
+            <div class="field">
+              <label for="plan">When</label>
+              <input id="plan" type="text" maxlength="140" placeholder="e.g. After breakfast" aria-describedby="goal-hint">
+            </div>
+            <div class="field duration-field">
+              <label for="duration">How long</label>
+              <input id="duration" type="text" maxlength="80" list="duration-options" placeholder="e.g. For 6 weeks">
+              <datalist id="duration-options">
+                <option value="Until your next appointment">
+                <option value="For 2 weeks">
+                <option value="For 4 weeks">
+                <option value="For 6 weeks">
+                <option value="For 12 weeks">
+                <option value="Keep going every day, even when you feel better">
+              </datalist>
+            </div>
+            <p id="goal-hint" class="hint">Left blank, the handout prints lines for the patient to fill in.</p>
           </div>
           </div>
           </details>
-
-          <h3 class="settings-group">Advice and goals</h3>
-          <div class="field message-field">
-          <label for="patient-message">Message for your patient <span class="hint">(optional, 2 or 3 lines)</span></label>
-          <textarea id="patient-message" rows="3" maxlength="240" aria-describedby="message-hint" placeholder="e.g. Great work today. Little and often is the key. See you in 2 weeks."></textarea>
-          <p id="message-hint" class="hint">Shown at the top of the handout and the patient page. <span id="message-count">240</span> characters left. It goes in the patient link, so no names or NHS numbers.</p>
-          </div>
-          <div class="field general-notes-field">
-          <label for="general-notes">General advice for the patient</label>
-          <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>
-          <p id="no-id-hint" class="hint">Notes are included in the patient link, so don't put names, NHS numbers or other identifying details in any notes.</p>
-          </div>
-
-        <!-- Goal and plan: agreeing these with the patient helps them keep going -->
-        <div class="goal-plan">
-          <div class="field">
-            <label for="goal">Patient's goal <span class="hint">(optional)</span></label>
-            <input id="goal" type="text" maxlength="140" placeholder="e.g. Walk to the shop without stopping" aria-describedby="goal-hint">
-          </div>
-          <div class="field">
-            <label for="plan">When they'll do them <span class="hint">(optional)</span></label>
-            <input id="plan" type="text" maxlength="140" placeholder="e.g. After breakfast, and while the kettle boils" aria-describedby="goal-hint">
-          </div>
-          <div class="field duration-field">
-            <label for="duration">How long to keep going <span class="hint">(optional)</span></label>
-            <input id="duration" type="text" maxlength="80" list="duration-options" placeholder="e.g. For 6 weeks, or until your next appointment">
-            <datalist id="duration-options">
-              <option value="Until your next appointment">
-              <option value="For 2 weeks">
-              <option value="For 4 weeks">
-              <option value="For 6 weeks">
-              <option value="For 12 weeks">
-              <option value="Keep going every day, even when you feel better">
-            </datalist>
-          </div>
-          <p id="goal-hint" class="hint">Agreeing a goal and a time of day helps people keep going. Leave them blank and the handout prints lines for the patient to fill in.</p>
-        </div>
 
         <h3 class="settings-group">Stages</h3>
         <label class="large-toggle">
@@ -523,24 +531,24 @@
     </div>
   </dialog>
 
-  <script src="config.js?v=20261117h"></script>
-  <script src="exercises.js?v=20261117h"></script>
-  <script src="media.js?v=20261117h"></script>
-  <script src="illustrations.js?v=20261117h"></script>
-  <script src="figures.js?v=20261117h"></script>
-  <script src="vendor/qrcode.js?v=20261117h"></script>
-  <script src="starters.js?v=20261117h"></script>
-  <script src="vendor/tiny-inflate.js?v=20261117h"></script>
-  <script src="i18n.js?v=20261117h"></script>
-  <script src="common.js?v=20261117h"></script>
-  <script src="feedback.js?v=20261117h"></script>
-  <script src="app.js?v=20261117h"></script>
-  <script src="i18n-builder.js?v=20261117h"></script>
-  <script src="pdf-maker.js?v=20261117h"></script>
-  <script src="privacy-check.js?v=20261117h"></script>
-  <script src="a11y-menu.js?v=20261117h"></script>
-  <script src="options-fold.js?v=20261117h"></script>
-  <script src="counter.js?v=20261117h"></script>
+  <script src="config.js?v=20261117k"></script>
+  <script src="exercises.js?v=20261117k"></script>
+  <script src="media.js?v=20261117k"></script>
+  <script src="illustrations.js?v=20261117k"></script>
+  <script src="figures.js?v=20261117k"></script>
+  <script src="vendor/qrcode.js?v=20261117k"></script>
+  <script src="starters.js?v=20261117k"></script>
+  <script src="vendor/tiny-inflate.js?v=20261117k"></script>
+  <script src="i18n.js?v=20261117k"></script>
+  <script src="common.js?v=20261117k"></script>
+  <script src="feedback.js?v=20261117k"></script>
+  <script src="app.js?v=20261117k"></script>
+  <script src="i18n-builder.js?v=20261117k"></script>
+  <script src="pdf-maker.js?v=20261117k"></script>
+  <script src="privacy-check.js?v=20261117k"></script>
+  <script src="a11y-menu.js?v=20261117k"></script>
+  <script src="options-fold.js?v=20261117k"></script>
+  <script src="counter.js?v=20261117k"></script>
   <script>if ("serviceWorker" in navigator && location.protocol !== "file:") navigator.serviceWorker.register("sw.js").catch(function () {});</script>
 </body>
 </html>

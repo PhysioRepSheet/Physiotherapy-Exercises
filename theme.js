@@ -1,6 +1,6 @@
 /*
   DARK MODE
-  Follows the phone or computer's own light/dark setting. The "Dark screen" / "Light screen" button
+  Follows the phone or computer's own light/dark setting. The "Dark mode" on/off switch in the header
   overrides it on this device only (saved in this browser; nothing is sent anywhere).
   Printing is always on white paper, whatever the screen shows.
   High contrast and easier reading (patient page) always use their own light colours.
@@ -36,18 +36,19 @@
     if (document.body && document.body.classList.contains("patient") && I && I.t) { const s = I.t(key); if (s && s !== key) return s; }
     return en;
   }
-  const MOON = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="theme-ico"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
-  const SUN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="theme-ico"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
   function label() {
     const b = document.getElementById("btn-theme");
     if (!b) return;
     if (!can) { b.hidden = true; return; }
-    const dark = wanted();
-    // The button says what it will switch to
-    b.innerHTML = (dark ? SUN : MOON) + "<span></span>";
-    b.lastChild.textContent = dark ? text("hdr.light", "Light screen") : text("hdr.dark", "Dark screen");
-    b.setAttribute("aria-pressed", String(dark));
-    b.hidden = lightOnly();
+    const on = wanted() && !lightOnly();
+    // An on/off switch that is always on show. The words stay "Dark mode"; the switch shows on or off.
+    const words = b.querySelector(".ts-label");
+    if (words) words.textContent = text("hdr.dark", "Dark mode");
+    b.setAttribute("aria-checked", String(on));
+    // High contrast and easier reading use their own light colours, so the switch rests while they are on
+    b.disabled = lightOnly();
+    if (b.disabled) b.title = text("hdr.darkoff", "Turn off high contrast or easier reading to use dark mode");
+    else b.removeAttribute("title");
   }
 
   function toggle() {
