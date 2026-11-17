@@ -1367,6 +1367,30 @@
   // Sit the summary just under the header, whatever height the header is
   const setHeaderH = () => { const h = document.querySelector(".site-header"); if (h) document.documentElement.style.setProperty("--header-h", Math.round(h.getBoundingClientRect().height) + "px"); };
   setHeaderH(); window.addEventListener("resize", setHeaderH);
+
+  // ---------- Handout details column follows the page (wide screens) ----------
+  (() => {
+    const panel = document.querySelector(".settings");
+    if (!panel || !window.matchMedia) return;
+    const wide = window.matchMedia("(min-width: 1240px)");
+    const GAP = 20;
+    let top = null, lastY = window.scrollY;
+    const update = () => {
+      if (!wide.matches) { if (top !== null) { document.documentElement.style.removeProperty("--settings-top"); top = null; } lastY = window.scrollY; return; }
+      const headerH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--header-h")) || 68;
+      const maxTop = headerH + GAP;
+      const minTop = Math.min(maxTop, window.innerHeight - panel.offsetHeight - GAP);
+      const y = window.scrollY;
+      const next = Math.max(minTop, Math.min(maxTop, (top === null ? maxTop : top) - (y - lastY)));
+      lastY = y;
+      if (next !== top) { top = next; document.documentElement.style.setProperty("--settings-top", Math.round(top) + "px"); }
+    };
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    if (wide.addEventListener) wide.addEventListener("change", update);
+    if (window.ResizeObserver) new ResizeObserver(update).observe(panel);
+    update();
+  })();
   new MutationObserver(renderExSummary).observe($("#programme-list"), { childList: true });
   $("#programme-list").addEventListener("input", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });
   $("#programme-list").addEventListener("change", () => { clearTimeout(renderExSummary.t); renderExSummary.t = setTimeout(renderExSummary, 150); });

@@ -586,7 +586,10 @@ dialog::backdrop { background: rgba(23, 35, 43, .4); backdrop-filter: blur(3px);
 @media (min-width: 1240px) {
   .wrap.layout, .site-header .wrap { max-width: 1680px; }
   .layout { grid-template-columns: 320px minmax(0, 1fr) 340px; gap: 24px; }
-  .settings { position: sticky; top: 92px; max-height: calc(100vh - 112px); overflow-y: auto; scrollbar-width: thin; padding: 20px; }
+  /* Handout details follows the page (17 Nov 2026). No inner scrollbar: if the panel is taller than the
+     window, app.js moves its sticky top so it scrolls with the page and stops once its end is in view;
+     scrolling back up brings the top (Print and the buttons) straight back. */
+  .settings { position: sticky; top: var(--settings-top, 92px); padding: 20px; }
   .settings .field-grid { grid-template-columns: 1fr; gap: 12px; }
   .settings-details > summary { display: none; }
   .settings-details { border-top: 1px solid var(--line); padding-top: 12px; }
