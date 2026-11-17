@@ -24,6 +24,9 @@
                   (e.g. "videos/knee-static-quads.mp4"). When set, a little "Picture | Video"
                   switch appears under the moving picture in the builder and on the patient's
                   page. Leave as "" and there is no switch, just the moving picture.
+    checked       Optional. Set to false for an exercise that has not had a clinical check yet.
+                  The builder shows an "Awaiting check" label on it. Delete the line (or set
+                  it to true) once it has been checked.
 */
 
 window.EXERCISES = [
@@ -180,6 +183,60 @@ window.EXERCISES = [
     regressions: ["Only lift your heel a little way"],
     video: ""
   },
+  {
+    id: "knee-lunge",
+    name: "Lunge",
+    area: "Knee",
+    aliases: "split squat, forward lunge, quadriceps, glutes, functional strength, knee rehab",
+    image: "",
+    instructions: [
+      "Stand with one foot a big step in front of the other.",
+      "Hold on to something if you need to.",
+      "Bend both knees. Lower your back knee towards the floor.",
+      "Push back up. Keep your front knee over your foot."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Hold a weight in each hand", "Step forward into the lunge each time"],
+    regressions: ["Make the dip smaller", "Hold on to a worktop"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "knee-hip-hinge",
+    name: "Hip hinge",
+    area: "Knee",
+    aliases: "hip hinge, Romanian deadlift, RDL, deadlift, hamstrings, glutes, posterior chain",
+    image: "",
+    instructions: [
+      "Stand with your feet a little apart. Knees soft.",
+      "Push your bottom back. Lean forward from your hips.",
+      "Keep your back straight. Let your hands slide down your thighs.",
+      "Squeeze your bottom to stand up tall."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Hold a weight in your hands", "Do it standing on one leg"],
+    regressions: ["Make the movement smaller"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "knee-single-leg-squat",
+    name: "Single leg mini squat",
+    area: "Knee",
+    aliases: "single leg squat, SLS, quadriceps, knee control, late stage rehab, ACL",
+    image: "",
+    instructions: [
+      "Stand next to a worktop. Hold on lightly.",
+      "Lift one foot off the floor.",
+      "Bend your standing knee a little. Keep it over your toes.",
+      "Straighten up slowly."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Let go of the worktop", "Bend a little further"],
+    regressions: ["Rest your other toes on the floor", "Do mini squats on both legs"],
+    video: "",
+    checked: false
+  },
   // ---------- Hip ----------
 {
     id: "hip-bridge",
@@ -300,6 +357,42 @@ window.EXERCISES = [
     regressions: ["Do it standing: take a big step forward and bend your front knee", "Hold on to a chair for balance"],
     video: ""
   },
+  {
+    id: "hip-lying-abduction",
+    name: "Lying leg slide out",
+    area: "Hip",
+    aliases: "supine hip abduction, hip abduction in lying, THR, hip replacement, hip fracture, post-op, glute med",
+    image: "",
+    instructions: [
+      "Lie on your back with your legs straight.",
+      "Keep your toes pointing up to the ceiling.",
+      "Slide one leg out to the side.",
+      "Then slide it back. Do not let it cross the middle."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Hold your leg out for 3 seconds"],
+    regressions: ["Put a plastic bag under your heel so it slides easily", "Slide only a little way"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hip-band-extension",
+    name: "Leg back with a band",
+    area: "Hip",
+    aliases: "resisted hip extension, glute max, theraband, THR, hip replacement rehab",
+    image: "",
+    instructions: [
+      "Tie a band round your ankle. Fix the other end low down behind you.",
+      "Stand facing a worktop. Hold on.",
+      "Keep your leg straight. Take it back against the band.",
+      "Bring it back slowly. Do not lean forward."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Use a stronger band"],
+    regressions: ["Do it with no band"],
+    video: "",
+    checked: false
+  },
   // ---------- Ankle ----------
 {
     id: "ankle-calf-raise",
@@ -401,6 +494,132 @@ window.EXERCISES = [
     progressions: ["Push down with your hands on your knees", "Do it standing up"],
     regressions: ["Make the movement smaller"],
     video: ""
+  },
+  {
+    id: "ankle-single-leg-heel-raise",
+    name: "Single leg calf raise",
+    area: "Ankle",
+    aliases: "single leg heel raise, SLHR, calf strength, gastrocnemius, Achilles tendinopathy, plantar heel pain",
+    image: "",
+    instructions: [
+      "Stand next to a worktop. Hold on lightly.",
+      "Lift one foot off the floor.",
+      "Rise up onto the toes of your standing foot.",
+      "Lower down slowly. Count to 3 on the way down."
+    ],
+    defaults: { sets: 3, reps: 15, hold: 0, frequency: "Once a day" },
+    progressions: ["Stand on a step and let your heel drop below it", "Wear a rucksack with some weight in it"],
+    regressions: ["Do calf raises on both feet", "Take more weight through your hands"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-bent-knee-heel-raise",
+    name: "Bent knee calf raise",
+    area: "Ankle",
+    aliases: "soleus raise, bent knee heel raise, soleus strengthening, Achilles tendinopathy, plantar fasciopathy",
+    image: "",
+    instructions: [
+      "Stand next to a worktop. Hold on lightly.",
+      "Bend your knees a little. Keep them bent.",
+      "Rise up onto your toes.",
+      "Lower down slowly."
+    ],
+    defaults: { sets: 3, reps: 15, hold: 0, frequency: "Once a day" },
+    progressions: ["Do it on one leg", "Hold a weight"],
+    regressions: ["Do it sitting down, with a weight on your knees"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-soleus-stretch",
+    name: "Bent knee calf stretch",
+    area: "Ankle",
+    aliases: "soleus stretch, lower calf stretch, Achilles stretch, ankle dorsiflexion",
+    image: "",
+    instructions: [
+      "Stand facing a wall. Put your hands on it.",
+      "Step one foot back. Keep both heels down.",
+      "Bend both knees until you feel a stretch low in your calf.",
+      "Hold it. Then swap legs."
+    ],
+    defaults: { sets: 1, reps: 3, hold: 30, frequency: "Twice a day" },
+    progressions: ["Step your back foot further back"],
+    regressions: ["Make the bend smaller"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-plantar-fascia-stretch",
+    name: "Sole of foot stretch",
+    area: "Ankle",
+    aliases: "plantar fascia stretch, plantar fasciitis, plantar fasciopathy, heel pain, towel stretch",
+    image: "",
+    instructions: [
+      "Sit with one leg out straight.",
+      "Put a towel round your toes. Hold both ends.",
+      "Pull your toes back towards you.",
+      "Feel a stretch under your foot. Hold it."
+    ],
+    defaults: { sets: 1, reps: 3, hold: 30, frequency: "Twice a day, and before you get up" },
+    progressions: ["Cross your foot over your other knee. Pull your toes back with your hand"],
+    regressions: ["Pull more gently"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-foot-roll",
+    name: "Roll your foot over a bottle",
+    area: "Ankle",
+    aliases: "plantar fascia massage, foot roll, frozen bottle, tennis ball, plantar heel pain",
+    image: "",
+    instructions: [
+      "Sit on a chair. Put a bottle or ball under your foot.",
+      "Roll it from your heel to your toes and back.",
+      "Press down as much as feels OK.",
+      "Keep going for 1 to 2 minutes."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "Twice a day" },
+    progressions: ["Use a frozen bottle of water"],
+    regressions: ["Use a softer ball", "Press more gently"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-towel-scrunch",
+    name: "Towel scrunch with toes",
+    area: "Ankle",
+    aliases: "toe curls, intrinsic foot strengthening, short foot, towel curls, foot strength",
+    image: "",
+    instructions: [
+      "Sit with your foot flat on a towel.",
+      "Keep your heel on the floor.",
+      "Curl your toes to pull the towel towards you.",
+      "Spread your toes. Then scrunch again."
+    ],
+    defaults: { sets: 2, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Put a tin on the far end of the towel"],
+    regressions: ["Just curl and spread your toes, with no towel"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "ankle-band-in-out",
+    name: "Ankle in and out with a band",
+    area: "Ankle",
+    aliases: "inversion, eversion, resisted ankle, peroneals, tibialis posterior, ankle sprain rehab, theraband",
+    image: "",
+    instructions: [
+      "Sit with a band round the front of your foot.",
+      "Hold the band, or tie it to something firm.",
+      "Keep your heel still. Turn your foot out against the band.",
+      "Then move the band over and turn your foot in."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Use a stronger band"],
+    regressions: ["Do it with no band"],
+    video: "",
+    checked: false
   },
   // ---------- Back ----------
 {
@@ -539,6 +758,78 @@ window.EXERCISES = [
     regressions: ["Make the movement smaller", "Stand with your back to a worktop for support"],
     video: ""
   },
+  {
+    id: "back-four-point-reach",
+    name: "All fours arm or leg reach",
+    area: "Back",
+    aliases: "four point kneeling, quadruped, bird dog regression, core stability, lumbar stability",
+    image: "",
+    instructions: [
+      "Kneel on all fours. Hands under shoulders, knees under hips.",
+      "Keep your back flat. Reach one arm out in front.",
+      "Put it down. Then slide one leg back and lift it.",
+      "Keep your hips level. Then swap sides."
+    ],
+    defaults: { sets: 2, reps: 10, hold: 3, frequency: "Once a day" },
+    progressions: ["Reach your arm and opposite leg together"],
+    regressions: ["Slide your hand or foot along the floor, with no lift"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "back-plank",
+    name: "Plank",
+    area: "Back",
+    aliases: "prone plank, front plank, core stability, trunk endurance, abdominals",
+    image: "",
+    instructions: [
+      "Lie on your front. Lean on your elbows and forearms.",
+      "Keep your knees on the floor.",
+      "Lift your hips so your body is in a straight line.",
+      "Hold it. Breathe normally. Then lower."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 10, frequency: "Once a day" },
+    progressions: ["Lift your knees and go up onto your toes", "Hold for longer"],
+    regressions: ["Lean on a worktop instead, standing up"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "back-side-plank",
+    name: "Side plank",
+    area: "Back",
+    aliases: "side bridge, lateral plank, obliques, quadratus lumborum, core stability, glute med",
+    image: "",
+    instructions: [
+      "Lie on your side. Lean on your elbow, under your shoulder.",
+      "Bend your knees behind you.",
+      "Lift your hips off the floor.",
+      "Hold it. Then lower slowly. Do both sides."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 10, frequency: "Once a day" },
+    progressions: ["Straighten your legs and go onto your feet", "Hold for longer"],
+    regressions: ["Lean side-on against a wall, standing up"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "back-prone-leg-lift",
+    name: "Lying leg lift on your front",
+    area: "Back",
+    aliases: "prone hip extension, back extensors, glute max, lumbar extensors",
+    image: "",
+    instructions: [
+      "Lie on your front. Rest your head on your hands.",
+      "Keep your leg straight. Tighten your bottom.",
+      "Lift one leg a little off the floor.",
+      "Hold it. Lower it slowly. Then do the other leg."
+    ],
+    defaults: { sets: 2, reps: 10, hold: 3, frequency: "Once a day" },
+    progressions: ["Wear an ankle weight", "Lift the opposite arm too"],
+    regressions: ["Put a pillow under your tummy", "Just squeeze your bottom, with no lift"],
+    video: "",
+    checked: false
+  },
   // ---------- Shoulder ----------
 {
     id: "shoulder-pendulum",
@@ -676,6 +967,260 @@ window.EXERCISES = [
     regressions: ["Lift only to shoulder height", "Help it up with your other hand"],
     video: ""
   },
+  {
+    id: "shoulder-isometric",
+    name: "Shoulder push against a wall",
+    area: "Shoulder",
+    aliases: "isometric shoulder, isometrics, rotator cuff, flexion, extension, abduction, external rotation, internal rotation, pain relief",
+    image: "",
+    instructions: [
+      "Stand next to a wall. Bend your elbow. Make a loose fist.",
+      "Push your fist into the wall. Your arm should not move.",
+      "Push gently. Hold it. Then relax.",
+      "Your physio will tell you which ways to push."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 10, frequency: "3 times a day" },
+    progressions: ["Push a little harder", "Hold for longer, up to 30 seconds"],
+    regressions: ["Push more gently", "Put a folded towel between your fist and the wall"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "shoulder-lying-arm-raise",
+    name: "Lying arm raise",
+    area: "Shoulder",
+    aliases: "supine flexion, anterior deltoid programme, rotator cuff tear, massive cuff tear, shoulder flexion, ROM",
+    image: "",
+    instructions: [
+      "Lie on your back with your knees bent.",
+      "Lift your arm up to point at the ceiling.",
+      "Keep your elbow straight. Take your arm back over your head.",
+      "Bring it back up. Then lower it by your side."
+    ],
+    defaults: { sets: 2, reps: 10, hold: 0, frequency: "Twice a day" },
+    progressions: ["Hold a light weight", "Do it sitting up a little on pillows"],
+    regressions: ["Help with your other hand", "Only lift your arm to point at the ceiling"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "shoulder-band-internal-rotation",
+    name: "Turn arm in with a band",
+    area: "Shoulder",
+    aliases: "internal rotation, IR, rotator cuff strengthening, subscapularis, theraband, resistance band",
+    image: "",
+    instructions: [
+      "Tie a band to a door handle at elbow height.",
+      "Stand side on. Hold the band in the hand nearest the door.",
+      "Keep your elbow at your side, bent to a right angle.",
+      "Pull your hand in across your tummy. Go back slowly."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Use a stronger band", "Stand further from the door"],
+    regressions: ["Use a lighter band", "Push your hand into your other hand, with no movement"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "shoulder-rolls",
+    name: "Shoulder rolls",
+    area: "Shoulder",
+    aliases: "shoulder circles, scapular mobility, posture, neck and shoulder tension, warm up",
+    image: "",
+    instructions: [
+      "Sit or stand tall. Let your arms hang.",
+      "Lift your shoulders up towards your ears.",
+      "Roll them back and down.",
+      "Keep going in slow circles."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Roll them forwards too"],
+    regressions: ["Make the circles smaller"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "shoulder-hand-behind-back",
+    name: "Hand behind back stretch",
+    area: "Shoulder",
+    aliases: "internal rotation stretch, HBB, frozen shoulder, adhesive capsulitis, towel stretch, functional reach",
+    image: "",
+    instructions: [
+      "Stand tall. Put your hand behind your back.",
+      "Rest the back of your hand on your lower back.",
+      "Slowly slide your hand up your back.",
+      "Stop when you feel a stretch. Hold it."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 10, frequency: "3 times a day" },
+    progressions: ["Use a towel. Pull it up with your other hand from above"],
+    regressions: ["Only slide your hand as far as your waist"],
+    video: "",
+    checked: false
+  },
+  // ---------- Elbow, wrist and hand ----------
+  {
+    id: "hand-elbow-bend",
+    name: "Bend and straighten your elbow",
+    area: "Elbow, wrist and hand",
+    aliases: "elbow flexion, elbow extension, elbow range of movement, ROM, elbow fracture, stiffness",
+    image: "",
+    instructions: [
+      "Sit or stand with your arm by your side.",
+      "Turn your palm to face forward.",
+      "Bend your elbow. Bring your hand up to your shoulder.",
+      "Then straighten your arm all the way down."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Hold a light weight, like a tin of beans", "Hold for 5 seconds at each end"],
+    regressions: ["Help with your other hand", "Rest your arm on a table while you do it"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-forearm-turn",
+    name: "Turn palm up and down",
+    area: "Elbow, wrist and hand",
+    aliases: "pronation, supination, forearm rotation, wrist fracture, elbow range of movement, ROM",
+    image: "",
+    instructions: [
+      "Sit with your elbow tucked into your side.",
+      "Bend your elbow so your hand points forward.",
+      "Turn your palm up to the ceiling.",
+      "Then turn it down to the floor."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Hold a tin or a light hammer", "Hold for 5 seconds at each end"],
+    regressions: ["Rest your forearm on a table", "Help with your other hand"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-wrist-bend",
+    name: "Wrist bend up and down",
+    area: "Elbow, wrist and hand",
+    aliases: "wrist flexion, wrist extension, wrist range of movement, ROM, wrist fracture, Colles",
+    image: "",
+    instructions: [
+      "Rest your forearm on a table.",
+      "Let your hand hang over the edge, palm down.",
+      "Bend your hand down. Then lift it up.",
+      "Keep your forearm still on the table."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Do it with your palm facing up too", "Hold for 5 seconds at each end"],
+    regressions: ["Make the movement smaller", "Help with your other hand"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-grip",
+    name: "Grip squeeze",
+    area: "Elbow, wrist and hand",
+    aliases: "grip strength, power grip, stress ball, putty, hand strengthening, hand osteoarthritis, OA",
+    image: "",
+    instructions: [
+      "Rest your forearm on a table.",
+      "Hold a soft ball or a rolled-up sock.",
+      "Squeeze it as hard as feels OK.",
+      "Hold it. Then let go slowly."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 3, frequency: "Once a day" },
+    progressions: ["Use a firmer ball or exercise putty", "Hold the squeeze for longer"],
+    regressions: ["Use a softer ball or a sponge", "Squeeze more gently"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-tendon-glides",
+    name: "Finger tendon glides",
+    area: "Elbow, wrist and hand",
+    aliases: "tendon gliding, finger range of movement, ROM, hand stiffness, hand osteoarthritis, hook fist, straight fist, tabletop",
+    image: "",
+    instructions: [
+      "Hold your hand up with your fingers straight.",
+      "Bend the tips of your fingers to make a hook.",
+      "Make a full fist. Then straighten your fingers.",
+      "Bend only at the big knuckles, like a table top.",
+      "Then curl into a flat fist. Straighten and start again."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 3, frequency: "3 times a day" },
+    progressions: ["Hold each shape for 5 seconds"],
+    regressions: ["Do only the shapes that feel OK", "Warm your hands in water first"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-wrist-extension-weight",
+    name: "Wrist lift with a weight",
+    area: "Elbow, wrist and hand",
+    aliases: "wrist extensor strengthening, tennis elbow, lateral elbow tendinopathy, lateral epicondylalgia, eccentric, isotonic",
+    image: "",
+    instructions: [
+      "Rest your forearm on a table, palm down.",
+      "Let your hand hang over the edge. Hold a light weight.",
+      "Lift your hand up as far as feels OK.",
+      "Lower it slowly. Count to 3 on the way down."
+    ],
+    defaults: { sets: 3, reps: 15, hold: 0, frequency: "Once a day" },
+    progressions: ["Use a heavier weight", "Lower even more slowly"],
+    regressions: ["Use a lighter weight, or none", "Help lift with your other hand. Lower on your own"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-thumb-opposition",
+    name: "Thumb to fingertips",
+    area: "Elbow, wrist and hand",
+    aliases: "thumb opposition, thumb range of movement, CMC joint, base of thumb osteoarthritis, OA, dexterity",
+    image: "",
+    instructions: [
+      "Hold your hand up with your fingers straight.",
+      "Touch your thumb to the tip of your first finger.",
+      "Make an O shape. Then open your hand.",
+      "Do the same with each finger in turn."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 0, frequency: "3 times a day" },
+    progressions: ["Press the tips together firmly for 3 seconds"],
+    regressions: ["Rest your hand on a table", "Go only as far as feels OK"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-finger-spread",
+    name: "Finger spread with a band",
+    area: "Elbow, wrist and hand",
+    aliases: "finger abduction, interossei, intrinsic strengthening, hand osteoarthritis, rubber band",
+    image: "",
+    instructions: [
+      "Put a rubber band round your fingers.",
+      "Keep your fingers straight.",
+      "Spread them apart, against the band.",
+      "Hold it. Then bring them back slowly."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 3, frequency: "Once a day" },
+    progressions: ["Use a thicker band, or two bands"],
+    regressions: ["Do it with no band", "Rest your hand flat on a table. Slide your fingers apart"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "hand-forearm-twist",
+    name: "Forearm twist with a hammer",
+    area: "Elbow, wrist and hand",
+    aliases: "pronation, supination, forearm rotation strengthening, tennis elbow, golfer's elbow, wrist rehab",
+    image: "",
+    instructions: [
+      "Rest your forearm on a table.",
+      "Hold a hammer near the bottom, pointing up.",
+      "Slowly turn it one way. Then back to the middle.",
+      "Then slowly turn it the other way."
+    ],
+    defaults: { sets: 3, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Hold the hammer further down the handle"],
+    regressions: ["Hold the hammer near the head", "Use a wooden spoon instead"],
+    video: "",
+    checked: false
+  },
   // ---------- Neck ----------
 {
     id: "neck-chin-tuck",
@@ -743,6 +1288,61 @@ window.EXERCISES = [
     progressions: ["Hold for 3 seconds at each end"],
     regressions: ["Make the movement smaller"],
     video: ""
+  },
+  // ---------- Upper back ----------
+  {
+    id: "upperback-seated-rotation",
+    name: "Sitting upper back twist",
+    area: "Upper back",
+    aliases: "thoracic rotation, T-spine mobility, trunk rotation, upper back stiffness, posture",
+    image: "",
+    instructions: [
+      "Sit on a firm chair with your feet flat.",
+      "Cross your arms over your chest.",
+      "Turn your upper body to one side. Keep your hips still.",
+      "Come back to the middle. Then turn to the other side."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Hold for 5 seconds at the end"],
+    regressions: ["Make the turn smaller"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "upperback-towel-opener",
+    name: "Chest opener over a towel",
+    area: "Upper back",
+    aliases: "thoracic extension, T-spine extension, towel roll, posture, kyphosis, pec stretch",
+    image: "",
+    instructions: [
+      "Roll up a towel. Lie on your back with it across your upper back.",
+      "Bend your knees. Keep your feet flat.",
+      "Slowly take your arms back over your head.",
+      "Rest there and breathe. Then bring your arms back."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 20, frequency: "Once a day" },
+    progressions: ["Use a bigger towel roll", "Hold for longer"],
+    regressions: ["Use a thinner towel", "Keep your hands on your chest"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "upperback-side-bend",
+    name: "Sitting side bend",
+    area: "Upper back",
+    aliases: "thoracic side flexion, lateral flexion, trunk mobility, upper back stiffness",
+    image: "",
+    instructions: [
+      "Sit tall on a firm chair. Let your arms hang.",
+      "Lean to one side. Let your hand slide towards the floor.",
+      "Come back up to the middle.",
+      "Then lean to the other side."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "3 times a day" },
+    progressions: ["Reach your other arm over your head as you lean"],
+    regressions: ["Make the lean smaller"],
+    video: "",
+    checked: false
   },
   // ---------- Balance ----------
   {
@@ -813,6 +1413,60 @@ window.EXERCISES = [
     regressions: ["Take normal steps but keep your feet close together"],
     video: ""
   },
+  {
+    id: "balance-backwards-walk",
+    name: "Walking backwards",
+    area: "Balance",
+    aliases: "backward walking, retro walking, balance, falls prevention, Otago",
+    image: "",
+    instructions: [
+      "Stand side on to a worktop. Hold on.",
+      "Take a small step backwards.",
+      "Then step back with your other foot.",
+      "Take 10 steps. Then walk forwards."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 0, frequency: "Once a day" },
+    progressions: ["Hold on more lightly, then let go"],
+    regressions: ["Take very small steps"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "balance-walk-turn",
+    name: "Walk and turn round",
+    area: "Balance",
+    aliases: "walking and turning, figure of 8, balance, falls prevention, Otago, gait",
+    image: "",
+    instructions: [
+      "Walk forward at your normal speed.",
+      "Turn round in a slow, wide circle.",
+      "Walk back to where you started.",
+      "Turn the other way next time."
+    ],
+    defaults: { sets: 1, reps: 4, hold: 0, frequency: "Once a day" },
+    progressions: ["Make the turns tighter", "Walk in a figure of 8"],
+    regressions: ["Use your walking aid", "Walk close to a worktop or wall"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "balance-heels-then-toes",
+    name: "Heel walking and toe walking",
+    area: "Balance",
+    aliases: "heel walk, toe walk, balance, falls prevention, Otago, ankle strength",
+    image: "",
+    instructions: [
+      "Stand next to a worktop. Hold on.",
+      "Lift your toes. Walk 10 steps on your heels.",
+      "Turn round. Rise up onto your toes.",
+      "Walk 10 steps back on your toes."
+    ],
+    defaults: { sets: 1, reps: 2, hold: 0, frequency: "Once a day" },
+    progressions: ["Hold on more lightly, then let go"],
+    regressions: ["Take fewer steps"],
+    video: "",
+    checked: false
+  },
   // ---------- After surgery ----------
   {
     id: "postop-ankle-pumps",
@@ -881,5 +1535,60 @@ window.EXERCISES = [
     progressions: ["After 5 breaths, give a strong huff or cough"],
     regressions: ["Take smaller breaths and rest between them"],
     video: ""
+  },
+  // ---------- Pelvic floor ----------
+  {
+    id: "pelvic-long-squeeze",
+    name: "Pelvic floor long squeezes",
+    area: "Pelvic floor",
+    aliases: "pelvic floor muscle training, PFMT, Kegels, slow contractions, stress incontinence, bladder leakage, antenatal, postnatal, prostatectomy",
+    image: "",
+    instructions: [
+      "Sit, stand or lie in a comfy position. Breathe normally.",
+      "Squeeze and lift the muscles you use to stop wind and wee.",
+      "Hold the squeeze. Do not hold your breath or squeeze your bottom.",
+      "Let go fully. Rest for a few seconds."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 5, frequency: "3 times a day" },
+    progressions: ["Hold for longer, up to 10 seconds", "Do them standing up"],
+    regressions: ["Hold for 2 to 3 seconds", "Do them lying down"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "pelvic-quick-squeeze",
+    name: "Pelvic floor quick squeezes",
+    area: "Pelvic floor",
+    aliases: "fast contractions, quick flicks, PFMT, Kegels, urgency, stress incontinence",
+    image: "",
+    instructions: [
+      "Sit, stand or lie in a comfy position.",
+      "Squeeze and lift your pelvic floor quickly.",
+      "Let go straight away.",
+      "Rest for a second. Then squeeze again."
+    ],
+    defaults: { sets: 1, reps: 10, hold: 1, frequency: "3 times a day" },
+    progressions: ["Do them standing up"],
+    regressions: ["Rest for longer between squeezes"],
+    video: "",
+    checked: false
+  },
+  {
+    id: "pelvic-knack",
+    name: "Squeeze before you cough",
+    area: "Pelvic floor",
+    aliases: "the Knack, pre-contraction, stress incontinence, cough, sneeze, lifting, bladder leakage",
+    image: "",
+    instructions: [
+      "Squeeze and lift your pelvic floor.",
+      "Keep holding it while you cough, sneeze or lift.",
+      "Then let go.",
+      "Practise until it becomes a habit."
+    ],
+    defaults: { sets: 1, reps: 5, hold: 0, frequency: "Every time you cough, sneeze or lift" },
+    progressions: ["Use it when you stand up from a chair too"],
+    regressions: ["Practise with a pretend cough first"],
+    video: "",
+    checked: false
   }
 ];

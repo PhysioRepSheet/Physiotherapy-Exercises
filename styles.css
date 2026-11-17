@@ -150,6 +150,7 @@ textarea { resize: vertical; }
 .lib-item .area { font-size: .8125rem; color: var(--ink-faint); display: flex; align-items: center; gap: 6px; }
 .has-video { display: inline-flex; color: var(--brand); }
 .has-video svg { width: 15px; height: 15px; }
+.awaiting-check { display: inline-block; margin: 2px 0 1px; padding: 1px 7px; border-radius: 999px; background: var(--accent-tint); color: var(--accent); font-size: .6875rem; font-weight: 700; letter-spacing: .02em; }
 .lib-item .add { flex: none; min-height: 34px; padding: 5px 14px; font-size: .8125rem; }
 .lib-item .add.added { background: var(--brand-tint); color: var(--brand-ink); border-color: transparent; box-shadow: none; }
 .lib-empty { color: var(--ink-soft); padding: 8px; }

@@ -172,6 +172,14 @@
       N: limbPoints(o.shN, sk.armN)[2],
       F: limbPoints(o.shF, sk.armF)[2]
     };
+    parts.feet = {
+      N: limbPoints(o.hipN, sk.legN)[2],
+      F: limbPoints(o.hipF, sk.legF)[2]
+    };
+    parts.toes = {
+      N: add(parts.feet.N, dir(sk.legN.f), sk.legN.fl),
+      F: add(parts.feet.F, dir(sk.legF.f), sk.legF.fl)
+    };
     return parts;
   }
 
@@ -226,8 +234,9 @@
       case "door":
         return `<rect x="${pr.x}" y="10" width="8" height="${GROUND - 10}" ${s}/><circle cx="${pr.x + 8}" cy="${pr.y}" r="2.5" fill="${COLOURS.prop}"/>`;
       case "band": {
-        const h = parts.hands[pr.hand || "N"];
-        return `<path d="M${pr.from[0]} ${pr.from[1]}L${n(h[0])} ${n(h[1])}" stroke="${COLOURS.band}" stroke-width="3" stroke-linecap="round"/>`;
+        const h = pr.toes ? parts.toes[pr.toes] : pr.foot ? parts.feet[pr.foot] : parts.hands[pr.hand || "N"];
+        const f = pr.fromHand ? parts.hands[pr.fromHand] : pr.from;
+        return `<path d="M${n(f[0])} ${n(f[1])}L${n(h[0])} ${n(h[1])}" stroke="${COLOURS.band}" stroke-width="3" stroke-linecap="round"/>`;
       }
       case "text":
         return `<text x="${pr.x}" y="${pr.y}" font-size="${pr.size || 13}" font-weight="700" fill="${COLOURS.move}" font-family="system-ui, sans-serif">${pr.text}</text>`;
@@ -264,12 +273,136 @@
   // The part of the drawing area shown for an exercise: [x, y, width, height]
   const crop = (ill) => ill.crop || [0, 0, PW, PH];
 
+
+  // ---------- close-up hand pictures (ill.kind === "hand") ----------
+  // A frame has "hand" instead of "pose". Two views:
+  //   view "side": forearm, palm and fingers seen from the side. base = forearm direction,
+  //     wrist = wrist bend, mcp/pip/dip = finger joint bends, thumb = thumb angle,
+  //     ball / weight (size) and stick (direction) for things held in the hand.
+  //   view "palm": hand seen from the front, forearm pointing down. turn = 0 palm, 180 back of hand,
+  //     spread = how far apart the fingers are, flex = [index, middle, ring, little] bend from 0 to 1,
+  //     touch = which finger (0 to 3) the thumb touches, fist = 0 to 1, stick = direction of a held stick.
+  function resolveHand(h) {
+    const P = {}, N = {};
+    if ((h.view || "side") === "side") {
+      const W = h.at || [104, 96], base = h.base || 0;
+      const pa = base + (h.wrist || 0);
+      P.E = add(W, dir(base), -84); P.W = W;
+      P.K = add(W, dir(pa), 27);
+      const a1 = pa + (h.mcp || 0), a2 = a1 + (h.pip || 0), a3 = a2 + (h.dip || 0);
+      P.F1 = add(P.K, dir(a1), 17); P.F2 = add(P.F1, dir(a2), 12); P.F3 = add(P.F2, dir(a3), 9);
+      const ta = pa + (h.thumb != null ? h.thumb : 26);
+      P.T0 = add(add(W, dir(pa), 8), dir(pa + 90), 4);
+      P.T1 = add(P.T0, dir(ta), 14); P.T2 = add(P.T1, dir(ta + (h.thumbBend || 0)), 11);
+      P.G = add(add(P.K, dir(pa), 3), dir(pa + 90), 9 + (h.ball || 0) * 0.3);
+      if (h.objAt) P.G = add(P.K, dir(pa + h.objAt[0]), h.objAt[1]);
+      N.ball = h.ball || 0; N.weight = h.weight || 0;
+      N.stick = h.stick != null ? h.stick : 0; N.hasStick = h.stick != null ? 1 : 0;
+    } else {
+      const W = h.at || [95, 120], c = Math.cos(rad(h.turn || 0)), sg = c < 0 ? -1 : 1;
+      const fist = h.fist || 0;
+      P.E = add(W, [0, 1], 70); P.W = W;
+      P.K = add(W, [0, -30], 1);
+      N.palmW = Math.max(12, 29 * Math.abs(c));
+      const xs = [10.5, 3.5, -3.5, -10.5], L = [25, 28, 26, 20], fan = [1.4, 0.45, -0.45, -1.4];
+      const flex = h.flex || [0, 0, 0, 0];
+      for (let i = 0; i < 4; i++) {
+        const f = Math.max(flex[i] || 0, fist, h.touch === i ? 0.45 : 0);
+        const a = -90 + (h.spread || 0) * fan[i] * sg;
+        const B = add(P.K, [xs[i] * c, 2], 1);
+        const len = L[i] * (1 - 0.62 * f);
+        P["B" + i] = B; P["M" + i] = add(B, dir(a), len * 0.55); P["F" + i] = add(B, dir(a), len);
+      }
+      P.T0 = add(W, [15 * c, -7], 1);
+      let tip;
+      if (h.touch != null) tip = add(P["F" + h.touch], [5 * c, 2], 1);
+      else if (fist) tip = add(P.K, [6 * c, -4], 1);
+      else tip = add(P.T0, [17 * c, -18], 1);
+      P.T2 = tip;
+      const mid = [(P.T0[0] + tip[0]) / 2, (P.T0[1] + tip[1]) / 2];
+      P.T1 = add(mid, [c * 6, 2], 1);
+      P.G = add(P.K, [0, 4], 1);
+      N.ball = 0; N.weight = 0;
+      N.stick = h.stick != null ? h.stick : -90; N.hasStick = h.stick != null ? 1 : 0;
+      N.band = h.band ? 1 : 0;
+      N.nails = Math.max(0, -c);
+    }
+    return { view: h.view || "side", P, N };
+  }
+
+  function mixHand(A, B, t) {
+    const P = {}, N = {};
+    for (const k in A.P) P[k] = [lerp(A.P[k][0], B.P[k][0], t), lerp(A.P[k][1], B.P[k][1], t)];
+    for (const k in A.N) N[k] = k === "stick" ? lerpAngle(A.N[k], B.N[k], t) : lerp(A.N[k], B.N[k], t);
+    return { view: A.view, P, N };
+  }
+
+  function handSVG(hd) {
+    const P = hd.P, N = hd.N;
+    let out = "";
+    const stick = () => {
+      if (!N.hasStick) return "";
+      const a = dir(N.stick), s = add(P.G, a, -16), e = add(P.G, a, 42), pp = dir(N.stick + 90);
+      return `<path d="M${n(s[0])} ${n(s[1])}L${n(e[0])} ${n(e[1])}" stroke="${COLOURS.prop}" stroke-width="6" stroke-linecap="round"/>` +
+        `<path d="M${n(e[0] - pp[0] * 9)} ${n(e[1] - pp[1] * 9)}L${n(e[0] + pp[0] * 9)} ${n(e[1] + pp[1] * 9)}" stroke="${COLOURS.prop}" stroke-width="11" stroke-linecap="round"/>`;
+    };
+    if (hd.view === "side") {
+      out += renderGroup([{ t: "seg", p: P.T0, q: P.T1, w: 8 }, { t: "seg", p: P.T1, q: P.T2, w: 7 }], COLOURS.far);
+      out += stick();
+      if (N.ball > 0.5) out += `<circle cx="${n(P.G[0])}" cy="${n(P.G[1])}" r="${n(N.ball)}" fill="#f2c7a8" stroke="${COLOURS.move}" stroke-width="1.8"/>`;
+      out += renderGroup([
+        { t: "seg", p: P.E, q: P.W, w: 16 },
+        { t: "seg", p: P.W, q: P.K, w: 15 },
+        { t: "seg", p: P.K, q: P.F1, w: 9.5 },
+        { t: "seg", p: P.F1, q: P.F2, w: 8.5 },
+        { t: "seg", p: P.F2, q: P.F3, w: 7.5 }
+      ], COLOURS.body);
+      if (N.weight > 0.5) {
+        out += `<circle cx="${n(P.G[0])}" cy="${n(P.G[1])}" r="${n(N.weight)}" fill="${COLOURS.prop}" stroke="${COLOURS.line}" stroke-width="1.8"/>` +
+          `<circle cx="${n(P.G[0])}" cy="${n(P.G[1])}" r="${n(N.weight * 0.35)}" fill="${COLOURS.propFill}"/>`;
+      }
+    } else {
+      out += stick();
+      const fingers = [];
+      for (let i = 3; i >= 0; i--) fingers.push({ t: "seg", p: P["B" + i], q: P["M" + i], w: 7.5 }, { t: "seg", p: P["M" + i], q: P["F" + i], w: 7 });
+      out += renderGroup([{ t: "seg", p: P.E, q: P.W, w: 17 }].concat(fingers, [{ t: "seg", p: add(P.W, [0, -3], 1), q: add(P.K, [0, 3], 1), w: N.palmW }]), COLOURS.body);
+      if (N.nails > 0.05) {
+        for (let i = 0; i < 4; i++) {
+          const a = dir(ang(P["M" + i], P["F" + i])), q = add(P["F" + i], a, -2.5);
+          out += `<ellipse cx="${n(q[0])}" cy="${n(q[1])}" rx="${n(2.4 * N.nails)}" ry="${n(3 * N.nails)}" fill="#fff" stroke="${COLOURS.line}" stroke-width="0.9"/>`;
+        }
+      }
+      out += renderGroup([{ t: "seg", p: P.T0, q: P.T1, w: 8.5 }, { t: "seg", p: P.T1, q: P.T2, w: 7.5 }], COLOURS.body);
+      if (N.band > 0.5) {
+        const m = [3, 2, 1, 0].map((i) => add(P["B" + i], dir(ang(P["B" + i], P["F" + i])), 13));
+        const top = m.map((p) => `${n(p[0])} ${n(p[1] - 3)}`).join("L"), bot = m.slice().reverse().map((p) => `${n(p[0])} ${n(p[1] + 3)}`).join("L");
+        out += `<path d="M${top}L${bot}Z" fill="none" stroke="${COLOURS.band}" stroke-width="2.6" stroke-linejoin="round"/>`;
+      }
+    }
+    return out;
+  }
+
+  function handPanel(ill, hd, arrows, markerId) {
+    const c = crop(ill);
+    const props = (ill.props || []).map((pr) => {
+      if (pr.type === "tableTop") return `<rect x="${pr.x1}" y="${pr.y}" width="${pr.x2 - pr.x1}" height="${pr.h || 10}" rx="2" stroke="${COLOURS.prop}" stroke-width="2" fill="${COLOURS.propFill}"/>`;
+      if (pr.type === "roll") return propSVG(pr);
+      return "";
+    }).join("");
+    return `<rect x="${c[0]}" y="${c[1]}" width="${c[2]}" height="${c[3]}" rx="${n(c[3] / 14)}" fill="${COLOURS.panel}"/>` +
+      props + handSVG(hd) + (arrows || []).map((a) => arrowSVG(a, markerId)).join("");
+  }
+
+  const isHand = (ill) => ill.kind === "hand";
+  const resolveFrame = (ill, fr) => (isHand(ill) ? resolveHand(fr.hand) : resolve(fr.pose));
+  const drawPanel = (ill, sk, arrows, id) => (isHand(ill) ? handPanel(ill, sk, arrows, id) : panelInner(ill, sk, arrows, id));
+
   // ---------- public: static pictures ----------
   function frameSVG(ill, index, opts = {}) {
     const id = "ah" + ++uid;
     const fr = ill.frames[index];
     const extra = (fr.text || []).map((t) => propSVG(Object.assign({ type: "text" }, t))).join("");
-    return `<svg viewBox="${crop(ill).join(" ")}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeXML(opts.alt || fr.label)}">${defs(id)}${panelInner(ill, resolve(fr.pose), opts.arrows === false ? [] : fr.arrows, id)}${extra}</svg>`;
+    return `<svg viewBox="${crop(ill).join(" ")}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${escapeXML(opts.alt || fr.label)}">${defs(id)}${drawPanel(ill, resolveFrame(ill, fr), opts.arrows === false ? [] : fr.arrows, id)}${extra}</svg>`;
   }
 
   // All frames side by side, numbered, with arrows: used on the printed handout
@@ -281,7 +414,7 @@
     ill.frames.forEach((fr, i) => {
       const x = i * (pw + gap);
       const extra = (fr.text || []).map((t) => propSVG(Object.assign({ type: "text" }, t))).join("");
-      body += `<svg x="${n(x)}" y="0" width="${n(pw)}" height="${H}" viewBox="${c.join(" ")}">${panelInner(ill, resolve(fr.pose), fr.arrows, id)}${extra}</svg>` +
+      body += `<svg x="${n(x)}" y="0" width="${n(pw)}" height="${H}" viewBox="${c.join(" ")}">${drawPanel(ill, resolveFrame(ill, fr), fr.arrows, id)}${extra}</svg>` +
         `<g transform="translate(${n(x)} 0)"><circle cx="15" cy="${H + 20}" r="13" fill="${COLOURS.line}"/><text x="15" y="${H + 26}" text-anchor="middle" font-size="16" font-weight="700" fill="#fff" font-family="system-ui, sans-serif">${i + 1}</text>` +
         `<text x="35" y="${H + 26}" font-size="17" font-weight="600" fill="${COLOURS.text}" font-family="system-ui, sans-serif">${escapeXML(fr.label)}</text></g>`;
       if (i < count - 1) {
@@ -329,7 +462,7 @@
       for (const st of anim.steps) {
         if (t < acc + st.hold) { anim.draw(anim.skels[st.a]); break; }
         acc += st.hold;
-        if (t < acc + st.move) { anim.draw(mix(anim.skels[st.a], anim.skels[st.b], ease((t - acc) / st.move))); break; }
+        if (t < acc + st.move) { anim.draw(anim.blend(anim.skels[st.a], anim.skels[st.b], ease((t - acc) / st.move))); break; }
         acc += st.move;
       }
     });
@@ -344,14 +477,15 @@
     svg.setAttribute("aria-label", opts.alt || "Animated exercise illustration");
     container.innerHTML = "";
     container.append(svg);
-    const skels = ill.frames.map((f) => resolve(f.pose));
+    const skels = ill.frames.map((f) => resolveFrame(ill, f));
+    const blend = isHand(ill) ? mixHand : mix;
     const steps = timeline(ill);
     const anim = {
-      svg, skels, steps,
+      svg, skels, steps, blend,
       total: steps.reduce((s, st) => s + st.hold + st.move, 0),
       start: performance.now() - (opts.offset || 0) * 1000, lastDraw: 0,
       paused: false,
-      draw: (sk) => { svg.innerHTML = defs(id) + panelInner(ill, sk, [], id); }
+      draw: (sk) => { svg.innerHTML = defs(id) + drawPanel(ill, sk, [], id); }
     };
     anim.draw(skels[0]);
     running.add(anim);

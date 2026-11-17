@@ -63,7 +63,7 @@
     list.innerHTML = "";
     const matches = LIBRARY.filter((e) =>
       (activeArea === "All" || e.area === activeArea) &&
-      (!q || (e.name + " " + e.area + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ")).toLowerCase().includes(q))
+      (!q || (e.name + " " + e.area + " " + (e.bodyArea || "") + " " + (e.aliases || "") + " " + e.instructions.join(" ") + (e.checked === false ? " awaiting check" : "")).toLowerCase().includes(q))
     );
     if (!matches.length) {
       list.append(el("li", { class: "lib-empty", text: "No exercises match your search." }));
@@ -76,6 +76,7 @@
         H.picture(ex, "thumb").el,
         el("div", { class: "meta" },
           el("div", { class: "name", text: ex.name }),
+          ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
           el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area, ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null)
         ),
         ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
