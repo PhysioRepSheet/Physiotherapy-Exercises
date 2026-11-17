@@ -164,6 +164,7 @@
       <details class="settings-details" id="settings-details" open>
         <summary>Patient, physio and print options</summary>
         <div class="settings-body">
+          <h3 class="settings-group">Patient and physio</h3>
           <div class="field-grid">
             <div class="field">
               <label for="patient-name">Patient name <span class="hint">(optional, not saved or shared)</span></label>
@@ -186,6 +187,9 @@
             <label class="remember">
               <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
             </label>
+          </div>
+          <h3 class="settings-group">Print and patient page options</h3>
+          <div class="tick-row">
             <label class="large-toggle">
               <input type="checkbox" id="large-print"> <span><strong>Large print</strong> <span class="hint">(bigger text and pictures on the handout and patient page)</span></span>
             </label>
@@ -212,6 +216,7 @@
             </label>
           </div>
 
+          <h3 class="settings-group">Advice and goals</h3>
           <div class="field general-notes-field">
           <label for="general-notes">General advice for the patient</label>
           <textarea id="general-notes" rows="3" aria-describedby="no-id-hint"></textarea>

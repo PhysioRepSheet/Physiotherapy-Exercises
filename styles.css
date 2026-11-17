@@ -163,8 +163,8 @@ textarea { resize: vertical; }
 .ex-card {
   background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 18px;
   counter-increment: ex; break-inside: avoid; transition: box-shadow .2s var(--ease), border-color .2s var(--ease);
-  animation: card-in .35s var(--ease);
 }
+.ex-card.entering { animation: card-in .35s var(--ease); }
 .ex-card:hover { box-shadow: var(--shadow); border-color: var(--line-strong); }
 @keyframes card-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .ex-media .pic { width: 160px; border-radius: 12px; } /* smaller at Alex's request, 16 Nov 2026 */
@@ -608,3 +608,65 @@ dialog::backdrop { background: rgba(23, 35, 43, .4); backdrop-filter: blur(3px);
   .params .freq, .params .load { grid-column: span 3; }
 }
 @media print { .note-toggle { display: none !important; } }
+
+/* =========================================================
+   Feel and finish (17 Nov 2026), following Alex's "apple-design" skill:
+   instant press feedback, calm motion that can be interrupted,
+   a see-through header that fades into the page, and support for
+   reduce motion, reduce transparency and more contrast settings.
+   ========================================================= */
+
+/* 1. Instant feedback the moment something is pressed */
+.btn, .btn-ghost, .chip, .icon-btn, .lib-item .add { transition: transform .1s ease-out, background .15s var(--ease), border-color .15s var(--ease), box-shadow .15s var(--ease), color .15s var(--ease); -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.btn:active:not(:disabled), .btn-ghost:active, .chip:active, .icon-btn:active:not(:disabled), .lib-item .add:active { transform: scale(.96); transition-duration: 0s; }
+
+/* 2. Header: see-through layer the page scrolls under, with a soft fade instead of a hard line */
+.site-header { border-bottom-color: transparent; transition: border-color .2s var(--ease); }
+.site-header::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px; pointer-events: none; background: linear-gradient(rgba(23, 35, 43, .07), rgba(23, 35, 43, 0)); opacity: 0; transition: opacity .2s var(--ease); }
+.is-scrolled .site-header::after { opacity: 1; }
+
+/* 3. Panels that fold open and closed glide instead of jumping (browsers that support it) */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+  details::details-content { height: 0; overflow: clip; transition: height .3s cubic-bezier(.25, .9, .3, 1), content-visibility .3s allow-discrete; }
+  details[open]::details-content { height: auto; }
+}
+
+/* 4. Dialogs grow from where they sit and leave the same way */
+dialog { transform-origin: 50% 40%; }
+
+/* 5. Type: tighter tracking and leading as text gets bigger, slightly open for tiny labels */
+h1 { letter-spacing: -0.025em; line-height: 1.1; }
+h2 { letter-spacing: -0.015em; line-height: 1.2; }
+h3, .ex-title { letter-spacing: -0.01em; line-height: 1.25; }
+.hint { letter-spacing: .005em; }
+body { font-optical-sizing: auto; }
+
+/* 6. Clearer grouping in the details panel */
+.settings-group { margin: 18px 0 8px; font-size: .75rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); }
+.settings-body > .settings-group:first-child { margin-top: 4px; }
+
+/* 7. People who prefer less motion: gentle fades only, no sliding */
+@media (prefers-reduced-motion: reduce) {
+  .ex-card.entering { animation: fade-in .2s ease both !important; animation-duration: .2s !important; }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+  .btn:active:not(:disabled), .btn-ghost:active, .chip:active, .icon-btn:active:not(:disabled), .lib-item .add:active { transform: none; }
+  details::details-content { transition: none; }
+}
+
+/* 8. People who prefer less transparency: solid header and backdrops */
+@media (prefers-reduced-transparency: reduce) {
+  .site-header { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
+  dialog::backdrop { background: rgba(23, 35, 43, .6); backdrop-filter: none; }
+}
+
+/* 9. People who prefer more contrast: solid surfaces and clear edges */
+@media (prefers-contrast: more) {
+  :root { --line: #8a948f; --line-strong: #4f5a55; --ink-soft: #2f3a42; --ink-faint: #3a454d; }
+  .site-header { background: var(--bg); backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: 1px solid var(--ink); }
+  .site-header::after { display: none; }
+  .panel, .ex-card, .lib-item .add, .chip, .btn-secondary, .move-btn { border: 1px solid var(--ink); }
+  .hint { color: var(--ink-soft); }
+}
+
+@media print { .site-header::after { display: none; } }

@@ -90,6 +90,30 @@
 
   // ---------- Programme ----------
   let uid = 0;
+  let enteringKey = null; // the card that has just been added, so only it animates in
+
+  // ---------- Smooth card movement ----------
+  // Before the list is redrawn, note where each card is on screen. After redrawing, each card starts
+  // where it was and glides to its new place. Reading the live position means a move can be
+  // interrupted by another click at any moment without a jump. Skipped if the person prefers less motion.
+  const reduceMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function cardPositions() {
+    const pos = new Map();
+    $("#programme-list").querySelectorAll(".ex-card[data-key]").forEach((c) => pos.set(c.dataset.key, c.getBoundingClientRect().top));
+    return pos;
+  }
+  function glideFrom(before) {
+    if (reduceMotion() || !Element.prototype.animate) return;
+    $("#programme-list").querySelectorAll(".ex-card[data-key]").forEach((c) => {
+      const was = before.get(c.dataset.key);
+      if (was == null) return;
+      const dy = was - c.getBoundingClientRect().top;
+      if (Math.abs(dy) < 1) return;
+      c.animate([{ transform: "translateY(" + dy + "px)" }, { transform: "none" }],
+        { duration: 380, easing: "cubic-bezier(.25, .9, .3, 1)" }); // close to a critically damped spring
+    });
+  }
+
   function addExercise(ex) {
     programme.push({
       key: ++uid,
@@ -102,7 +126,9 @@
       prog: [],
       reg: []
     });
+    enteringKey = uid;
     renderProgramme();
+    enteringKey = null;
     renderLibrary();
     changed();
     toast(ex.name + " added");
@@ -116,13 +142,15 @@
   // Move one exercise to a new position (used by the up and down buttons)
   function moveTo(from, to, focusSelector) {
     if (to < 0 || to >= programme.length || to === from) return;
+    const before = cardPositions();
     const [item] = programme.splice(from, 1);
     programme.splice(to, 0, item);
     renderProgramme();
+    glideFrom(before);
     changed();
     const card = $("#programme-list").children[to];
     if (card) {
-      card.style.animation = "none"; card.classList.add("just-moved");
+      card.classList.add("just-moved");
       setTimeout(() => card.classList.remove("just-moved"), 900);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       card.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" });
@@ -138,8 +166,26 @@
 
 
   function removeAt(index) {
-    const [gone] = programme.splice(index, 1);
-    renderProgramme();
+    const card = $("#programme-list").children[index];
+    const finish = () => {
+      const i = programme.indexOf(item);
+      if (i < 0) return;
+      const before = cardPositions();
+      programme.splice(i, 1);
+      renderProgramme();
+      glideFrom(before);
+      afterRemove(item);
+    };
+    const item = programme[index];
+    if (!item) return;
+    // Leave the way it came in (fade and drop slightly), then close the gap
+    if (card && !reduceMotion() && card.animate) {
+      card.style.pointerEvents = "none";
+      card.animate([{ opacity: 1, transform: "none" }, { opacity: 0, transform: "translateY(6px) scale(.985)" }],
+        { duration: 160, easing: "cubic-bezier(.4, 0, 1, 1)", fill: "forwards" }).finished.then(finish, finish);
+    } else finish();
+  }
+  function afterRemove(gone) {
     renderLibrary();
     changed();
     const ex = H.byId(gone.id);
@@ -236,7 +282,7 @@
       const optionCount = (ex.progressions || []).length + (ex.regressions || []).length;
       const ticked = item.prog.length + item.reg.length;
 
-      list.append(el("li", { class: "ex-card" },
+      list.append(el("li", { class: "ex-card" + (item.key === enteringKey ? " entering" : ""), "data-key": item.key },
         el("div", { class: "ex-media no-print" }, H.picture(ex, "anim", { offset: i * 0.4 }).el),
         el("div", { class: "ex-body" },
           el("div", { class: "ex-top" },
@@ -744,6 +790,10 @@
   $("#handout-date").value = new Date().toISOString().slice(0, 10);
   $("#search").addEventListener("input", renderLibrary);
   $("#btn-print").addEventListener("click", printHandout);
+  // Soft shadow under the header only once the page has scrolled under it
+  const onScroll = () => document.documentElement.classList.toggle("is-scrolled", window.scrollY > 4);
+  window.addEventListener("scroll", onScroll, { passive: true }); onScroll();
+
   // Details panel: always open in the three-column layout, folded away on smaller screens to start with
   (function () {
     const sd = $("#settings-details"); const wide = window.matchMedia("(min-width: 1240px)");
