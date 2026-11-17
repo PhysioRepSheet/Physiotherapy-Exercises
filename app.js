@@ -509,7 +509,7 @@
 
       // Steps: the library's wording, or the physio's own for this handout (Advanced view, "Change the steps")
       const stepsList = el("ol", { class: "ex-steps" });
-      const editedMark = el("span", { class: "steps-edited-mark no-print", title: "You changed the steps for this handout", hidden: !H.stepsEdited(item) }, "Edited");
+      const editedMark = el("span", { class: "steps-edited-mark no-print", title: "You edited the instructions for this handout", hidden: !H.stepsEdited(item) }, "Edited");
       const stepsId = "se-" + item.key;
       const stepsBox = el("textarea", {
         id: stepsId, class: "steps-text", rows: String(Math.min(8, Math.max(3, H.stepsOf(item, ex).length + 1))), maxlength: "1500",
@@ -522,7 +522,7 @@
         refreshSteps();
         changed();
         stepsBox.dispatchEvent(new Event("input", { bubbles: true })); // re-runs the privacy check
-        toast("Steps reset to the standard wording");
+        toast("Instructions reset to the standard wording");
       } }, "Reset to standard");
       const refreshSteps = () => {
         const edited = H.stepsEdited(item);
@@ -534,9 +534,9 @@
       };
       refreshSteps();
       const stepsEditor = el("details", { class: "steps-edit no-print", open: H.stepsEdited(item) },
-        el("summary", {}, "Change the steps ", el("span", { class: "hint", text: "(for this handout only)" })),
+        el("summary", {}, "Edit exercise instructions ", el("span", { class: "hint", text: "(for this handout only)" })),
         el("div", { class: "steps-edit-body" },
-          el("label", { for: stepsId, text: "Steps, one per line" }),
+          el("label", { for: stepsId, text: "Instructions, one step per line" }),
           stepsBox,
           el("div", { class: "steps-edit-foot" },
             el("p", { class: "hint", id: "se-hint-" + item.key, text: "Your wording replaces the standard steps on this handout and patient page. It isn\u2019t translated, so other languages show it in English. Please don\u2019t include any patient details." }),
@@ -613,7 +613,7 @@
       if (item.side) extras.push(H.sideLabel(item).toLowerCase());
       if (item.load) extras.push(item.load);
       if (item.notes) extras.push("a note");
-      if (H.stepsEdited(item)) extras.push("edited steps");
+      if (H.stepsEdited(item)) extras.push("edited instructions");
       const pr = (item.prog || []).length + (item.reg || []).length + (item.progText ? 1 : 0) + (item.regText ? 1 : 0);
       if (pr) extras.push(pr + (pr === 1 ? " progression or regression" : " progressions and regressions"));
       if (st) extras.push(st.name);
