@@ -1158,3 +1158,18 @@ body { font-optical-sizing: auto; }
   .theme-switch .ts-moon { display: block; }
   .theme-switch .ts-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+
+/* Search-first library (17 Nov 2026): empty until the clinician types or picks a filter */
+.library-list mark.hit { background: none; color: inherit; font-weight: 800; }
+.lib-start { list-style: none; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 26px 12px 18px; margin-bottom: 4px; border: 1.5px dashed var(--line-strong); border-radius: 16px; background: var(--brand-tint-2); }
+.lib-start-icon { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--brand-tint); color: var(--brand); margin-bottom: 4px; }
+.lib-start-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.lib-start-title { margin: 0; font-weight: 700; font-size: 1.0625rem; color: var(--ink); }
+.lib-start-text { margin: 0; font-size: .875rem; line-height: 1.45; color: var(--ink-soft); max-width: 30ch; }
+.lib-quick { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 10px; }
+.lib-quick-btn { border: 1px solid var(--line-strong); background: var(--card); color: var(--ink); border-radius: 999px; padding: 5px 12px; min-height: 32px; font: inherit; font-size: .8125rem; font-weight: 600; cursor: pointer; }
+.lib-quick-btn:hover, .lib-quick-btn:focus-visible { border-color: var(--brand); color: var(--brand-ink); background: var(--brand-tint); outline: none; }
+.lib-quick-btn:focus-visible { box-shadow: 0 0 0 3px rgba(14, 107, 98, .25); }
+.lib-group { list-style: none; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 12px 8px 2px; font-size: .6875rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.lib-group-more, .lib-clear { border: 0; background: none; padding: 2px 4px; font: inherit; font-size: .8125rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--brand); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.lib-count { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 8px 4px; font-size: .8125rem; color: var(--ink-soft); }

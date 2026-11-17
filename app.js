@@ -68,6 +68,7 @@
   }
 
   const TYPES = ["Strength", "Stretch", "Movement", "Balance", "Breathing"];
+  const GOAL_LABELS = { "Any type": "Any goal" };
   let activeType = "Any type";
   const LEVELS = ["Easy", "Medium", "Harder"];
   let activeLevel = "Any level";
@@ -85,8 +86,9 @@
       sel.value = active;
       sel.closest(".lib-filter").classList.toggle("is-set", sel.selectedIndex > 0);
     };
-    fill($("#area-filter"), areas, activeArea, (a) => (a === "Favourites" ? "★ Favourites" : a === "All" ? "All areas" : a));
-    fill($("#type-filter"), ["Any type", ...TYPES], activeType, (t) => (t === "Any type" ? "All types" : t));
+    fill($("#area-filter"), areas, activeArea, (a) => (a === "Favourites" ? "★ Favourites" : a === "Recent" ? "Recently used" : a === "All" ? "Any area" : a));
+    // The second dropdown asks what the patient is working towards (17 Nov 2026). Values stay the exercise types.
+    fill($("#type-filter"), ["Any type", ...TYPES], activeType, (t) => GOAL_LABELS[t] || t);
   }
   const filterChanged = (set) => (e) => { set(e.target.value); renderFilters(); renderLibrary(); };
   $("#area-filter").addEventListener("change", filterChanged((v) => { activeArea = v; if (window.RepSheetBodyMap) window.RepSheetBodyMap.refresh(); }));
@@ -122,7 +124,10 @@
     else if (activeArea === "Recent") pool = recent.map(H.byId).filter((e) => e && pool.includes(e));
     else if (activeArea !== "All") pool = pool.filter((e) => e.area === activeArea);
     if (!q) return { list: pool, fuzzy: false };
-    const exact = pool.filter((e) => searchText(e).includes(q));
+    // Best matches first, like a search engine: name starts with the words, then name contains them,
+    // then another name (alias), then anything else (area, steps).
+    const rank = (e) => { const n = e.name.toLowerCase(); return n.startsWith(q) ? 0 : n.split(/[^a-z0-9]+/).some((w) => w.startsWith(q)) ? 1 : n.includes(q) ? 2 : String(e.aliases || "").toLowerCase().includes(q) ? 3 : 4; };
+    const exact = pool.filter((e) => searchText(e).includes(q)).map((e, i) => [rank(e), i, e]).sort((x, y) => x[0] - y[0] || x[1] - y[1]).map((x) => x[2]);
     if (exact.length) return { list: exact, fuzzy: false };
     return { list: pool.filter((e) => fuzzyMatch(searchText(e), q)), fuzzy: true };
   }
@@ -138,38 +143,90 @@
     return hit ? el("div", { class: "also-called", text: "Also called: " + hit }) : null;
   }
 
+  // Search-first library (17 Nov 2026): the list starts empty with an invitation to type.
+  // Results appear as you type, or when a body area or goal is picked.
+  const libraryIdle = () => !$("#search").value.trim() && activeArea === "All" && activeType === "Any type";
+  const QUICK_AREAS = ["Knee", "Back", "Shoulder", "Hip", "Ankle", "Neck"];
+
+  // Show the part of the name that matches the search in bold, like a search engine.
+  function nameWithHit(name) {
+    const q = $("#search").value.trim().toLowerCase();
+    const i = q ? name.toLowerCase().indexOf(q) : -1;
+    if (i < 0) return [name];
+    return [name.slice(0, i), el("mark", { class: "hit", text: name.slice(i, i + q.length) }), name.slice(i + q.length)];
+  }
+
+  function libItem(ex, inProgramme) {
+    const added = inProgramme.has(ex.id);
+    const fav = favourites.includes(ex.id);
+    return el("li", { class: "lib-item" },
+      el("button", { type: "button", class: "lib-preview", "aria-label": "Preview " + ex.name, title: "Preview", onclick: () => openPreview(ex) }, H.picture(ex, "thumb").el),
+      el("div", { class: "meta" },
+        el("button", { type: "button", class: "name name-btn", title: "Preview " + ex.name, "aria-label": ex.name, onclick: () => openPreview(ex) }, nameWithHit(ex.name)),
+        ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
+        el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
+        alsoCalled(ex)
+      ),
+      ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
+      el("button", { type: "button", class: "icon-btn fav" + (fav ? " on" : ""), "aria-pressed": String(fav), "aria-label": (fav ? "Remove " : "Add ") + ex.name + (fav ? " from" : " to") + " favourites", title: fav ? "Favourite" : "Add to favourites", onclick: () => toggleFavourite(ex) }, icon(ICONS.star)),
+      el("button", {
+        type: "button",
+        class: "btn btn-secondary add" + (added ? " added" : ""),
+        "aria-label": (added ? "Add another " : "Add ") + ex.name,
+        text: added ? "Added ✓" : "Add",
+        onclick: () => addExercise(ex)
+      })
+    );
+  }
+
+  function clearLibrary() {
+    $("#search").value = "";
+    activeArea = "All"; activeType = "Any type";
+    renderFilters(); renderLibrary();
+    $("#search").focus();
+  }
+
+  function renderStart(list, inProgramme) {
+    const pickArea = (a) => { activeArea = a; renderFilters(); renderLibrary(); };
+    const areas = QUICK_AREAS.filter((a) => LIBRARY.some((e) => e.area === a));
+    list.append(el("li", { class: "lib-start" },
+      el("span", { class: "lib-start-icon", "aria-hidden": "true" }, icon('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>')),
+      el("p", { class: "lib-start-title", text: "Find an exercise" }),
+      el("p", { class: "lib-start-text", text: "Start typing, like knee, squat or calf. Or pick a body area and a goal above." }),
+      el("div", { class: "lib-quick", role: "group", "aria-label": "Popular body areas" },
+        areas.map((a) => el("button", { type: "button", class: "lib-quick-btn", text: a, onclick: () => pickArea(a) })))
+    ));
+    // Shortcuts to exercises this clinician uses: favourites first, then recently added.
+    const favs = favourites.map(H.byId).filter(Boolean);
+    const recent = readIds(RECENT_KEY).map(H.byId).filter((e) => e && !favourites.includes(e.id)).slice(0, 5);
+    const group = (title, items, moreArea) => {
+      if (!items.length) return;
+      list.append(el("li", { class: "lib-group" }, el("span", { text: title }),
+        moreArea ? el("button", { type: "button", class: "lib-group-more", text: "See all", onclick: () => pickArea(moreArea) }) : null));
+      items.forEach((ex) => list.append(libItem(ex, inProgramme)));
+    };
+    group("★ Your favourites", favs.slice(0, 6), favs.length > 6 ? "Favourites" : null);
+    group("Recently used", recent, null);
+  }
+
   function renderLibrary() {
     const list = $("#library-list");
     list.innerHTML = "";
+    const inProgramme = new Set(programme.map((p) => p.id));
+    const idle = libraryIdle();
+    list.classList.toggle("is-idle", idle);
+    if (idle) { renderStart(list, inProgramme); return; }
     const { list: matches, fuzzy } = libraryMatches();
+    const what = [activeArea === "All" ? "" : activeArea === "Recent" ? "Recently used" : activeArea, activeType === "Any type" ? "" : activeType].filter(Boolean).join(" · ");
+    list.append(el("li", { class: "lib-count", role: "status" },
+      el("span", { text: matches.length ? matches.length + (matches.length === 1 ? " exercise" : " exercises") + (what ? " · " + what : "") : "" }),
+      el("button", { type: "button", class: "lib-clear", text: "Clear", "aria-label": "Clear search and filters", onclick: clearLibrary })));
     if (!matches.length) {
-      list.append(el("li", { class: "lib-empty", text: activeArea === "Favourites" ? "Tap the star on any exercise to add it here." : "No exercises match your search." }));
+      list.append(el("li", { class: "lib-empty", text: activeArea === "Favourites" ? "Tap the star on any exercise to add it here." : "No exercises match. Try another word, or clear the filters." }));
       return;
     }
     if (fuzzy) list.append(el("li", { class: "lib-note", text: "No exact match. Showing close spellings." }));
-    const inProgramme = new Set(programme.map((p) => p.id));
-    matches.forEach((ex) => {
-      const added = inProgramme.has(ex.id);
-      const fav = favourites.includes(ex.id);
-      list.append(el("li", { class: "lib-item" },
-        el("button", { type: "button", class: "lib-preview", "aria-label": "Preview " + ex.name, title: "Preview", onclick: () => openPreview(ex) }, H.picture(ex, "thumb").el),
-        el("div", { class: "meta" },
-          el("button", { type: "button", class: "name name-btn", text: ex.name, title: "Preview " + ex.name, onclick: () => openPreview(ex) }),
-          ex.checked === false ? el("span", { class: "awaiting-check", title: "New exercise. Not yet clinically checked.", text: "Awaiting check" }) : null,
-          el("div", { class: "area" }, ex.custom ? (ex.bodyArea ? "My exercise · " + ex.bodyArea : "My exercise") : ex.area + (ex.type ? " · " + ex.type : ""), ex.video ? el("span", { class: "has-video", title: "Has a video" }, icon(ICONS.video)) : null),
-          alsoCalled(ex)
-        ),
-        ex.custom ? el("button", { type: "button", class: "icon-btn own-edit", "aria-label": "Edit " + ex.name, title: "Edit", onclick: () => openOwn(ex) }, icon(ICONS.edit)) : null,
-        el("button", { type: "button", class: "icon-btn fav" + (fav ? " on" : ""), "aria-pressed": String(fav), "aria-label": (fav ? "Remove " : "Add ") + ex.name + (fav ? " from" : " to") + " favourites", title: fav ? "Favourite" : "Add to favourites", onclick: () => toggleFavourite(ex) }, icon(ICONS.star)),
-        el("button", {
-          type: "button",
-          class: "btn btn-secondary add" + (added ? " added" : ""),
-          "aria-label": (added ? "Add another " : "Add ") + ex.name,
-          text: added ? "Added ✓" : "Add",
-          onclick: () => addExercise(ex)
-        })
-      ));
-    });
+    matches.forEach((ex) => list.append(libItem(ex, inProgramme)));
   }
 
   // ---------- Preview a library exercise before adding it ----------
@@ -1320,8 +1377,10 @@
   $("#search").addEventListener("input", renderLibrary);
   // Enter in the search box adds the top result
   $("#search").addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && e.target.value) { e.preventDefault(); e.target.value = ""; renderLibrary(); return; }
     if (e.key !== "Enter") return;
     e.preventDefault();
+    if (libraryIdle()) return;
     const top = libraryMatches().list[0];
     if (top) addExercise(top);
   });

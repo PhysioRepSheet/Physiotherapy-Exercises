@@ -50,13 +50,13 @@
     <section class="panel library no-print" aria-labelledby="library-title">
       <h2 id="library-title">Exercise library</h2>
       <label class="visually-hidden" for="search">Search exercises</label>
-      <input id="search" type="search" placeholder="Search exercises…" title="Shortcut: press / to search, Enter to add the top result" autocomplete="off" aria-describedby="search-hint">
+      <input id="search" type="search" placeholder="Type to search…" title="Shortcut: press / to search, Enter to add the top result" autocomplete="off" aria-describedby="search-hint">
       <p id="search-hint" class="visually-hidden">Press Enter to add the top result.</p>
       <div class="lib-filters" role="group" aria-label="Filter exercises">
         <label class="lib-filter"><span>Body area</span><select id="area-filter"></select></label>
-        <label class="lib-filter"><span>Type</span><select id="type-filter"></select></label>
+        <label class="lib-filter"><span>Goal</span><select id="type-filter"></select></label>
       </div>
-      <ul id="library-list" class="library-list"></ul>
+      <ul id="library-list" class="library-list" aria-live="polite"></ul>
       <div class="library-foot">
         <button type="button" class="btn btn-secondary btn-own" id="btn-own-new">+ Make your own exercise</button>
         <a href="#" data-request="exercise">Or ask for one to be added to the library</a>
