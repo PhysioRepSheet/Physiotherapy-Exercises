@@ -483,6 +483,7 @@
       $("#fa-start-wrap").hidden = false;
     } catch (e) {
       $("#intro").hidden = true;
+      $("#reminder").hidden = true; // no programme, so no daily reminder to offer
       $("#error").hidden = false;
     }
   }
