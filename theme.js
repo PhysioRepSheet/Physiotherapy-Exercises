@@ -4,6 +4,8 @@
   overrides it on this device only (saved in this browser; nothing is sent anywhere).
   Printing is always on white paper, whatever the screen shows.
   High contrast and easier reading (patient page) always use their own light colours.
+  Switching between light and dark fades gently (about half a second), both ways. No fade when the
+  page first opens, and none at all if the device is set to reduce motion.
 */
 (function () {
   "use strict";
@@ -21,6 +23,29 @@
   const wanted = () => can && (choice ? choice === "dark" : osDark());
   // Light-only reading modes on the patient page
   const lightOnly = () => !!(document.body && document.body.classList && (document.body.classList.contains("high-contrast") || document.body.classList.contains("easy-read-screen")));
+
+  // Gentle fade between light and dark. Uses the browser's own cross-fade where it has one,
+  // otherwise briefly lets colours drift (see "theme-fading" in dark.css).
+  const FADE_MS = 600;
+  let fadeTimer = 0;
+  const reduceMotion = () => !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  function fade(change) {
+    if (reduceMotion() || !document.body) { change(); return; }
+    if (document.startViewTransition) {
+      root.classList.add("theme-vt");
+      try {
+        const t = document.startViewTransition(change);
+        const done = () => root.classList.remove("theme-vt");
+        t.finished.then(done, done);
+        return;
+      } catch (e) { root.classList.remove("theme-vt"); }
+    }
+    root.classList.add("theme-fading");
+    void root.offsetWidth; // let the browser see the transition before the colours change
+    change();
+    clearTimeout(fadeTimer);
+    fadeTimer = setTimeout(() => root.classList.remove("theme-fading"), FADE_MS + 100);
+  }
 
   function apply() {
     const dark = wanted() && !lightOnly();
@@ -56,11 +81,11 @@
     // Matching the device again means "follow the device" from now on
     choice = (next === "dark") === osDark() ? null : next;
     try { if (choice) localStorage.setItem(KEY, choice); else localStorage.removeItem(KEY); } catch (e) { /* storage unavailable */ }
-    apply();
+    fade(apply);
   }
 
   apply();
-  if (mq) { const f = () => { if (!choice) apply(); }; mq.addEventListener ? mq.addEventListener("change", f) : mq.addListener(f); }
+  if (mq) { const f = () => { if (!choice) fade(apply); }; mq.addEventListener ? mq.addEventListener("change", f) : mq.addListener(f); }
   function ready() {
     const b = document.getElementById("btn-theme");
     if (b) b.addEventListener("click", toggle);

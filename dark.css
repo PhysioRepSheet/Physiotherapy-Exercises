@@ -110,3 +110,26 @@
   :root[data-theme="dark"] .quick-field { background-color: var(--field); border-color: var(--line-strong); }
   :root[data-theme="dark"] .quick-field input, :root[data-theme="dark"] .quick-field input:focus { background-color: transparent; box-shadow: none; }
 }
+
+/* ---------------------------------------------------------
+   Gentle fade when switching between light and dark (theme.js).
+   Never on first load; switched off for "reduce motion".
+   --------------------------------------------------------- */
+@media screen and (prefers-reduced-motion: no-preference) {
+  /* Browsers with a built-in cross-fade: the whole page fades slowly */
+  :root.theme-vt::view-transition-old(root),
+  :root.theme-vt::view-transition-new(root) { animation-duration: .6s; animation-timing-function: ease-in-out; }
+  /* The switch itself slides straight away rather than fading */
+  :root.theme-vt .theme-switch { view-transition-name: theme-switch; }
+  :root.theme-vt::view-transition-old(theme-switch) { display: none; }
+  :root.theme-vt::view-transition-new(theme-switch) { animation: none; }
+  /* Other browsers: colours drift from one theme to the other */
+  :root.theme-fading,
+  :root.theme-fading *,
+  :root.theme-fading *::before,
+  :root.theme-fading *::after {
+    transition: background-color .6s ease-in-out, color .6s ease-in-out, border-color .6s ease-in-out,
+                fill .6s ease-in-out, stroke .6s ease-in-out, box-shadow .6s ease-in-out !important;
+  }
+  :root.theme-fading .ts-thumb { transition: transform .2s ease, background-color .6s ease-in-out !important; }
+}
