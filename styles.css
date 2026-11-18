@@ -1305,3 +1305,14 @@ html[data-step="edit"] .programme-toolbar .view-switch { order: 1; }
 .steps-bar { position: relative; }
 @media (max-width: 1100px) { .tut-link { position: static; margin-left: 8px; } }
 @media (max-width: 960px) { .steps-bar { flex-wrap: wrap; } .tut-link { flex-basis: 100%; text-align: center; margin: 2px 0 0; } }
+
+/* Tutorial link in the builder's top bar (18 Nov 2026) */
+.header-tut { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; min-height: 32px; }
+.header-tut:hover { background: var(--brand-tint); border-color: var(--brand); color: var(--brand-ink); }
+.header-tut .ht-ico { width: 16px; height: 16px; flex: none; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+@media print { .header-tut { display: none !important; } }
+/* Small phones: book icon only, so the top bar stays on fewer lines (screen readers still hear "How to use") */
+@media (max-width: 480px) {
+  .header-tut { padding: 6px 10px; }
+  .header-tut span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
