@@ -6,7 +6,7 @@
 
   When you change the site, change VERSION below (any new text), so phones fetch the new files.
 */
-const VERSION = "repsheet-2026-11-18-tutorial-top-bar";
+const VERSION = "repsheet-2026-11-18-physio-fold-no-email";
 // Natural-voice recordings (audio/...) are kept in their own store. Each file's name comes from its words,
 // so a file never changes: they are saved the first time they play and are not re-downloaded on updates.
 const AUDIO = "repsheet-audio-1";

@@ -1316,3 +1316,5 @@ html[data-step="edit"] .programme-toolbar .view-switch { order: 1; }
   .header-tut { padding: 6px 10px; }
   .header-tut span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 }
+.physio-fold { margin: 0 0 4px; }
+.physio-fold .tick-row { margin-top: 12px; }

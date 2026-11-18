@@ -1,5 +1,5 @@
 /*
-  FOLD-AWAY BOXES in Handout details: "Handout options" and "Advice and goals"
+  FOLD-AWAY BOXES in Handout details: "Handout options", "Patient and physio" and "Advice and goals"
   Each opens and closes (a <details> box) with a short slide and a turning arrow.
   When closed, a short line shows what is switched on or filled in.
   Open or closed is remembered on this device only. Both start closed.
@@ -57,6 +57,12 @@
     if (lang && lang.selectedIndex >= 0) bits.push(lang.options[lang.selectedIndex].text);
     OPTIONS.forEach(([id, name]) => { const c = $(id); if (c && c.checked && shown(c)) bits.push(name); });
     return bits;
+  });
+
+  const PHYSIO = [["patient-name", "Patient name"], ["clinician", "Physio"], ["contact", "Contact"]];
+  fold("physio-fold", "physio-fold-sum", "repsheet:physio-open", () => {
+    const bits = PHYSIO.filter(([id]) => { const f = $(id); return f && f.value.trim(); }).map(([, name]) => name);
+    return bits.length ? bits : ["Optional"];
   });
 
   const ADVICE = [["patient-message", "Message"], ["general-notes", "Advice"], ["goal", "Goal"], ["plan", "When"], ["duration", "How long"]];

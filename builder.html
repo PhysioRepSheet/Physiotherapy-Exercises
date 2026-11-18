@@ -254,7 +254,6 @@
           <button type="button" class="btn btn-primary" id="btn-print" title="Open the print window">Print</button>
           <button type="button" class="btn btn-primary btn-pdf" id="btn-pdf" title="Make a PDF of the handout and open it in a new tab">Save as PDF</button>
           <button type="button" class="btn btn-secondary" id="btn-copy-patient" title="Copy the patient page link, to paste into a text, email or letter" disabled>Copy link</button>
-          <button type="button" class="btn btn-secondary" id="btn-email" title="Email the handout link to your patient">Email</button>
           <button type="button" class="btn btn-secondary" id="btn-notes" title="Copy a summary of this programme to paste into your clinical notes">Copy notes</button>
           <button type="button" class="btn btn-secondary" id="btn-my-templates" title="Save this programme as a template, or load one you saved">Templates</button>
           <button type="button" class="btn btn-secondary" id="btn-template" title="Make a link to share this programme with colleagues (no patient details)">Share template</button>
@@ -317,7 +316,10 @@
       <details class="settings-details" id="settings-details" open>
         <summary>Patient, physio, advice and stages</summary>
         <div class="settings-body">
-          <h3 class="settings-group">Patient and physio</h3>
+          <!-- Patient and physio: folds away like the boxes below (options-fold.js), closed to start with (18 Nov 2026) -->
+          <details class="options-fold physio-fold" id="physio-fold">
+          <summary><h3 class="settings-group">Patient and physio</h3><span class="options-fold-sum" id="physio-fold-sum"></span><svg class="options-fold-chev" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="options-fold-body">
           <div class="field-grid">
             <div class="field">
               <label for="patient-name">Patient name <span class="hint">(optional, never shared, forgotten when you close the tab)</span></label>
@@ -341,6 +343,8 @@
               <input type="checkbox" id="remember-me"> Remember my name and contact details on this device
             </label>
           </div>
+          </div>
+          </details>
 
           <!-- Advice and goals: optional, folds away (options-fold.js), closed to start with -->
           <details class="options-fold advice-fold" id="advice-fold">
@@ -427,23 +431,6 @@
       </nav>
     </div>
   </footer>
-
-  <!-- Email dialog -->
-  <dialog id="email-dialog" aria-labelledby="email-title">
-    <form method="dialog" class="dialog-body">
-      <h2 id="email-title">Email this handout</h2>
-      <p>This opens a new email in your own mail program (for example Outlook) with the exercises and the patient link written out. Nothing is sent from this website.</p>
-      <div class="field">
-        <label for="email-to">Patient email address <span class="hint">(optional)</span></label>
-        <input id="email-to" type="email" autocomplete="off">
-      </div>
-      <p class="hint">Tip: to include the step-by-step pictures, choose <em>Save as PDF</em>, save the PDF, and attach it to the email.</p>
-      <div class="dialog-actions">
-        <button value="cancel" class="btn btn-secondary">Cancel</button>
-        <button value="send" id="email-go" class="btn btn-primary">Open email</button>
-      </div>
-    </form>
-  </dialog>
 
   <!-- Share as template dialog -->
   <dialog id="my-templates-dialog" aria-labelledby="mt-title">

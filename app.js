@@ -1276,59 +1276,7 @@
     }
   }
 
-  function emailText() {
-    const lines = [];
-    const name = $("#patient-name").value.trim();
-    lines.push(name ? "Dear " + name + "," : "Hello,");
-    const msg = $("#patient-message").value.trim();
-    if (msg) lines.push("", msg);
-    lines.push("", "Here is your home exercise programme.");
-    if (currentLink && location.protocol !== "file:") {
-      lines.push("", "Watch your exercises (with moving pictures) here:", currentLink);
-    }
-    const general = $("#general-notes").value.trim();
-    if (general) lines.push("", general);
-    programme.forEach((item, i) => {
-      const ex = H.byId(item.id);
-      if (stages.length && (i === 0 || (programme[i - 1].stage || 1) !== (item.stage || 1))) {
-        const st = stages[(item.stage || 1) - 1];
-        lines.push("", "== " + st.name.toUpperCase() + (st.when ? " (" + st.when + ")" : "") + " ==");
-        if (st.move) lines.push("Move on to the next stage when: " + st.move);
-      }
-      lines.push("", (i + 1) + ". " + ex.name.toUpperCase());
-      H.stepsOf(item, ex).forEach((s) => lines.push("- " + s));
-      const d = H.describe(item);
-      if (d) lines.push(d);
-      if (item.notes.trim()) lines.push("Note: " + item.notes.trim());
-      const progs = [...item.prog.map((x) => ex.progressions[x]), String(item.progText || "").trim()].filter(Boolean);
-      if (progs.length) lines.push("To make it harder: " + progs.join("; "));
-      const regs = [...item.reg.map((x) => ex.regressions[x]), String(item.regText || "").trim()].filter(Boolean);
-      if (regs.length) lines.push("To make it easier: " + regs.join("; "));
-    });
-    lines.push("", "Stop if an exercise causes sharp pain, or pain that gets worse. Then call your physio.");
-    const who = [$("#clinician").value.trim(), $("#contact").value.trim()].filter(Boolean);
-    if (who.length) lines.push("", "Kind regards,", ...who);
-    return lines.join("\n");
-  }
-
-  async function openEmail() {
-    if (!programme.length) { toast("Add at least one exercise first"); return; }
-    clearTimeout(linkTimer);
-    await updateLink();
-    const dlg = $("#email-dialog");
-    dlg.returnValue = "";
-    dlg.showModal();
-  }
-
-  $("#email-dialog").addEventListener("close", () => {
-    if ($("#email-dialog").returnValue !== "send") return;
-    const to = $("#email-to").value.trim();
-    const href = "mailto:" + encodeURIComponent(to) +
-      "?subject=" + encodeURIComponent("Your home exercise programme") +
-      "&body=" + encodeURIComponent(emailText());
-    $("#email-to").value = ""; // don't keep the address around
-    window.location.href = href;
-  });
+  // Email button removed at Alex's request (18 Nov 2026): Copy link and Save as PDF cover sending.
 
   function clearAll() {
     if (!programme.length && !$("#patient-name").value && !$("#general-notes").value) return;
@@ -1623,7 +1571,6 @@
     sd.open = wide.matches;
     wide.addEventListener("change", () => { if (wide.matches) sd.open = true; });
   })();
-  $("#btn-email").addEventListener("click", openEmail);
   $("#btn-clear").addEventListener("click", clearAll);
   $("#btn-copy").addEventListener("click", copyLink);
   $("#btn-copy-patient").addEventListener("click", copyLink);
