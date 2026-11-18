@@ -104,3 +104,9 @@
 /* Accessibility dropdown: the Light/Dark screen item looks like the other items */
 :root[data-theme="dark"] .a11y-row #btn-theme[aria-pressed="true"] { border-color: transparent; background: transparent; }
 :root[data-theme="dark"] .a11y-row #btn-theme[aria-pressed="true"]:hover { background: var(--brand-tint-2); }
+
+/* Quick Sets / Reps / Hold boxes in "Your handout" (18 Nov 2026): the box is the field, the input inside stays clear */
+@media screen {
+  :root[data-theme="dark"] .quick-field { background-color: var(--field); border-color: var(--line-strong); }
+  :root[data-theme="dark"] .quick-field input, :root[data-theme="dark"] .quick-field input:focus { background-color: transparent; box-shadow: none; }
+}

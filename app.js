@@ -1420,6 +1420,51 @@
   // ---------- Step 1 summary: "Your handout" (18 Nov 2026) ----------
   // Lists what has been added so far, with move and remove, and the button on to step 2.
   let pickedFocus = null;
+
+  // Quick dose edits in "Your handout" (18 Nov 2026): Sets, Reps and Hold for each exercise.
+  // They change the same values as step 2, and step 2's card is updated straight away.
+  // The rest of the dose (weight, how often) is shown as text under the name; change it in step 2.
+  const QUICK = [["sets", "Sets", ""], ["reps", "Reps", ""], ["hold", "Hold", "s"]];
+  function otherDose(it) {
+    return [it.load, it.frequency].filter(Boolean).join(" · ");
+  }
+  function pickedDose(it, ex, i) {
+    return el("span", { class: "picked-quick" }, QUICK.map(([key, label, unit]) => {
+      const id = "q-" + it.key + "-" + key;
+      const input = el("input", {
+        id, type: "number", min: "0", max: "999", step: "1", inputmode: "numeric", value: it[key] || "", placeholder: "–",
+        "aria-label": (key === "hold" ? "Hold, in seconds, for " : label + " for ") + ex.name,
+        oninput: (e) => {
+          let v = e.target.value.trim();
+          if (v !== "") { const n = Math.round(Number(v)); v = isNaN(n) || n <= 0 ? "" : String(Math.min(n, 999)); }
+          it[key] = v;
+          syncCard(i, key, v);
+          changed();
+        }
+      });
+      return el("span", { class: "quick-field" },
+        el("label", { for: id, text: label, "aria-hidden": "true" }), input,
+        unit ? el("span", { class: "quick-unit", "aria-hidden": "true", text: unit }) : null);
+    }));
+  }
+  // Update step 2 to match a quick edit, without rebuilding the step 1 list (so typing isn't interrupted)
+  function syncCard(i, key, v) {
+    const it = programme[i];
+    const card = $("#programme-list").children[i];
+    if (card) {
+      const box = card.querySelector("#p-" + CSS.escape(it.key) + "-" + key);
+      if (box) box.value = v;
+      const sum = card.querySelector(".param-summary");
+      if (sum) sum.textContent = H.describe(it);
+      const dp = card.querySelector(".dose-panel");
+      if (dp) fillDose(dp, it);
+    }
+    updateSummary();
+    const t = $("#picked-time");
+    if (t) t.textContent = "About " + H.estimateMinutes(programme) + " minutes each time";
+    const exsDose = $("#exs-list") && $("#exs-list").querySelectorAll(".exs-dose")[i];
+    if (exsDose) exsDose.textContent = shortDose(it) || "No dose set";
+  }
   function renderPicked() {
     const list = $("#picked-list");
     if (!list) return;
@@ -1443,11 +1488,12 @@
         el("span", { class: "picked-pic", "aria-hidden": "true" }, H.picture(ex, "thumb").el),
         el("span", { class: "picked-meta" },
           el("span", { class: "picked-name", text: ex.name + (side ? " (" + side.toLowerCase().replace(" side", "") + ")" : "") }),
-          el("span", { class: "picked-dose", text: shortDose(it) || "No dose set" })),
+          el("span", { class: "picked-dose", text: otherDose(it), hidden: !otherDose(it) })),
         el("span", { class: "picked-btns" },
           el("button", { type: "button", class: "icon-btn picked-up", "aria-label": "Move " + ex.name + " up", title: "Move up", disabled: i === 0, onclick: () => { pickedFocus = [i - 1, ".picked-up"]; moveTo(i, i - 1); } }, icon(ICONS.up)),
           el("button", { type: "button", class: "icon-btn picked-down", "aria-label": "Move " + ex.name + " down", title: "Move down", disabled: i === n - 1, onclick: () => { pickedFocus = [i + 1, ".picked-down"]; moveTo(i, i + 1); } }, icon(ICONS.down)),
-          el("button", { type: "button", class: "icon-btn picked-remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => { pickedFocus = [Math.min(i, n - 2), ".picked-remove"]; removeAt(i); } }, icon(ICONS.remove)))
+          el("button", { type: "button", class: "icon-btn picked-remove", "aria-label": "Remove " + ex.name, title: "Remove", onclick: () => { pickedFocus = [Math.min(i, n - 2), ".picked-remove"]; removeAt(i); } }, icon(ICONS.remove))),
+        pickedDose(it, ex, i)
       ));
     });
     if (pickedFocus) {
